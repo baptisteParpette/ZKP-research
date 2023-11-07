@@ -14,13 +14,20 @@ Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessi
 
 Exemple 2 (Résolution de sudoku)
 ---------
-Le jeu de sudoku consiste à répartir des chiffres de 1 à 9 dans une grille 9x9 formée de 5 pavés de 3x3. Pour être résolue la grille doit comporter tous les chiffres uniques de 1 à 9 sur toutes les lignes, toutes les colonnes et tous les 4 pavés de 9 cases. Pour contraindre le système, la grille est initialement peuplée de valeurs qui amènent à une solution unique. Le jeu consiste à répartir les 11 séries de 9 valeurs dans toutes les zones de la grille. Dans la solution de base, le prouveur est celui qui montre que tous les chiffres sont présents dans la grille.
+Le jeu de sudoku consiste à répartir des chiffres de 1 à 9 dans une grille 9x9 formée de 9 pavés de 3x3. Pour être résolue la grille doit comporter tous les chiffres uniques de 1 à 9 sur toutes les lignes, toutes les colonnes et tous les pavés de 9 cases. Pour contraindre le système, la grille est initialement peuplée de valeurs qui par déduction amènent à une solution unique. Le jeu consiste à répartir les 27 séries de 9 valeurs de toutes les zones de la grille (lignes, colonnes, pavés). Dans la solution de base, le prouveur est celui qui montre que tous les chiffres sont présents et répartis dans la grille.
 
-Dans une approche ZKP le prouveur peut montrer au vérifieur qu'il connait la solution sans divulguer la répartition des chiffres.
+Dans une approche ZKP, le prouveur peut montrer au vérifieur qu'il connait la solution sans divulguer la répartition des chiffres.
 
-Pour cela, il ne marque pas la solution directement sur la grille, mais sur des étiquettes mobiles qu'il colle sur les cases vides de la grilles. Ces étiquettes sont retournée afin que le vérifieur ne puisse pas voir les valeurs solution. Pour que la preuve ZKP fonctionne, le vérifieur pose 11 questions. Chaque question consiste à demander l'ensemble des étiquettes constituant une des zone de répartition (ligne, colonne ou pavé). Le prouveur prend les étiquettes les mélange caché et dévoile au vérifieur que les 9 chiffres sont bien présents de manière unique. Puis il replace les étiquettes face cachées sur leur emplacement. En répétant ce processus 11 fois, le vérifier est convaincu à 100% que le prouver connait bien la solution à la grille, mais le vérifier ne connait pas la position des différentes valeurs dans la grille.
+Pour cela, il ne marque pas la solution directement sur la grille, mais sur des étiquettes mobiles qu'il colle sur les cases vides de la grilles. Chaque case contient une étique avec la valeur solution. Ces étiquettes sont retournée afin que le vérifieur ne puisse pas voir les valeurs solution. Pour que la preuve ZKP fonctionne, le vérifieur pose 18  questions. Chaque question consiste à demander l'ensemble des étiquettes constituant une des zone de répartition (ligne, colonne ou pavé). Le prouveur prend les étiquettes les mélange caché et dévoile au vérifieur que les 9 chiffres sont bien présents de manière unique. Puis il replace les étiquettes face cachées sur leur emplacement. En répétant ce processus 18 fois, le vérifier est convaincu à 100% que le prouver connait bien la solution à la grille, mais le vérifier ne connait pas la position des différentes valeurs dans la grille.
 
-Cette preuve est dite interactive, car elle peut se terminer avant la fin des 11 intérations. En effet, au fur et à mesure des itérations le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
+Cette preuve est dite interactive, car elle peut se terminer avant la fin des 18 intérations. En effet, au fur et à mesure des itérations le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
+
+Ces deux exemples donnent une intuition sur le principe de fonctionnement des approches par ZKP. Dans le cadre général il s'agit d'arriver à montrer qu'on connait la réponse à une question en révélant des valeurs qui n'ont pas de correlation directe avec la solution. "Charly est là, mais je n'ai pas sa coordonnée", "les chiffres sont là mais je n'ai pas vu l'organisation".
+
+Il existe de nombreux exemples plus ou moins intuitifs sur les méchanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynomes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire. Par exemple, si vous savez qu'il s'agit d'un ensemble de 10 courbes, et que le prouveur annonce qu'il pense que toutes les courbes de cet ensemble passent par des points de coordonnées (12, 100), (20, 230), (32, 430), (1233,2301), (124, 131389), (1212,101281818) et (13123, 12239191281), il y a de fortes chance qu'il connaisse l'ensemble. Le mécanisme  zkSNARK consiste à construire cet ensemble de courbes afin de permettre à un prouveur qu'il connait une solution type que le verifier peut facilement controler.
+Pour ceci le vérifier connait une courbe de référence publique (x-1)(x-2)(x-3).... Cette courbe coupe l'axe des x aux coordonnées (0, 1), (0, 2) (0, 3) (0, 4). D'autre part le vérifier possède un certain nombre de coefficient de courbes qui sont indirectement liés au système d'équation initial. Le prouver fourni un vecteur solution de valeurs [x1,...xn] que le vérifier peu appliquer à son système de courbe. Le vérifier peut alors controler que sa courbe publique est un diviseur exact de la courbe déduite à partir du vecteur solution appliqué au système de coefficients.
+
+Le prouver indique qu'il connait une solution [x1,...xn], sans que le vérifieur puisse remonter aux courbes initiales.
 
 
 Voici des exemples simplifier :
@@ -29,7 +36,7 @@ Voici des exemples simplifier :
 
 - Le problème du daltonien et des boulles de couleur
 
-### Applications
+### Applications //SFR pour moi c'est inutile pour l'instant
 
 Les ZKP ont de nombreuses applications, notamment :
 
@@ -210,7 +217,7 @@ So our new goal is to move from vector field to polynomial field:
 
 
 
-Dans cette partie on a trouver les matrices de polynome pour L R O 
+Dans cette partie on a trouver les matrices de polynome pour L R O
 
 Ensuite on a calculer U=Lw, V=Rw, W=Ow dans le corps de Galois toujours
 
@@ -314,7 +321,7 @@ To reiterate: In an ideal scenario, the smart contract should accept points *A*
 
 #### Partie 6:
 
-a relire 
+a relire
 
 
 
@@ -326,7 +333,7 @@ Il faudra voir sur le code solidity fonctionne bien. Pour quoi pas faire 3 progr
 
 Il va pas assez loin des les explications, on peut mieux faire. Il faut que je lisse + de papier sur EC:
 
-- https://medium.com/blockapex/a-primer-for-the-zero-knowledge-cryptography-part-ii-ecc0199d0a56 
+- https://medium.com/blockapex/a-primer-for-the-zero-knowledge-cryptography-part-ii-ecc0199d0a56
 
 - https://medium.com/@imolfar/why-and-how-zk-snark-works-8-zero-knowledge-computation-f120339c2c55
 
