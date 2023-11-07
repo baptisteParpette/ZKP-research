@@ -53,8 +53,6 @@ Sans entrer dans les détails techniques, le fonctionnement des ZKP repose sur d
 
 [mettre un schema des echange dans un ZKPi]
 
-
-
 ## Les different type de ZKP
 
 Etant donné que les regles pour definir un ZKP sont simples, il y a ensuite des categories qui se sont former avec d'autre propriete afin d'optenir des types de preuve plus adapter aux context dans lequel on les utilise.
@@ -123,6 +121,246 @@ A suivre...
 ##### Pour la suite:
 
 On sait un peu près comment formaliser ses preuves, ensuite il va falloir penser qu'on travail dans des groupes fini Z/nZ et le point important est l'utilisation des courbes elliptiques ??
+
+
+
+
+
+
+
+
+
+---
+
+### Groth16
+
+Article medium qui explique le fonctionnement : [Under the hood of zkSNARK Groth16 protocol (part 1) | by Crypto Fairy | Coinmonks | Sep, 2023 | Medium](https://medium.com/coinmonks/under-the-hood-of-zksnark-groth16-protocol-2843b0d1558b)
+
+Code python : [zkSNARK-under-the-hood/groth16.ipynb at main · tarassh/zkSNARK-under-the-hood · GitHub](https://github.com/tarassh/zkSNARK-under-the-hood/blob/main/groth16.ipynb)
+
+article de ref de groth16 : [260.pdf (iacr.org)](https://eprint.iacr.org/2016/260.pdf)
+
+
+
+
+
+Groth16 est spécifiquement un protocole de preuve pour les preuves succinctes non interactives d'argument de connaissance (zk-SNARKs). Il est particulièrement connu pour être très efficace en termes de taille de preuve et de temps de vérification. Dans un zk-SNARK, le prouveur peut générer une preuve que certains éléments d'entrée satisfont une certaine relation sans révéler les éléments eux-mêmes. Cette preuve peut être vérifiée très rapidement, même si la relation est complexe.
+
+Le zk-SNARK Groth16 est largement utilisé car il permet de créer des preuves très petites qui peuvent être vérifiées en un temps constant, indépendamment de la complexité de l'affirmation. C'est essentiel pour les applications blockchain où la bande passante et le temps de calcul sont des ressources précieuses.
+
+
+
+##### Partie 1:
+
+"Here is an image that depicts the zkSNARK setup. Unlike other ZKP protocols such as STARK and Bulletproofs, zkSNARK requires a third party during the initialization phase. This third party provides the prover and verifier with their respective keys."
+
+"the execution time will tend to be greater on the prover’s side."
+
+"in the case of SNARKs, computations must be bounded. This means the number of iterations must be known in advance, and the number of parameters, as well as their size, should also be predetermined."
+
+
+
+"There are several libraries capable of performing this conversion, including:
+
+- [Zokrates](https://github.com/Zokrates/ZoKrates): The code is written in a language resembling Python.
+- [Circom](https://github.com/iden3/circom): It uses its own domain-specific language.
+- [Pequin](https://github.com/pepper-project/pequin) from the Pepper-Project: This utilizes a C-like language, similar to the gist provided above."
+
+
+
+Pour construit le circuit il faudrait factoriser au max pour avoir le moins de constraint possible à la fin "The primary objective here is to identify the fewest constraints that can accurately represent this equation."
+
+<img src="https://miro.medium.com/v2/resize:fit:875/1*x3BJS5DA5i1sJ6MpHjicgA.png" title="" alt="" data-align="center">
+
+
+
+#### Partie 2 :
+
+"in *GF(p)*:
+
+*p = 21888242871839275222246405745257275088548364400416034343698204186575808495617*
+
+The value *p* is a prime number, so the set under consideration comprises integers ranging from 0 to *p*−1. This specific choice is pivotal because of the Elliptic Curve known as *BN-128*, which we will later employ for encryption. Notably, within the Ethereum blockchain’s framework, *BN-128* and *secp256k1* are the only supported elliptic curves."
+
+
+
+witness vector:
+
+<img src="https://miro.medium.com/v2/resize:fit:805/1*6yzb6iqFaT2SoFaJV1BGLQ.png" title="" alt="" data-align="center">
+
+
+
+Finally, if we multiply each matrix by witness vector we will get next:
+
+<img src="https://miro.medium.com/v2/resize:fit:393/1*PqHEXvk3CPjalnwvpWCOXw.png" title="" alt="" data-align="center">
+
+Where *Lw*, *Rw*, and *Ow* are vectors. The element-wise multiplication of *Lw* and *Rw* should yield *Ow*. If this equality holds true, it confirms the correctness of our R1CS defined by the matrices *L*, *R*,*O* and vector *w*.
+
+#### Partie 3 :
+
+However, in the first article, I emphasized the importance in zkSNARK of maintaining a verifier time that is either constant or close to it — represented as O(1). Evaluating *Lw*×*Rw*=*Ow* by verifiers isn’t inherently O(1) as it’s contingent on the program’s size. Furthermore, introducing encryption into the mix further decelerates execution. Therefore, we need a more concise representation than R1CS, and this is where QAP comes into play
+
+Homomorphism: Let’s simplify this concept. In Abstract Algebra, we study numbers, categorize them, and then organize them into groups based on specific rules — this is known as Group Theory. Within Group Theory, we also explore the relationships between these groups. At its core, a homomorphism is a mapping between two groups that preserves their inherent structures. Think of it as a bridge that allows us to relate operations in one group to another. Interestingly, the vector space where R1CS resides and the space of polynomials can be thought of as two such groups, and there exists a homomorphism between them. For those diving deeper, it’s worth noting that both vectors and polynomials technically belong to the category of “Rings”. I’ll provide a link at the end of this article for those curious to learn more.
+
+## QAP
+
+So our new goal is to move from vector field to polynomial field:
+
+<img src="https://miro.medium.com/v2/resize:fit:683/1*VGm1yoiXQC-S_jhERXAW9Q.png" title="" alt="" data-align="center">
+
+
+
+Dans cette partie on a trouver les matrices de polynome pour L R O 
+
+Ensuite on a calculer U=Lw, V=Rw, W=Ow dans le corps de Galois toujours
+
+Et maintenant si on teste avoir un x aléatoire pour voir sur le reste est nul
+
+
+
+<img src="https://miro.medium.com/v2/resize:fit:578/1*-fdN6ag6L6cnmrtahGlpgA.png" title="" alt="" data-align="center">
+
+
+
+#### Partie 4 :
+
+The Groth16 protocol, for instance, employs a specific elliptic curve known as BN254.
+
+we need to place Bob and Alice within a common “framework” or “environment.” This is where Elliptic Curves come into play.
+
+Here are a few introductory remarks about Elliptic Curves (ECs):
+
+1. ECs belong to the category of Finite Field Groups from Abstract Algebra.
+2. When you select a point on an Elliptic Curve and “multiply” it by a number, you’ll derive another point on that same curve. However, reverse-engineering the original number from the resulting point is a formidable challenge. This mechanism is reminiscent of a coding or encryption process.
+3. Adding two points on the curve will yield a new point.
+4. Not all Elliptic Curves can be employed for this purpose. The curve must be “pairing-friendly.” While this might sound abstract, it essentially means that when you pair a point from one group with a point from another group, the outcome will belong to a third distinct group.
+
+<img src="https://miro.medium.com/v2/resize:fit:368/1*FRPntmukUp7bgtulgVN3Og.png" title="" alt="" data-align="center">
+
+First, we require an intermediary — the “trusted setup.” This entity will place Alice and Bob within a unified environment. The trusted setup provides them with essential parameters, but in an encrypted format, ensuring that neither Alice nor Bob can decipher their true nature. This is crucial, as we don’t want to leave it to chance or rely on the assumption that Alice or Bob will act with integrity.
+
+We now have our initial prover program. To reemphasize, this setup is not yet secure. Since Alice merely presents three points on the elliptic curve, there’s nothing to confirm that any actual computation took place. In the subsequent article, we’ll introduce additional parameters to transform this into a genuine proof.
+
+#### Partie 5 :
+
+So far, we’ve managed to compress the prover’s work evaluation into three points on elliptic curve: A, B, and C. Here’s a brief recap of how it looked in the beginning:
+
+- The R1CS was represented as a matrix multiplication *Lw*​×*Rw*​=*Cw*​.
+- Then, thanks to homomorphism, the R1CS was transformed into the QAP in polynomial form, given by *U*(*τ*)×*V*(*τ*)=*W*(*τ*)+*H*×*T*(*τ*).
+- Now, it’s represented in the form of elliptic curve points: *A*×*B*=*C*
+
+![](https://miro.medium.com/v2/resize:fit:833/1*NbI9W51BYXY2VPO1TBl61A.png)
+
+*A*×*B*=*C*
+
+
+
+# α, β
+
+Although the structure is preserved, we must introduce constraints to this equation to fully realize it as a zkSNARK. When the verifier receives points *A, B*, and *C*, they cannot determine if these points are genuine results of an evaluation or merely a trick by the prover. For this very reason, we need to introduce two additional parameters, *α* (alpha) and *β* (beta). These parameters must be provided by a trusted setup agent:
+
+![](https://miro.medium.com/v2/resize:fit:650/1*unZ_bnl1enOtWwD9z_u20A.png)
+
+Now, the prover must compute *(A + α), (B + β), βA, αB*, and *C*. Meanwhile, the verifier will have to compute the *αβ* pairing aka “multiplication” (values provided by the trusted setup) and check if the equation is valid
+
+We must revisit the matrices *Lp*​, *Rp*​, and *Op*​, which contain the polynomial coefficients. It’s necessary to compute *β*×*Lp*​ and *α*×*Rp*​. Eventually, these calculations will yield the values *βA* and *αB.* Setup agent is responsible for calculating these parameters.
+
+As for verifier, unfortunately, python library doesn’t support additions for pairings but if it would it may look like this:
+
+```python
+# A = A + α
+# B = B + β
+# C = βA + αB + C
+# AB == αβ + [βA + αB + C]
+assert pairing(B_G2, A_G1) == pairing(beta_G1, alpha_G1) + pairing(G2, C_G1)
+```
+
+Fortunately we can do it in solidity but we have to move A*B to the right side:
+
+![](https://miro.medium.com/v2/resize:fit:375/1*P9cqqRpz4pbH-HKt7r52sw.png)
+
+***Note****:* Ideally, points A, B, and C should be provided as input parameters to the `verify` function. However, for the sake of simplicity in this demonstration, they have been hardcoded. To witness this in action, you can import this contract into Remix Studio, compile it, and deploy it. You'll observe that the result returns `true`
+
+
+
+![](https://miro.medium.com/v2/resize:fit:643/1*srZCBdRIK0jt7zRqXC1Gtw.png)
+
+Until now, this data was treated as private. However, in this example, I aim to designate both ‘1’ and ‘out’ as public parameters. To achieve this, we must split the vector into two pieces.
+
+![](https://miro.medium.com/v2/resize:fit:543/1*k_1zLzREVWQEmuDFR83xxw.png)
+
+**Note**: The sequence should remain as **[1, out]** followed by [x, y, …, v4]. If there’s a requirement to reveal other data (e.g., *y* and *v*4), you must rearrange these entries so they can be split into two sections. This means that the matrices *L*, *R*, and *O* for the arithmetic circuit will also need adjustments.
+
+
+
+We split the pre-image of point C, represented as *βU*+*αV*+*W*+*HT*, into two parts:
+
+1. *c* = [*βU*+*αV*+*W*+*HT*] — This is the polynomial for the private input.
+2. *k* = [*βU*+*αV*+*W*] — This is the polynomial for the public input.
+
+For the pre-images of A and B, represented as *U*+*α* and *V*+*β* respectively, nothing has changed. Final equation will look like this:
+
+![](https://miro.medium.com/v2/resize:fit:358/1*AX6aaaScgwXFvJB_8we5rQ.png)
+
+The prover will supply *A*′, *B*′, and *C*. The values of *α* and *β* are provided to the verifier from the trusted setup. The verifier is responsible for calculating the point *K*. The prover is required to present the values [1 out] in an unencrypted form. To encrypt these values, the verifier will employ elliptic curve scalar multiplication, and the necessary points for this operation will be supplied by the setup ([k1] * 1 + [k2] * out).
+
+
+
+To reiterate: In an ideal scenario, the smart contract should accept points *A*, *B*, *C*, and the ‘public input’ as function arguments. However, for the sake of simplicity in this demonstration, all values have been hard-coded. These can be easily verified in Remix Studio or [here](https://mumbai.polygonscan.com/address/0xe529a6ba0847a2e7e2335fbb29ea2eaa3ee00b85#readContract).
+
+
+
+
+
+#### Partie 6:
+
+a relire 
+
+
+
+#### Conclusion:
+
+Les 6 papiers sont très bien expliqués avec du bon code python qui fonctionnent très bien !
+
+Il faudra voir sur le code solidity fonctionne bien. Pour quoi pas faire 3 programmes pour le setup/prover/verifier pour savoir exactement ce qu'ils ont en commun comme data.
+
+Il va pas assez loin des les explications, on peut mieux faire. Il faut que je lisse + de papier sur EC:
+
+- https://medium.com/blockapex/a-primer-for-the-zero-knowledge-cryptography-part-ii-ecc0199d0a56 
+
+- https://medium.com/@imolfar/why-and-how-zk-snark-works-8-zero-knowledge-computation-f120339c2c55
+
+Il a aussi fait un article il y a quelques jours sur PLONK : [Under the hood of zkSNARKs — PLONK protocol: Part 1 | by Crypto Fairy | Nov, 2023 | Medium](https://medium.com/@cryptofairy/under-the-hood-of-zksnarks-plonk-protocol-part-1-34bc406d8303)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##### Ressources :
 
