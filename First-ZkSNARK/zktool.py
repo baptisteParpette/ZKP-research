@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 def decompose_polynomial(poly):
     # Replace minus signs with a '+' followed by the negative sign for splitting
@@ -272,5 +273,34 @@ def polynomial_division(T, Z):
     """
     quotient, remainder = np.polydiv(T, Z)
     return quotient, remainder
+
+def plot_polynomials(coefficients_list,xlim=[-10,10],ylim=[-10,10]):
+    """
+    Affiche graphiquement les polynômes à partir de leurs coefficients.
     
-   
+    :param coefficients_list: Une liste de listes où chaque sous-liste contient les coefficients d'un polynôme.
+                              Par exemple, [[1, 2, 3], [3, 2]] représenterait les polynômes x^2 + 2x + 3 et 3x + 2.
+    """
+    # Plage de valeurs x pour l'affichage
+    x = np.linspace(xlim[0], xlim[1], 400)
+    
+    plt.figure(figsize=(10, 6))
+    
+    # Parcourir chaque liste de coefficients et tracer le polynôme correspondant
+    for idx, coeffs in enumerate(coefficients_list):
+            y = np.polyval(coeffs, x)
+            
+            # Trouver les racines du polynôme
+            roots = np.roots(coeffs)
+            formatted_roots = ", ".join([f"{root:.2f}" for root in roots if np.isreal(root)])
+            
+            plt.plot(x, y, label=f'Polynôme {idx + 1} (Racines: {formatted_roots})')
+        
+    plt.title("Graphique des polynômes avec leurs racines")
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.axhline(0, color='black',linewidth=0.5)
+    plt.axvline(0, color='black',linewidth=0.5)
+    plt.grid(color = 'gray', linestyle = '--', linewidth = 0.5)
+    plt.legend()
+    plt.show()
