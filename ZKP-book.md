@@ -1,20 +1,33 @@
 # Preuves à divulgation nulle de connaissance (ZKP)
 
-Les preuves à divulgation nulle de connaissance sont un concept fascinant dans le domaine de la cryptographie. Elles permettent à une partie (le prouveur) de montrer à une autre partie (le vérificateur) qu'une affirmation est vraie, sans révéler d'information supplémentaire. 
+Les preuves à divulgation nulle de connaissances (Zero Knowledge Proofs) couvrent un nouveau concept dans le domaine de la cryptographie. Elles permettent à une partie ; le **prouveur** ; de montrer à une autre partie ; le **vérifieur** ; qu'une **affirmation** est vraie, sans révéler d'information supplémentaire.
 
-## Introduction aux ZKP?
+### Exemples simples
 
-Les ZKP sont des méthodes cryptographiques qui permettent à une personne de prouver qu'elle connaît une valeur particulière sans révéler cette valeur. En d'autres termes, elles permettent de prouver une connaissance sans révéler cette connaissance.
+Exemple 1 (Où est Charlie ?)
+---------
+Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le prouveur est celui qui indique où est le personnage, le vérifieur peut voir sur le dessin que Charlie est au bon endroit indiqué.
 
-### Exemple simple
+Dans une approche ZKP le prouveur peut montrer au vérifieur qu'il sait où se trouve Charlie sans divulguer sa position.
 
-Prenons l'exemple d'un jeu de devinette où Alice veut prouver à Bob qu'elle connaît un secret, mais sans le lui révéler. Avec un ZKP, Alice pourrait convaincre Bob qu'elle connaît le secret sans jamais avoir à le lui divulguer. Voici des exemples simplifier : 
+Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. C'est à dire au moins 3 fois la dimension de l'image sur  les deux dimensions. Dans ce cache, un trou est fait de la dimension du personnage de Charlie et positionne ce trou sur "l'image de Charlie". Le cache recouvre largement l'image et ne divulgue que Charly, mais pas sa position dans l'image. Le cache couvrant les coordonnées de l'image. Le vérifieur voit charly à travers le trou, mais ne sais pas à quelles coordonnées dans l'image il se trouve. En repartant le vérifieur sais que le prouveur à trouvé Charlie, mais le vérifieur ne sais pas où il se trouve. Il y a eu preuve de l'affirmation sans divulgation de la coordonnée.
+
+Exemple 2 (Résolution de sudoku)
+---------
+Le jeu de sudoku consiste à répartir des chiffres de 1 à 9 dans une grille 9x9 formée de 5 pavés de 3x3. Pour être résolue la grille doit comporter tous les chiffres uniques de 1 à 9 sur toutes les lignes, toutes les colonnes et tous les 4 pavés de 9 cases. Pour contraindre le système, la grille est initialement peuplée de valeurs qui amènent à une solution unique. Le jeu consiste à répartir les 11 séries de 9 valeurs dans toutes les zones de la grille. Dans la solution de base, le prouveur est celui qui montre que tous les chiffres sont présents dans la grille.
+
+Dans une approche ZKP le prouveur peut montrer au vérifieur qu'il connait la solution sans divulguer la répartition des chiffres.
+
+Pour cela, il ne marque pas la solution directement sur la grille, mais sur des étiquettes mobiles qu'il colle sur les cases vides de la grilles. Ces étiquettes sont retournée afin que le vérifieur ne puisse pas voir les valeurs solution. Pour que la preuve ZKP fonctionne, le vérifieur pose 11 questions. Chaque question consiste à demander l'ensemble des étiquettes constituant une des zone de répartition (ligne, colonne ou pavé). Le prouveur prend les étiquettes les mélange caché et dévoile au vérifieur que les 9 chiffres sont bien présents de manière unique. Puis il replace les étiquettes face cachées sur leur emplacement. En répétant ce processus 11 fois, le vérifier est convaincu à 100% que le prouver connait bien la solution à la grille, mais le vérifier ne connait pas la position des différentes valeurs dans la grille.
+
+Cette preuve est dite interactive, car elle peut se terminer avant la fin des 11 intérations. En effet, au fur et à mesure des itérations le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
+
+
+Voici des exemples simplifier :
 
 - Caverne l'ali baba
 
 - Le problème du daltonien et des boulles de couleur
-
-- Ou est Charlie
 
 ### Applications
 
@@ -26,9 +39,9 @@ Les ZKP ont de nombreuses applications, notamment :
 
 ### Définition d'un ZKP:
 
-Pour quoi preuve soit considerer comme un ZKP, elle doit repondre à 3 propriété : 
+Pour quoi preuve soit considerer comme un ZKP, elle doit repondre à 3 propriété :
 
-- consistance (*completeness*) : Si la proposition (statement) est vrai et que le verifieur est honnete, alors il sera forcement convaincu par un honnete prouver. 
+- consistance (*completeness*) : Si la proposition (statement) est vrai et que le verifieur est honnete, alors il sera forcement convaincu par un honnete prouver.
 
 - robustesse (*soundness*) : Si la proposition est fausse et que le verifieur est honete, alors il sera impossible de le convaincre de la verasité de la proposition.
 
@@ -36,7 +49,7 @@ Pour quoi preuve soit considerer comme un ZKP, elle doit repondre à 3 propriét
 
 ### Comment cela fonctionne-t-il?
 
-Sans entrer dans les détails techniques, le fonctionnement des ZKP repose sur des problèmes mathématiques complexes qui sont difficiles à résoudre sans connaître certaines informations secrètes. Le prouveur utilise ces informations secrètes pour générer une preuve, et le vérificateur peut alors vérifier cette preuve sans jamais connaître les informations secrètes. Le verifieur à la possibilité de lancer des challenges au prouver afin de se convaincre qu'il connait pas le secret. 
+Sans entrer dans les détails techniques, le fonctionnement des ZKP repose sur des problèmes mathématiques complexes qui sont difficiles à résoudre sans connaître certaines informations secrètes. Le prouveur utilise ces informations secrètes pour générer une preuve, et le vérificateur peut alors vérifier cette preuve sans jamais connaître les informations secrètes. Le verifieur à la possibilité de lancer des challenges au prouver afin de se convaincre qu'il connait pas le secret.
 
 [mettre un schema des echange dans un ZKPi]
 
@@ -48,11 +61,11 @@ Etant donné que les regles pour definir un ZKP sont simples, il y a ensuite des
 
 ### Interactive vs Non-Interactive
 
-Nous avons vu dans l'introduction des ZKP que le verifier et le prouver commiquait ensemble et qu'il pouvait y avoir plusieurs allers retours possible afin d'effectué des challenge, ceci represente les ZKP interactive ou le verifier peux demander un complement de preuve sous forme de challenge. En opposition il existe des ZKP non interactif, dans ce cas de figure c'est au prouver de former une proposition suffisament évolué pour que n'importe quelle verifier honnet puisse etre convaincu directement. 
+Nous avons vu dans l'introduction des ZKP que le verifier et le prouver commiquait ensemble et qu'il pouvait y avoir plusieurs allers retours possible afin d'effectué des challenge, ceci represente les ZKP interactive ou le verifier peux demander un complement de preuve sous forme de challenge. En opposition il existe des ZKP non interactif, dans ce cas de figure c'est au prouver de former une proposition suffisament évolué pour que n'importe quelle verifier honnet puisse etre convaincu directement.
 
-Les iZKP sont possible grace à l'heuristique de Fiat-Shamir (qui se base sur la resistance de collisison des fonction de hashage) En réalité ce sont ses dernière qui sont le plus developper et mise en application, car les peuves interactive sont plus scalable 
+Les iZKP sont possible grace à l'heuristique de Fiat-Shamir (qui se base sur la resistance de collisison des fonction de hashage) En réalité ce sont ses dernière qui sont le plus developper et mise en application, car les peuves interactive sont plus scalable
 
-Aventage et inconveniant : 
+Aventage et inconveniant :
 
 |        | Avantage                                                                                                                                             | Inconveniant                                                                                                                                                              |
 | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -78,7 +91,7 @@ Ce polynome x^3+x+5 donnerai en circuit arithmetique :
 
 ###### Convertion circuit en R1CS :
 
-On va prendre trois vecteur A,B et C 
+On va prendre trois vecteur A,B et C
 Puis pour chaque porte du circuit on va avoir une contrainte de la forme :
 A[i]*B[i]=C[i]
 Ainsi pour notre circuit on aura :
@@ -109,7 +122,7 @@ A suivre...
 
 ##### Pour la suite:
 
-On sait un peu près comment formaliser ses preuves, ensuite il va falloir penser qu'on travail dans des groupes fini Z/nZ et le point important est l'utilisation des courbes elliptiques ?? 
+On sait un peu près comment formaliser ses preuves, ensuite il va falloir penser qu'on travail dans des groupes fini Z/nZ et le point important est l'utilisation des courbes elliptiques ??
 
 ##### Ressources :
 
