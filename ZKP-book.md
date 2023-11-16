@@ -404,3 +404,43 @@ https://www.youtube.com/watch?v=HJ9K_o-RRSY
 ###### Utilisation de libsnark pour les zk-SNARKs :
 
 https://github.com/christianlundkvist/libsnark-tutorial
+
+##### Rareskills.io
+Site de vulgarisation des maths pour les programmeur crypto
+- Théorie des ensembles : https://www.rareskills.io/post/set-theory
+  - Termes définis : ensemble / magma / semi-groupe / monoid / groupe
+      - Semigroup : pas d'élément identite (0 dans l'addition)
+      - Monoid : identité, mais pas d'inverse (-1 / +1)
+      - Groupe : identité + inverse
+- Théorie des groupes : https://www.rareskills.io/post/group-theory-and-coding
+  - groupe : ensemble muni de
+            - Un opérateur binaire associatif et fermé
+            - Un élément identité
+            - Les éléments possèdent un inverse
+      - Groupe Abélien : groupe muni de
+            - L'opérateur binaire associatif et fermé est aussi commutatif (ex : +)
+  - groupe fini
+  - ordre d'un groupe
+  - groupe cyclique : tous les éléments sont générés par un générateur additionné pleins de fois
+- Anneau et Champs : https://www.rareskills.io/post/rings-and-fields
+  - Anneau : ensemble muni de deux opérateurs binaires
+    - Sous le premier opérateur, l'ensemble est un groupe abélien(inverse et commutatif)
+    - Sous le second, l'ensemble est un monoid(pas d'inverse)
+    - Le second opérateur distribue sur le premier
+  - Champ : pareil qu'un anneau
+    - Premier opérateur pareil que l'anneau
+    - Second opérateur si on exclue le 0, l'ensemble est un groupe abélien
+
+    Exemple : Addition et multiplication modulo 2 est le plus petit champ possible (cf GF(2))
+    Exemple : l'ensemble des entiers avec + et * n'est pas un champ, mais un anneau
+    Exemple : l'ensemble de réels est un champ
+
+- Courbe elliptiques sur les champs finis : https://www.rareskills.io/post/elliptic-curves-finite-fields
+  - Très bon article sur le principe de y^2 = X^3 + 3 (mod 27)
+    - Base des zkp : x + y = 5, je peux prouver que je connais deux chiffres x et y solution, sans les donner.
+    -      Je peux donner : GX, et GY.
+    -        Grace aux courbes elliptiques le vérifieur peut faire
+    -                GX + GY = 5G
+    - ==> On suppose qu'un attaquant qui connait GX, ne peux pas revenir à X. C'est le principe des algorithmes discrets
+    - ==> Si un attaqueur imagine x et y, il peut par contre vérifier que ce sont les bonnes valeur sur les points de la courbe elliptique
+
