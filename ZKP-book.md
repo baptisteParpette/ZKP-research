@@ -444,3 +444,9 @@ Site de vulgarisation des maths pour les programmeur crypto
     - ==> On suppose qu'un attaquant qui connait GX, ne peux pas revenir à X. C'est le principe des algorithmes discrets
     - ==> Si un attaqueur imagine x et y, il peut par contre vérifier que ce sont les bonnes valeur sur les points de la courbe elliptique
 
+- Billinear Pairing : Pour l'instant pas compris : https://www.rareskills.io/post/bilinear-pairing
+- R1CS to Quadratic Arithmetic Program over a Finite Field in Python : https://www.rareskills.io/post/r1cs-to-qap
+- Converting Algebraic Circuits to R1CS (Rank One Constraint System) : https://www.rareskills.io/post/rank-1-constraint-system
+
+- Circom : code rust pour écrire des circuits R1CS (version précédente en js) : https://docs.circom.io/
+
