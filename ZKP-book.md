@@ -1,16 +1,16 @@
 # Preuves à divulgation nulle de connaissance (ZKP)
 
-Les preuves à divulgation nulle de connaissances (Zero Knowledge Proofs) couvrent un nouveau concept dans le domaine de la cryptographie. Elles permettent à une partie ; le **prouveur** ; de montrer à une autre partie ; le **vérifieur** ; qu'une **affirmation** est vraie, sans révéler d'information supplémentaire.
+Les preuves à divulgation nulle de connaissances (Zero Knowledge Proofs) couvrent un concept spécifique dans le domaine de la cryptographie. Elles permettent à une partie ; le **prouveur** ; de montrer à une autre partie ; le **vérifieur** ; qu'une **affirmation** est vraie, sans révéler d'information supplémentaire ; elle reposent également sur un **tiers de confiance** qui défini l'espace de travail de la preuve.
 
 ### Exemples simples
 
 Exemple 1 (Où est Charlie ?)
 ---------
-Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le prouveur est celui qui indique où est le personnage, le vérifieur peut voir sur le dessin que Charlie est au bon endroit indiqué.
+Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le prouveur est celui qui indique où est le personnage, le vérifieur peut voir sur le dessin que Charlie est au bon endroit indiqué. Le tiers de confiance peut être vu comme une personne qui garantie au vérifier que Charlie est bien présent quelque part sur l'image ou que l'image n'a pas été remplacée.
 
 Dans une approche ZKP le prouveur peut montrer au vérifieur qu'il sait où se trouve Charlie sans divulguer sa position.
 
-Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. C'est à dire au moins 3 fois la dimension de l'image sur  les deux dimensions. Dans ce cache, un trou est fait de la dimension du personnage de Charlie et positionne ce trou sur "l'image de Charlie". Le cache recouvre largement l'image et ne divulgue que Charly, mais pas sa position dans l'image. Le cache couvrant les coordonnées de l'image. Le vérifieur voit charly à travers le trou, mais ne sais pas à quelles coordonnées dans l'image il se trouve. En repartant le vérifieur sais que le prouveur à trouvé Charlie, mais le vérifieur ne sais pas où il se trouve. Il y a eu preuve de l'affirmation sans divulgation de la coordonnée.
+Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. C'est à dire au moins 3 fois la dimension de l'image sur ses deux dimensions. Dans ce cache, un trou est fait de la dimension du personnage de Charlie et positionne ce trou sur "l'image de Charlie". Le cache recouvre largement l'image et ne divulgue que Charlie, mais pas sa position dans l'image. Le cache couvrant les coordonnées de l'image. Le vérifieur voit charly à travers le trou, mais ne sait pas à quelles coordonnées dans l'image il se trouve. En repartant le vérifieur sais que le prouveur à trouvé Charlie, mais le vérifieur ne sais pas où il se trouve. Il y a eu preuve de l'affirmation sans divulgation de la coordonnée.
 
 Exemple 2 (Résolution de sudoku)
 ---------
@@ -22,21 +22,23 @@ Pour cela, il ne marque pas la solution directement sur la grille, mais sur des 
 
 Cette preuve est dite interactive, car elle peut se terminer avant la fin des 18 intérations. En effet, au fur et à mesure des itérations le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
 
-Ces deux exemples donnent une intuition sur le principe de fonctionnement des approches par ZKP. Dans le cadre général il s'agit d'arriver à montrer qu'on connait la réponse à une question en révélant des valeurs qui n'ont pas de correlation directe avec la solution. "Charly est là, mais je n'ai pas sa coordonnée", "les chiffres sont là mais je n'ai pas vu l'organisation".
+Ces deux exemples donnent une intuition sur le principe de fonctionnement des approches par ZKP. Dans le cadre général il s'agit d'arriver à montrer qu'on connait la réponse à une question en révélant des valeurs qui n'ont pas de correlation directe avec la solution. "Charlie est là, mais je n'ai pas sa coordonnée", "les chiffres sont là mais je n'ai pas vu l'organisation".
 
-Il existe de nombreux exemples plus ou moins intuitifs sur les méchanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynomes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire. Par exemple, si vous savez qu'il s'agit d'un ensemble de 10 courbes, et que le prouveur annonce qu'il pense que toutes les courbes de cet ensemble passent par des points de coordonnées (12, 100), (20, 230), (32, 430), (1233,2301), (124, 131389), (1212,101281818) et (13123, 12239191281), il y a de fortes chance qu'il connaisse l'ensemble. Le mécanisme  zkSNARK consiste à construire cet ensemble de courbes afin de permettre à un prouveur qu'il connait une solution type que le verifier peut facilement controler.
-Pour ceci le vérifier connait une courbe de référence publique (x-1)(x-2)(x-3).... Cette courbe coupe l'axe des x aux coordonnées (0, 1), (0, 2) (0, 3) (0, 4). D'autre part le vérifier possède un certain nombre de coefficient de courbes qui sont indirectement liés au système d'équation initial. Le prouver fourni un vecteur solution de valeurs [x1,...xn] que le vérifier peu appliquer à son système de courbe. Le vérifier peut alors controler que sa courbe publique est un diviseur exact de la courbe déduite à partir du vecteur solution appliqué au système de coefficients.
+Il existe de nombreux exemples plus ou moins intuitifs sur les méchanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynomes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire.
 
-Le prouver indique qu'il connait une solution [x1,...xn], sans que le vérifieur puisse remonter aux courbes initiales.
+<!-- Par exemple, si vous savez qu'il s'agit d'un ensemble de 10 courbes, et que le prouveur annonce qu'il pense que toutes les courbes de cet ensemble passent par des points de coordonnées (12, 100), (20, 230), (32, 430), (1233,2301), (124, 131389), (1212,101281818) et (13123, 12239191281), il y a de fortes chance qu'il connaisse l'ensemble. Le mécanisme  zkSNARK consiste à construire cet ensemble de courbes afin de permettre à un prouveur qu'il connait une solution type que le verifier peut facilement controler.
+Pour ceci le vérifier connait une courbe de référence publique (x-1)(x-2)(x-3).... Cette courbe coupe l'axe des x aux coordonnées (0, 1), (0, 2) (0, 3) (0, 4). D'autre part le vérifier possède un certain nombre de coefficient de courbes qui sont indirectement liés au système d'équation initial. Le prouver fourni un vecteur solution de valeurs [x1,...xn] que le vérifier peu appliquer à son système de courbe. Le vérifier peut alors controler que sa courbe publique est un diviseur exact de la courbe déduite à partir du vecteur solution appliqué au système de coefficients. -->
+
+<!-- Le prouver indique qu'il connait une solution [x1,...xn], sans que le vérifieur puisse remonter aux courbes initiales. -->
 
 
-Voici des exemples simplifier :
+<!-- Voici des exemples simplifier :
 
 - Caverne l'ali baba
 
-- Le problème du daltonien et des boulles de couleur
+- Le problème du daltonien et des boulles de couleur -->
 
-### Applications //SFR pour moi c'est inutile pour l'instant
+<!-- ### Applications //SFR pour moi c'est inutile pour l'instant
 
 Les ZKP ont de nombreuses applications, notamment :
 
@@ -77,11 +79,213 @@ Aventage et inconveniant :
 | ZKP-I  | Plus simples à comprendre et à mettre en œuvre<br/>Souplesse et Adaptabilité                                                                         | Besoins de communication (ce qui peut être inefficace en termes de temps et de ressources)<br/>Non transférables                                                          |
 | ZKP-NI | Pas besoin d'interaction <br/>Transférabilité : La preuve peut être vérifiée par n'importe qui<br/>Meilleure efficacité pour les systèmes distribués | Complexité<br/>Taille de la preuve : Les preuves non interactives peuvent être plus grandes en taille, ce qui peut être problématique pour le stockage ou la transmission |
 
----------
+--------- -->
 
 ### zk-SNARK
+Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Non-interactif, veut dire que la preuve est validée en un seul échange, succcincte veut dire que le temps de calcul pour le vérifieur doit être rapide. Groth16 est un implantation du protocole sk-Snark et nous proposons ici de présenter le fonctionnement général et justifier les différentes étapes. Nous expliquerons cela sans faire appel à de trop grandes notions théoriques mathématiques, tout en illustrant de lignes de code les exemples les plus importants.
 
-Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Ils sont utilisés pour prouver qu'une information est vraie sans révéler l'information elle-même. Les zk-SNARKs sont utilisés dans de nombreuses blockchains, notamment Zcash, Ethereum et Tezos.
+Nous donnons en annexe une liste de lecture permettant de rentrer plus facilement dans certains détails. Ce document est fortement inspiré de deux sources.
+
+Notre objectif étant que le protocole soit compréhensible dans cette première lecture.
+
+Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait une polynôme sans divulguer l'équation du polynome. Partons du polynôme : f(x) = 3x^3+5x^2+10x+3 que seul le prouveur connait.
+
+La question est la suivante, en tant que prouveur "Comment prouver à une personne que je connais ce polynôme" sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
+
+Si j'indique au vérifieur les couples de valeurs : (0, 3) (1, 21), (2, 67) (3, 159), il peut alors confirmer que je connais cette courbe, car il n'y a qu'une seule courbe de degré 3 qui passe par 4 points. Mais il y a de fortes chances qu'il puisse remonter à la courbe source également. Je n'ai pas pu "cacher" la courbe. D'autre part, j'aurais pu inventer ces points de toute pièce...  En gardant le principe de divulgation de certaines coordonnées, nous avons deux challenges à résoudre : indiquer que je connais le polynôme sans en donner les coefficients afin que le vérifieur puisse vérifier qu'une courbe associée existe, masquer ces informations afin que le verifier ne puisse pas remonter au polynôme source tout en garantissant que le masqage ne me permet pas de choisir des chiffres au hasard.
+
+Le premier challenge, consiste à transformer l'équation vers un ensemble de polynomes uniques qui possèdent la même solution que le polynme initial. Le polynôme initial est transformé dans un système d'équations qui présente le même ensemble de solutions que le polynôme initial, mais qui rend fortement improbable de remonter au polynôme source.
+
+Cette transformation se fait en trois étapes :
+  - 1) Transformation du polynôme initial dans un circuit R1CS
+  - 2) Transformation du circuit en coefficients d'un système de courbe quadratique
+  - 3) Extension du système de courbes quadratiques pour équilibrer les équations
+
+# Circuit R1CS
+Le circuit R1CS permet de réexprimer le polynôme initial dans un ensemble portes de calcul ne contenant que des additions et des multiplications. Pour faire simple les portes illustrent les multiplications, les passages de porte les additions.
+f(x) = 3x^3+5x^2+10x+3
+
+v1 = x * x   (1)
+v2 = x * v1  (2)
+v3 = 3 * v2  (3)
+v4 = 5 * v1  (4)
+v5 = 10 * x  (5)
+                           //out = v3 + v5 + v6 + 3
+v3 + v4 + v5 + 3 - out = 0 // (6)
+
+Cette série d'opération va être représentée par une matrice contenant les coefficients de chaque opération.
+Les colonnes de la matrice représentent les variables. Les lignes représentent la série d'opérations à appliquer.
+Chaque opération unitaire est convertie par une ligne dans la matrice.
+
+Les colonnes de la matrice sont donc [ 1 out x v1 v2 v3 v4 v5 ].
+Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : O = L * R qui signifie : la sortie (Out) = Left(L) * Right(O)
+
+//out
+//1 out x v1 v2 v3 v4 v5
+[
+  0  0  0  1  0  0  0  0    // v1
+  0  0  0  0  1  0  0  0    // v2
+  0  0  0  0  0  1  0  0    // v3
+  0  0  0  0  0  0  1  0    // v4
+  0  0  0  0  0  0  0  1    // v5
+  3 -1  0  0  0  1  1  1    // v3 + v4 + V5 + 3 - out
+]
+
+//L
+//1 out x v1 v2 v3 v4 v5
+[
+  0  0  1  0  0  0  0  0    // x
+  0  0  1  0  0  0  0  0    // x
+  3  0  0  0  0  0  0  0    // 3
+  5  0  0  0  0  0  0  0    // 5
+ 10  0  0  0  0  0  0  0    // 10
+  0  0  0  0  0  0  0  0    // (6)
+]
+
+//R
+//1 out x v1 v2 v3 v4 v5
+[
+  0  0  1  0  0  0  0  0  // x
+  0  0  0  1  0  0  0  0  // v1
+  0  0  0  0  1  0  0  0  // v2
+  0  0  0  1  0  0  0  0  // v1
+  0  0  1  0  0  0  0  0  // x
+  0  0  0  0  0  0  0  0  // (6)
+]
+
+Le vecteur témoins est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond peu ou prou au coordonnées initialement proposées.
+w = [ 1 out x v1 v2 v3 v4 v5] on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si x = 5 alors on aura comme vecteur témoins les valeurs suivantes :
+w = [ 1 553 5 25 125 375 125 50]
+
+Lw * Rw = Ow
+
+Que l'on peut vérifier avec le code python suivant :
+```python
+import numpy as np
+import random
+
+# Define the matrices
+O = np.array([
+[0,0,0,1,0,0,0,0],
+[0,0,0,0,1,0,0,0],
+[0,0,0,0,0,1,0,0],
+[0,0,0,0,0,0,1,0],
+[0,0,0,0,0,0,0,1],
+[3,-1,0,0,0,1,1,1]
+])
+
+L = np.array([
+[0,0,1,0,0,0,0,0],
+[0,0,1,0,0,0,0,0],
+[3,0,0,0,0,0,0,0],
+[5,0,0,0,0,0,0,0],
+[10,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0]
+])
+
+R = np.array([
+[0,0,1,0,0,0,0,0],
+[0,0,0,1,0,0,0,0],
+[0,0,0,0,1,0,0,0],
+[0,0,0,1,0,0,0,0],
+[0,0,1,0,0,0,0,0],
+[0,0,0,0,0,0,0,0]
+])
+
+# pick random values for x and y
+x = random.randint(1,1000)
+#x = 5
+
+# this is our orignal formula
+v1 = x * x
+v2 = x * v1
+v3 = 3 * v2
+v4 = 5 * v1
+v5 = 10 * x
+out = v3 + v4 + v5 + 3
+
+w = np.array([1, out, x, v1, v2, v3, v4, v5])
+
+result = O.dot(w) == np.multiply(L.dot(w),R.dot(w))
+assert result.all(), "result contains an inequality"
+
+print("-->", w)
+```
+
+Ces matrices ne font que représenter le polynôme initial en le décomposant en une multiplication de matrice. Le polynôme va maintenant être masqué dans un système d'équation quadratiques, constitué d'autant de courbes quadratique que de paramètre de l'équation, et pour lequel le degré max des équation correspond au nombre le ligne des matrices.
+
+Dans notre exemple, le système d'équation quadrique sera composé de 8 équations de degré 6.
+
+Pour fabriquer ces équations, nous allons appliquer le vecteur temoins précédent aux trois matrices (L, R, O). Cette multiplication d'Hadamard possède les bonnes propriétés pour fabriquer notre système d'équation quadratique.
+
+*** L ***
+Lw . Rw = Ow
+
+L.w =
+  0  0  1  0  0  0  0  0           1
+  0  0  1  0  0  0  0  0         553
+  3  0  0  0  0  0  0  0    .      5
+  5  0  0  0  0  0  0  0          25
+ 10  0  0  0  0  0  0  0         125
+  0  0  0  0  0  0  0  0         375
+                                 125
+                                  50
+
+==> L.w
+ 0 * 1     0 * 553   1 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
+ 0 * 1     0 * 553   1 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
+ 3 * 1  +  0 * 553 + 0 * 5 + 0 * 25 + 0 * 125+ 0 * 375+ 0 * 125 + 0 * 50
+ 5 * 1     0 * 553   0 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
+10 * 1     0 * 553   0 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
+ 0 * 1     0 * 553   0 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
+
+==> L.w
+ 5
+ 5
+ 3
+ 5
+10
+ 0
+
+==> R.w
+0 * 1   0 * 553   1 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+0 * 1   0 * 553   0 * 5   1 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+0 * 1 + 0 * 553 + 0 * 5 + 0 * 25 + 1 * 125 + 0 * 375 + 0 * 125 + 0 * 50
+0 * 1   0 * 553   0 * 5   1 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+0 * 1   0 * 553   1 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+0 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+
+==> R.w
+  5
+ 25
+125
+ 25
+  5
+  0
+
+==> O.w
+0 * 1   0 * 553   0 * 5   1 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+0 * 1   0 * 553   0 * 5   0 * 25   1 * 125   0 * 375   0 * 125   0 * 50
+0 * 1 + 0 * 553 + 0 * 5 + 0 * 25 + 0 * 125 + 1 * 375 + 0 * 125 + 0 * 50
+0 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   1 * 125   0 * 50
+0 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   0 * 125   1 * 50
+3 * 1  -1 * 553   0 * 5   0 * 25   0 * 125   1 * 375   1 * 125   1 * 50
+
+==> O.w
+ 25
+125
+375
+125
+ 50
+  0
+
+On peut facilement vérifier que Lw x Rw = Ow. Mais la transformation du R1CS vers les équation quadratique, ne réside pas ici. Nous allons réaliser le même produit, mais en passant par des courbes.
+
+
+
+
+
+Ils sont utilisés pour prouver qu'une information est vraie sans révéler l'information elle-même. Les zk-SNARKs sont utilisés dans de nombreuses blockchains, notamment Zcash, Ethereum et Tezos.
 
 #### Fonctionnement technique :
 
