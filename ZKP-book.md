@@ -445,6 +445,14 @@ Site de vulgarisation des maths pour les programmeur crypto
     - ==> Si un attaqueur imagine x et y, il peut par contre vérifier que ce sont les bonnes valeur sur les points de la courbe elliptique
 
 - Billinear Pairing : Pour l'instant pas compris : https://www.rareskills.io/post/bilinear-pairing
+Le principe est de permettre la multiplication de deux coordonnées de courbes elliptiques. Dans la même courbe (G1) cela correspond à un produit scalaire, qui est l'addition du point sur lui-même autant de fois que possible.
+kA = A + A + A. et A + B = C sont des points d'une même courbe. Le pairing permet de faire une multiplication de points de deux courbes différentes pour se retrouver sur une troisième courbe.
+A x B = C, le principe est que les points sont sur trois courbes différentes qui ont des propriétés de champs étendus similaire (à vérifier). Le pairing est une fonction qui rend homomorphe la multiplication sur des courbes elliptique.
+5G2 * 6G1 = 30 G12. D'une manière générale elle est utilisée pour comparer des pairing. Les points de la courbe G23 ne sont pas forcément accessibles (volume mémoire). On veut vérifier des équalités du style :
+Pairing(G2 * 5, G1 * 6) = Pairing (30*G2, G1). Tout se fait dans G12, mais c'est invisible.
+
+
+
 - R1CS to Quadratic Arithmetic Program over a Finite Field in Python : https://www.rareskills.io/post/r1cs-to-qap
 - Converting Algebraic Circuits to R1CS (Rank One Constraint System) : https://www.rareskills.io/post/rank-1-constraint-system
 
