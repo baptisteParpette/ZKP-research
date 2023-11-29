@@ -303,4 +303,6 @@ def plot_polynomials(coefficients_list,xlim=[-10,10],ylim=[-10,10]):
     plt.axvline(0, color='black',linewidth=0.5)
     plt.grid(color = 'gray', linestyle = '--', linewidth = 0.5)
     plt.legend()
+    # Configurer les limites de l'axe y
+    plt.ylim(ylim)
     plt.show()
