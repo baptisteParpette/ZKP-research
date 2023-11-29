@@ -110,8 +110,8 @@ v2 = x * v1  (2)
 v3 = 3 * v2  (3)
 v4 = 5 * v1  (4)
 v5 = 10 * x  (5)
-                           //out = v3 + v5 + v5 + 3
-v3 + v4 + v5 + 3 - out = 0 // (6)
+out = v3 + v4 + v5 + 3 (6)
+out = (v3 + v4 + v5 + 3) * 1 (6bis)
 
 Cette série d'opération va être représentée par une matrice contenant les coefficients de chaque opération.
 Les colonnes de la matrice représentent les variables. Les lignes représentent la série d'opérations à appliquer.
@@ -128,7 +128,7 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   0  0  0  0  0  1  0  0    // v3
   0  0  0  0  0  0  1  0    // v4
   0  0  0  0  0  0  0  1    // v5
-  3 -1  0  0  0  1  1  1    // v3 + v4 + V5 + 3 - out
+  0  1  0  0  0  0  0  0    // out
 ]
 
 //L
@@ -139,7 +139,7 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   3  0  0  0  0  0  0  0    // 3
   5  0  0  0  0  0  0  0    // 5
  10  0  0  0  0  0  0  0    // 10
-  0  0  0  0  0  0  0  0    // (6)
+  3  0  0  0  0  1  1  1    // (6bis)
 ]
 
 //R
@@ -150,7 +150,7 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   0  0  0  0  1  0  0  0  // v2
   0  0  0  1  0  0  0  0  // v1
   0  0  1  0  0  0  0  0  // x
-  0  0  0  0  0  0  0  0  // (6)
+  1  0  0  0  0  0  0  0  // (6bis)
 ]
 
 Le vecteur témoins est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond peu ou prou au coordonnées initialement proposées.
@@ -171,16 +171,16 @@ O = np.array([
 [0,0,0,0,0,1,0,0],
 [0,0,0,0,0,0,1,0],
 [0,0,0,0,0,0,0,1],
-[3,-1,0,0,0,1,1,1]
+[0,1,0,0,0,0,0,0]
 ])
 
 L = np.array([
-[0,0,1,0,0,0,0,0],
-[0,0,1,0,0,0,0,0],
-[3,0,0,0,0,0,0,0],
-[5,0,0,0,0,0,0,0],
+[ 0,0,1,0,0,0,0,0],
+[ 0,0,1,0,0,0,0,0],
+[ 3,0,0,0,0,0,0,0],
+[ 5,0,0,0,0,0,0,0],
 [10,0,0,0,0,0,0,0],
-[0,0,0,0,0,0,0,0]
+[ 3,0,0,0,0,1,1,1]
 ])
 
 R = np.array([
@@ -189,7 +189,7 @@ R = np.array([
 [0,0,0,0,1,0,0,0],
 [0,0,0,1,0,0,0,0],
 [0,0,1,0,0,0,0,0],
-[0,0,0,0,0,0,0,0]
+[1,0,0,0,0,0,0,0]
 ])
 
 # pick random values for x and y
@@ -228,7 +228,7 @@ L.w =
   3  0  0  0  0  0  0  0    .      5
   5  0  0  0  0  0  0  0          25
  10  0  0  0  0  0  0  0         125
-  0  0  0  0  0  0  0  0         375
+  3  0  0  0  0  1  1  1         375
                                  125
                                   50
 
@@ -238,15 +238,15 @@ L.w =
  3 * 1  +  0 * 553 + 0 * 5 + 0 * 25 + 0 * 125+ 0 * 375+ 0 * 125 + 0 * 50
  5 * 1     0 * 553   0 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
 10 * 1     0 * 553   0 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
- 0 * 1     0 * 553   0 * 5   0 * 25   0 * 125  0 * 375  0 * 125   0 * 50
+ 3 * 1     0 * 553   0 * 5   0 * 25   0 * 125  1 * 375  1 * 125   1 * 50
 
 ==> L.w
- 5
- 5
- 3
- 5
-10
- 0
+   5
+   5
+   3
+   5
+  10
+ 553
 
 ==> R.w
 0 * 1   0 * 553   1 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
@@ -254,7 +254,7 @@ L.w =
 0 * 1 + 0 * 553 + 0 * 5 + 0 * 25 + 1 * 125 + 0 * 375 + 0 * 125 + 0 * 50
 0 * 1   0 * 553   0 * 5   1 * 25   0 * 125   0 * 375   0 * 125   0 * 50
 0 * 1   0 * 553   1 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
-0 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
+1 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
 
 ==> R.w
   5
@@ -262,7 +262,7 @@ L.w =
 125
  25
   5
-  0
+  1
 
 ==> O.w
 0 * 1   0 * 553   0 * 5   1 * 25   0 * 125   0 * 375   0 * 125   0 * 50
@@ -270,7 +270,7 @@ L.w =
 0 * 1 + 0 * 553 + 0 * 5 + 0 * 25 + 0 * 125 + 1 * 375 + 0 * 125 + 0 * 50
 0 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   1 * 125   0 * 50
 0 * 1   0 * 553   0 * 5   0 * 25   0 * 125   0 * 375   0 * 125   1 * 50
-3 * 1  -1 * 553   0 * 5   0 * 25   0 * 125   1 * 375   1 * 125   1 * 50
+0 * 1   1 * 553   0 * 5   0 * 25   0 * 125   0 * 375   0 * 125   0 * 50
 
 ==> O.w
  25
@@ -278,7 +278,7 @@ L.w =
 375
 125
  50
-  0
+553
 
 On peut facilement vérifier que Lw x Rw = Ow. Mais la transformation du R1CS vers les équation quadratique, ne réside pas ici. Nous allons réaliser le même produit, mais en passant par des courbes.
 -->
