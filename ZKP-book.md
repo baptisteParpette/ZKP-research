@@ -110,7 +110,7 @@ v2 = x * v1  (2)
 v3 = 3 * v2  (3)
 v4 = 5 * v1  (4)
 v5 = 10 * x  (5)
-                           //out = v3 + v5 + v6 + 3
+                           //out = v3 + v5 + v5 + 3
 v3 + v4 + v5 + 3 - out = 0 // (6)
 
 Cette série d'opération va être représentée par une matrice contenant les coefficients de chaque opération.
@@ -216,6 +216,7 @@ Ces matrices ne font que représenter le polynôme initial en le décomposant en
 
 Dans notre exemple, le système d'équation quadrique sera composé de 8 équations de degré 6.
 
+<!--
 Pour fabriquer ces équations, nous allons appliquer le vecteur temoins précédent aux trois matrices (L, R, O). Cette multiplication d'Hadamard possède les bonnes propriétés pour fabriquer notre système d'équation quadratique.
 
 *** L ***
@@ -280,6 +281,7 @@ L.w =
   0
 
 On peut facilement vérifier que Lw x Rw = Ow. Mais la transformation du R1CS vers les équation quadratique, ne réside pas ici. Nous allons réaliser le même produit, mais en passant par des courbes.
+-->
 
 
 
