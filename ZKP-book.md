@@ -153,7 +153,7 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   1  0  0  0  0  0  0  0  // (6bis)
 ]
 
-Le vecteur témoins est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond peu ou prou au coordonnées initialement proposées.
+Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond peu ou prou au coordonnées initialement proposées.
 w = [ 1 out x v1 v2 v3 v4 v5] on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si x = 5 alors on aura comme vecteur témoins les valeurs suivantes :
 w = [ 1 553 5 25 125 375 125 50]
 
@@ -216,8 +216,8 @@ Ces matrices ne font que représenter le polynôme initial en le décomposant en
 
 Dans notre exemple, le système d'équation quadrique sera composé de 8 équations de degré 6.
 
-<!--
-Pour fabriquer ces équations, nous allons appliquer le vecteur temoins précédent aux trois matrices (L, R, O). Cette multiplication d'Hadamard possède les bonnes propriétés pour fabriquer notre système d'équation quadratique.
+## Une vérification intermédiaire rapide
+Une première vérification consiste à vérifier que les matrices représentant le circuit résolvent le vecteur témoin. L'application est un produit d'Hadamard entre les matrice L, R et O et le vecteur comme illustré ci-dessous. Les valeurs du vecteur sont répliqués sur chaque colonne de la matrice.
 
 *** L ***
 Lw . Rw = Ow
@@ -280,10 +280,55 @@ L.w =
  50
 553
 
-On peut facilement vérifier que Lw x Rw = Ow. Mais la transformation du R1CS vers les équation quadratique, ne réside pas ici. Nous allons réaliser le même produit, mais en passant par des courbes.
--->
+On peut facilement vérifier que Lw x Rw = Ow.
 
+# Le twist des équations quadratiques
+Cette dernière multiplication fonctionne, mais il est simple de comprendre que si on connait les valeur de la matrice et le vecteur solution on peut remonter au circuit initial. Le premier vrai masqage va consister a faire la même multiplication mais dans le monde des Polynomes en "noyant" les coefficients des matrices dans une série d'équations quadratiques.
 
+Si on prend la première série de coefficient de la matrice L, on a les valeurs : (0, 0, 3, 5, 10, 3), ce sont les coefficients d'entrée aux portes du circuit. Si ces coefficients sont vus comme des coordonnées de l'espace plan : [(0,0), (1,0), (2, 3), (3, 5), (4, 10), (5, 3)]. On sait qu'il existe une seule courbe de dimension 5 qui passe par ces 5 points. Elle a la forme f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0, et que grâce à Lagrange on peut lui faire calculer les coefficient pour passer par les points. On passe alors dans l'espace du signal, et l'ensemble des fonctions de tous les coefficient de passage des portes forme un système d'équation. Ce système d'équation est résolu par une convolution avec le vecteur témoin.
+
+Pour obtenir le système d'équation, il faut transposer les matrices, puis prendre chaque ligne de chaque matrice pour en fabriquer les polynomes de lagrange correspondant.
+
+Le code suivant permet d'obtenir les coefficients des polynômes de Lagrange.
+
+```python
+import numpy as np
+from scipy.interpolate import lagrange
+x = np.array([1, 2, 3, 4, 5, 6])
+y = np.array([0, 0, 3, 5, 10, 3])
+print(lagrange(x, 1))
+```
+
+L : Transposé et coordonnées           --> Polynôme (on n'indique que les polynômes différents de 0)
+
+(1,0) (2,0) (3,3) (4,5) (5,10) (6,3)   --> f(x) = -0.225x^5 +3.708x^4 -23.12x^3 +67.79x^2 -90.15x +42
+(1,0) (2,0) (3,0) (4,0)  (5,0) (6,0)   --> 0
+(1,1) (2,1) (3,0) (4,0)  (5,0) (6,0)   --> f(x) = 0.03333x^5 -0.625x^4 +4.417x^3 -14.38x^2 +20.55x -9
+(1,0) (2,0) (3,0) (4,0)  (5,0) (6,0)   --> 0
+(1,0) (2,0) (3,0) (4,0)  (5,0) (6,0)   --> 0
+(1,0) (2,0) (3,0) (4,0)  (5,0) (6,1)   --> f(x) = 0.008333x^5 -0.125x^4 +0.7083x^3 -1.875x^2 + 2.283x -1
+(1,0) (2,0) (3,0) (4,0)  (5,0) (6,1)   --> f(x) = idem
+(1,0) (2,0) (3,0) (4,0)  (5,0) (6,1)   --> f(x) = idem
+
+R : Transposé et coordonnées           --> Polynôme (on n'indique que les polynômes différents de 0)
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,1)    --> f(x) = idem
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)    --> 0
+(1,1) (2,0) (3,0) (4,0) (5,1) (6,0)    --> f(x) = -0.05x^5 +0.8333x^4 -5.25x^3 +15.67x^2 -22.2x +12
+(1,0) (2,1) (3,0) (4,1) (5,0) (6,0)    --> f(x) = 0.125x^5 -2.208x^4 +14.62x^3 -44.79x^2 +62.25x -30
+(1,0) (2,0) (3,1) (4,0) (5,0) (6,0)    --> f(x) = -0.08333x^5 +1.5x^4 -10.08x^3 +31x^2 -42.33x +20
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)    --> 0
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)    --> 0
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)    --> 0
+
+O : Transposé et coordonnées           --> Polynôme (on n'indique que les polynômes différents de 0)
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)   --> 0
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,1)   --> f(x) = idem
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)   --> 0
+(1,0) (2,0) (3,0) (4,0) (5,0) (6,0)   --> f(x) = -0.008333x^5+0.1667x^4-1.292x^3+4.833x^2-8.7x+6
+(1,0) (2,1) (3,0) (4,0) (5,0) (6,0)   --> f(x) = 0.04167x^5-0.7917x^4+5.708x^3-19.21x^2+29.25x-15
+(1,0) (2,0) (3,1) (4,0) (5,0) (6,0)   --> f(x) = idem à R[4]
+(1,0) (2,0) (3,0) (4,1) (5,0) (6,0)   --> f(x) = 0.08333x^5-1.417x^4+8.917x^3-25.58x^2+33x-15
+(1,0) (2,0) (3,0) (4,0) (5,1) (6,0)   --> f(x) =
 
 
 
