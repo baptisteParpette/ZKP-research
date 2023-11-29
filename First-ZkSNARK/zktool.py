@@ -15,14 +15,14 @@ def decompose_polynomial(poly):
     
     def add_equation(lhs, rhs):
         nonlocal counter
-        eq_name = f"equation_{counter}"
+        eq_name = f"v{counter}"
         equations.append(f"{eq_name} = {lhs} + {rhs}")
         counter += 1
         return eq_name
 
     def get_power_name():
         nonlocal counter
-        name = f"power_{counter}"
+        name = f"v{counter}"
         counter += 1
         return name
     
@@ -65,17 +65,33 @@ def decompose_polynomial(poly):
                 result = term.strip()
                 result_is_zero = False
 
+    equations[-1] = f"out = {' '.join(equations[-1].split()[2:])}"
+
     return equations
 
+
 def get_unique_words(equations):
-    words = set()
+    mot=[]
     for equation in equations:
         tokens = equation.split()
-        for token in tokens:
-            if token.isnumeric() or (token.startswith("-") and token[1:].isnumeric()):  
-                words.add('1')
+        for token in reversed(tokens):
+            if token.isnumeric() or (token.startswith("-") and token[1:].isnumeric()): 
+                mot.append('1') 
             elif token not in ["+", "*", "=", "-", "/"]:  # if the token is not a mathematical operator
-                words.add(token)
+                mot.append(token)
+
+    words = []
+    for elem in mot:
+        if elem not in words:
+            words.append(elem)
+    # S'assurer que '1' et 'out' sont dans la liste et les déplacer aux index 0 et 1 respectivement
+    if '1' in words:
+        words.remove('1')
+        words.insert(0, '1')
+    if 'out' in words:
+        words.remove('out')
+        words.insert(1, 'out')
+
     return words
 
 def get_position_vector(unique_words, elements):
