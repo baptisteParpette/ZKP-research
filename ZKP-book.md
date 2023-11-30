@@ -432,8 +432,21 @@ t = poly1d([1, -1])*poly1d([1, -2])*poly1d([1, -3])*poly1d([1, -4])*poly1d([1, -
 print("h \n", h)
 print("reste \n", reste)
 ```
+h : -34.09 x^4 + 414.6 x^3 - 1713 x^2 + 2734 x - 1394
+reste : 0.0001015 x^5 - 0.001524 x^4 + 0.00865 x^3 - 0.02295 x^2 + 0.028 x - 0.01228
+
+A titre de comparaison la fonction résultante ((Uw*Vw)-Ww) est la suivante
+-34.09x^10+1130x^9-1.638e+04x^8+1.363e+05x^7-7.187e+05x^6+2.5e+06 x^5-5.792e+06 x^4+8.785e+06x^3-8.321e+06x^2+4.428e+06x-1.004e+06
+
+Le tracé de la fonction résultante et du reste permet de visualiser concrêtement le caractère hortogonal de ces fonctions.
+(visual)
 
 
+Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le prouveur et le vérifieur.
+
+l'étape suivante va consister à porter ce principe dans un espace plus efficace à calculer. A savoir passer sur de l'arithmétique modulaire et projet les données dans l'espace des courbes elliptiques.
+
+# Simplifier les équations
 
 
 Ils sont utilisés pour prouver qu'une information est vraie sans révéler l'information elle-même. Les zk-SNARKs sont utilisés dans de nombreuses blockchains, notamment Zcash, Ethereum et Tezos.
