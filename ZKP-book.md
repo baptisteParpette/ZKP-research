@@ -163,9 +163,9 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
 
 
 Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond aux variables internes et externes du circuit.
-`w = [ 1 out x v1 v2 v3 v4 v5]` on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si x = 5 alors on aura comme vecteur témoins les valeurs suivantes :  `w = [ 1 553 5 25 125 375 125 50]`  
+`w = [ 1 out x v1 v2 v3 v4 v5]` on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si `x = 5` alors on aura comme vecteur témoins les valeurs suivantes :  `w = [ 1 553 5 25 125 375 125 50]`  
   
-Lw * Rw = Ow  
+`Lw * Rw = Ow`  
   
 Que l'on peut vérifier avec le code python suivant :
 ```python
@@ -412,7 +412,7 @@ print(poly1d(Vw))
 # L'application de la preuve
 Si l'isomorphisme fonctionne, nous pouvons faire l'opération de controle. Dans le monde R1CS nous avons vérifié que `Lw . Rw = Ow`. Nous devrions avoir par similitude dans le domaine des Polynômes : `Uw * Vw = Ww`.  
 
-On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré deg(Uw * Vw) - deg(Ww).  
+On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré `deg(Uw * Vw) - deg(Ww)`.  
 $H(x) = (x-1)(x-2)(x-3)...(x-10)$
 
 `Uw * Vw = Ww + H`
