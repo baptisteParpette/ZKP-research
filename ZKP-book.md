@@ -118,20 +118,9 @@ Les colonnes de la matrice représentent les variables. Les lignes représentent
 Chaque opération unitaire est convertie par une ligne dans la matrice.
 
 Les colonnes de la matrice sont donc [ 1 out x v1 v2 v3 v4 v5 ].  
-Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : O = L * R qui signifie : la sortie (Out) = Left(L) * Right(O)  
+Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : L * R = O qui signifie : la sortie Left(L) * Right(O) = Out(O).    
 
-//out  
-//1 out x v1 v2 v3 v4 v5  
-[  
-  0  0  0  1  0  0  0  0    // v1  
-  0  0  0  0  1  0  0  0    // v2  
-  0  0  0  0  0  1  0  0    // v3   
-  0  0  0  0  0  0  1  0    // v4  
-  0  0  0  0  0  0  0  1    // v5  
-  0  1  0  0  0  0  0  0    // out  
-]  
-
-//L  
+//L    
 //1 out x v1 v2 v3 v4 v5  
 [  
   0  0  1  0  0  0  0  0    // x  
@@ -153,12 +142,22 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   1  0  0  0  0  0  0  0  // (6bis)  
 ]  
 
-Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond peu ou prou au coordonnées initialement proposées.
-w = [ 1 out x v1 v2 v3 v4 v5] on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si x = 5 alors on aura comme vecteur témoins les valeurs suivantes :
-w = [ 1 553 5 25 125 375 125 50]
+//out  
+//1 out x v1 v2 v3 v4 v5  
+[  
+  0  0  0  1  0  0  0  0    // v1  
+  0  0  0  0  1  0  0  0    // v2  
+  0  0  0  0  0  1  0  0    // v3   
+  0  0  0  0  0  0  1  0    // v4  
+  0  0  0  0  0  0  0  1    // v5  
+  0  1  0  0  0  0  0  0    // out  
+]  
 
-Lw * Rw = Ow
-
+Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond aux variables internes et externes du circuit.
+`w = [ 1 out x v1 v2 v3 v4 v5]` on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si x = 5 alors on aura comme vecteur témoins les valeurs suivantes :  `w = [ 1 553 5 25 125 375 125 50]`  
+  
+Lw * Rw = Ow  
+  
 Que l'on peut vérifier avec le code python suivant :
 ```python
 import numpy as np
