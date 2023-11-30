@@ -97,9 +97,9 @@ Si j'indique au vérifieur les couples de valeurs : (0, 3) (1, 21), (2, 67) (3, 
 Le premier challenge, consiste à transformer l'équation vers un ensemble de polynomes uniques qui possèdent la même solution que le polynme initial. Le polynôme initial est transformé dans un système d'équations qui présente le même ensemble de solutions que le polynôme initial, mais qui rend fortement improbable de remonter au polynôme source.
 
 Cette transformation se fait en trois étapes :
-  - 1) Transformation du polynôme initial dans un circuit R1CS
-  - 2) Transformation du circuit en coefficients d'un système de courbe quadratique
-  - 3) Extension du système de courbes quadratiques pour équilibrer les équations
+  1. Transformation du polynôme initial dans un circuit R1CS
+  2. Transformation du circuit en coefficients d'un système de courbe quadratique
+  3. Extension du système de courbes quadratiques pour équilibrer les équations
 
 # Circuit R1CS
 Le circuit R1CS permet de réexprimer le polynôme initial dans un ensemble portes de calcul ne contenant que des additions et des multiplications. Pour faire simple les portes illustrent les multiplications, les passages de porte les additions.
@@ -294,9 +294,11 @@ On peut facilement vérifier que Lw x Rw = Ow.
 # Le twist des équations quadratiques
 Cette dernière multiplication fonctionne, mais il est simple de comprendre que si on connait les valeur de la matrice et le vecteur solution on peut remonter au circuit initial. Le premier vrai masqage va consister a faire la même multiplication mais dans le monde des Polynomes en "noyant" les coefficients des matrices dans une série d'équations quadratiques.
 
-Si on prend la première série de coefficient de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée aux portes du circuit. Si ces coefficients sont vus comme des coordonnées de l'espace plan : `[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]`. On sait qu'il existe une seule courbe de dimension 5 qui passe par ces 5 points. Elle a la forme `f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0`, et que grâce à Lagrange on peut lui faire calculer les coefficient pour passer par les points. On passe alors dans l'espace du signal, et l'ensemble des fonctions de tous les coefficient de passage des portes forme un système d'équation. Ce système d'équation est résolu par une convolution avec le vecteur témoin.
+Si on prend la première série de coefficient de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée aux portes du circuit. Si ces coefficients sont vus comme des coordonnées de l'espace plan : $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
 
-Pour obtenir le système d'équation, il faut transposer les matrices, puis prendre chaque ligne de chaque matrice pour en fabriquer les polynomes de lagrange correspondant.
+On sait qu'il existe une seule courbe de dimension 6 qui passe par ces 6 points. Elle a la forme $f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0$ , et que grâce à Lagrange on peut lui faire calculer les coefficient pour passer par les points. On passe alors dans l'espace du signal, et l'ensemble des fonctions de tous les coefficients de passage des portes forme un système d'équations. Ce système d'équations est résolu par une convolution avec le vecteur témoin.
+
+Pour obtenir le système, il faut fabriquer les polynomes de lagrange correspondant.
 
 Le code suivant permet d'obtenir les coefficients des polynômes de Lagrange.
 
@@ -341,10 +343,10 @@ W : Transposé et coordonnées           --> Polynôme (on n'indique que les pol
 (1,0) (2,0) (3,0) (4,0) (5,1) (6,0)   --> f(x) = -0.04167x^5+0.6667x^4-3.958x^3+10.83x2-13.5x+6
 ```
 
-Nous obtenons 3 matrices de coefficients de Lagrange. Le nombre de fonctions, représenté par les lignes représentent le nombre de paramètres utilisés dans le circuit, le degré des polynomes correspond au nombre d'opérations du circuit (un degré 5, véhicule 6 opérations).
+Nous obtenons 3 matrices de coefficients de Lagrange. Le nombre de fonctions, représenté par les lignes représentent le nombre de paramètres utilisés dans le circuit, le degré des polynomes correspond au nombre d'opérations du circuit (un degré 5, véhicule 6 opérations). Dans notre exemple 8 variables de circuit pour 6 opérations.
 
 Nous récrivons ces polynomes sous la forme de matrices (de coefficients) que nous pouvons multiplier avec le vecteur solution, afin de vérifier la même preuve que précédemment mais dans l'espace des polynômes.
-Uw . Vw = Ww
+`Uw . Vw = Ww`
 
 `w = [ 1 553 5 25 125 375 125 50]`
 ```
@@ -357,8 +359,9 @@ U:
  [-90.15 , 0, 20.55 , 0, 0,  2.283,  2.283,  2.283]
  [ 42    , 0, -9.   , 0, 0, -1    , -1    , -1   ]
 ]
-Uw = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553
 ```
+$Uw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
+
 
 ```
 V:
@@ -370,8 +373,8 @@ V:
  [ 2.283, 0, -22.2  ,  62.25 , -42.333, 0, 0, 0]
  [-1    , 0,  12    , -30    ,  20    , 0, 0, 0]
 ]
-Vw = -7.492x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809
 ```
+$Vw(x) = -7.492x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809$
 
 ```
 W:
@@ -383,12 +386,12 @@ W:
  [0,  2.283, 0, -8.7  ,  29.25 , -42.333,  33    , 13.5  ]
  [0, -1    , 0,  6    , -15    ,  20    , -15    ,  6    ]
 ]
-Ww = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647
 ```
+$Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
 
 *Attention les polynômes Uw, Vw, Ww indiqués ici sont arrondis par les affichages. Les erreurs d'arrondis peuvent faire dévier fortement les courbes...*
 
-La multiplication de la matrice de lagrange par le vecteur témoin se fait par le code python suivant :
+La multiplication de la matrice de Lagrange par le vecteur témoin se fait par le code python suivant :
 ```python
 import numpy as np
 from numpy import poly1d
@@ -410,21 +413,22 @@ print(poly1d(Vw))
 Si l'isomorphisme fonctionne, nous pouvons faire l'opération de controle. Dans le monde R1CS nous avons vérifié que `Lw . Rw = Ow`. Nous devrions avoir par similitude dans le domaine des Polynômes : `Uw * Vw = Ww`.  
 
 On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré deg(Uw * Vw) - deg(Ww).  
-`H(t) = (x-1)(x-2)(x-3)...(x-10)` 
+$H(x) = (x-1)(x-2)(x-3)...(x-10)$
 
 `Uw * Vw = Ww + H`
-Le polynome H n'a aucune chance d'annuler le l'innégalité, car il est choisi de manière arbitrairement connu.  
+Le polynome H n'a aucune chance d'annuler l'innégalité, car il est choisi de manière arbitraire.  
 `(Uw * Vw) - Ww != H`  
 
-L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est connu h, l'autre ne fait qu'annuler l'équation.
+L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est connu h et l'autre ne fait qu'annuler l'équation.
 `(Uw * Vw) - Ww = h * t`  
 
 `h * t` doit être de la dimension de `(Uw * Vw)`, t peut être fabriqué commme voulu. On peut donc écrire l'équation suivante :
 `((Uw * Vw) - Ww) / t = h`
 
-Si t est un diviseur parfait de `((Uw * Vw) - Ww)` alors votre équation Qap fonctionne et vous avez fourni la preuve que vous connaissez le polynome initialement utilisé `f(x)=3x^3+5x^2+10x+3`.
+Si `t` est un diviseur parfait de `((Uw * Vw) - Ww)` alors l'équation Qap fonctionne et nous avons la preuve qu'on connait le polynome initial.  
+$f(x)=3x^3+5x^2+10x+3$.
 
-En effet la probabilité de connaître un polynôme unique qui relie les signaux U, V, et W par un diviseur cible t est nulle. Vous pouvez donc vérifier cette proposition en vérifiant que le reste de la division est nulle.
+En effet la probabilité de connaître un polynôme unique qui relie les signaux `U, V, et W` par un diviseur cible `t` est nulle. Vous pouvez donc vérifier cette proposition en vérifiant que le reste de la division est nul.
 
 Dans notre exemple, le code python suivant, indique un reste proche de 0 qu'on peut considérer nul.
 ```python
@@ -442,11 +446,11 @@ t = poly1d([1, -1])*poly1d([1, -2])*poly1d([1, -3])*poly1d([1, -4])*poly1d([1, -
 print("h \n", h)
 print("reste \n", reste)
 ```
-`    h : -34.09x^4+414.6x^3-1713x^2+2734x-1394`
-`reste : 0.0001015x^5-0.001524x^4+0.00865x^3-0.02295x^2+0.028x-0.01228`
+$h(x)=-34.09x^4+414.6x^3-1713x^2+2734x-1394$
+$r(x)=0.0001015x^5-0.001524x^4+0.00865x^3-0.02295x^2+0.028x-0.01228$
 
 A titre de comparaison la fonction résultante ((Uw*Vw)-Ww) est la suivante  
-`-34.09x^10+1130x^9-1.638e+04x^8+1.363e+05x^7-7.187e+05x^6+2.5e+06 x^5-5.792e+06 x^4+8.785e+06x^3-8.321e+06x^2+4.428e+06x-1.004e+06`
+$f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+8785000x^3-8321000ex^2+4428000x-1004000$
 
 Le tracé de la fonction résultante et du reste permet de visualiser concrêtement le caractère hortogonal de ces fonctions.
 (visual)
