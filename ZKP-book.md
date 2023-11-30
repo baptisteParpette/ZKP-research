@@ -105,13 +105,13 @@ Cette transformation se fait en trois étapes :
 Le circuit R1CS permet de réexprimer le polynôme initial dans un ensemble portes de calcul ne contenant que des additions et des multiplications. Pour faire simple les portes illustrent les multiplications, les passages de porte les additions.
 f(x) = 3x^3+5x^2+10x+3
 
-v1 = x * x   (1)
-v2 = x * v1  (2)
-v3 = 3 * v2  (3)
-v4 = 5 * v1  (4)
-v5 = 10 * x  (5)
-out = v3 + v4 + v5 + 3 (6)
-out = (v3 + v4 + v5 + 3) * 1 (6bis)
+v1 = x * x   (1)  
+v2 = x * v1  (2)  
+v3 = 3 * v2  (3)  
+v4 = 5 * v1  (4)  
+v5 = 10 * x  (5)  
+out = v3 + v4 + v5 + 3 (6)  
+out = (v3 + v4 + v5 + 3) * 1 (6bis)  
 
 Cette série d'opération va être représentée par une matrice contenant les coefficients de chaque opération.
 Les colonnes de la matrice représentent les variables. Les lignes représentent la série d'opérations à appliquer.
