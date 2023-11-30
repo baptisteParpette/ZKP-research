@@ -347,8 +347,7 @@ U:
   [0.008333, -0.125, 0.7083, -1.875,  2.283, -1],
   [0.008333, -0.125, 0.7083, -1.875,  2.283, -1]
 ]
-
-Uw = 4.5248x^5-68.167x^4+388.53x^3-1035.36x^2+1268.25x-553
+Uw = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553
 
 V:
 [
@@ -361,8 +360,7 @@ V:
   [       0,      0,      0,      0,      0,   0],
   [       0,      0,      0,      0,      0,   0]
 ]
-
-Vw = -7.532917x^5+136.3415x^4-920.0417x^3+2831.725x^2-3843.717x+1809
+Vw = -7.533x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809
 
 W:
 [
@@ -375,7 +373,66 @@ W:
   [  0.08333,  -1.417,  8.917, -25.58,     33, -15],
   [ -0.04167,  0.6667, -3.958,  10.83,  -13.5,   6]
 ]
-Ww = -13.307426x^5+254.79x^4-1790.3851x^3+5651.7x^2-7722.501x+3647
+Ww = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647
+
+*Attention les polynômes Uw, Vw, Ww indiqués ici sont arrondis par les affichages, il doivent être utilisés dans le code directement pour avoir les vraies valeurs par la suite. Les erreurs d'arrondis peuvent faire dévier fortement les courbes...*
+
+La multiplication de la matrice de lagrange par le vecteur témoin se fait par le code python suivant :
+```python
+U:
+[
+  [  -0.225,  3.708, -23.12,  67.79, -90.15, 42],
+  [       0,      0,      0,      0,      0,  0],
+  [ 0.03333, -0.625,  4.417, -14.38,  20.55, -9],
+  [       0,      0,      0,      0,      0,  0],
+  [       0,      0,      0,      0,      0,  0],
+  [0.008333, -0.125, 0.7083, -1.875,  2.283, -1],
+  [0.008333, -0.125, 0.7083, -1.875,  2.283, -1],
+  [0.008333, -0.125, 0.7083, -1.875,  2.283, -1]
+]
+witness = [1, 553, 5, 25, 125, 375, 125, 50]
+
+Uw = np.matmul(U, witness)
+print(poly1d(Uw))
+```
+
+Si l'isomorphisme fonctionne, nous pouvons faire l'opération de controle. Dans le monde R1CS nous avons vérifié que Lw . Rw = Ow. Nous devrions avoir par similitude dans le domaine des Polynômes :
+Uw * Vw = Ww . Il s'agit d'une convolution de fonctions.
+
+On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré deg(Uw * Vw) - deg(Ww).
+H(t) = (x-1)(x-2)(x-3)...(x-10)
+
+Uw * Vw = Ww + H
+Le polynome H n'a aucune chance d'annuler le l'innégalité, car il est choisi de manière arbitrairement connu.
+(Uw * Vw) - Ww != H
+
+L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est connu h, l'autre ne fait qu'annuler l'équation.
+(Uw * Vw) - Ww = h * t
+
+h * t doit être de la dimension de (Uw * Vw), t peut être fabriquer commme voulu. On peut donc écrire l'équation suivante :
+((Uw * Vw) - Ww) / t = h
+
+Si t est un diviseur parfait de ((Uw * Vw) - Ww) alors votre équation Qap fonctionne et vous avez fourni la preuve que vous connaissez le polynome initialement utilisé 3x^3+5x^2+10x+3.
+
+En effet la probabilité que je connaisse un polynôme unique qui relie les signaux U, V, et W par un diviseur cible t est nulle. Vous pouvez vérifier cette proposition en vérifiant que le reste de la division est nulle.
+
+Dans notre exemple, le code python suivant, indique un reste proche de 0 qu'on peut considérer nul.
+```python
+import numpy as np
+from numpy import poly1d
+
+Uw = poly1d([4.525,-68.16666667,388.54166667,-1035.33333333,1268.43333333,-553])
+Vw = poly1d([-7.53333333,136.33333333,-920.33333333,2831.66666667,-3844.13333333,1809])
+Ww = poly1d([-13.30833333,254.83333333,-1791.625,5651.66666667,-7723.56666667,3647])
+
+t = poly1d([1, -1])*poly1d([1, -2])*poly1d([1, -3])*poly1d([1, -4])*poly1d([1, -5])*poly1d([1, -6])
+
+(h, reste) = ((Uw * Vw)-Ww)/t
+
+print("h \n", h)
+print("reste \n", reste)
+```
+
 
 
 
