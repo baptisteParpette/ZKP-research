@@ -117,41 +117,41 @@ Cette série d'opération va être représentée par une matrice contenant les c
 Les colonnes de la matrice représentent les variables. Les lignes représentent la série d'opérations à appliquer.
 Chaque opération unitaire est convertie par une ligne dans la matrice.
 
-Les colonnes de la matrice sont donc [ 1 out x v1 v2 v3 v4 v5 ].
-Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : O = L * R qui signifie : la sortie (Out) = Left(L) * Right(O)
+Les colonnes de la matrice sont donc [ 1 out x v1 v2 v3 v4 v5 ].  
+Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : O = L * R qui signifie : la sortie (Out) = Left(L) * Right(O)  
 
-//out
-//1 out x v1 v2 v3 v4 v5
-[
-  0  0  0  1  0  0  0  0    // v1
-  0  0  0  0  1  0  0  0    // v2
-  0  0  0  0  0  1  0  0    // v3
-  0  0  0  0  0  0  1  0    // v4
-  0  0  0  0  0  0  0  1    // v5
-  0  1  0  0  0  0  0  0    // out
-]
+//out  
+//1 out x v1 v2 v3 v4 v5  
+[  
+  0  0  0  1  0  0  0  0    // v1  
+  0  0  0  0  1  0  0  0    // v2  
+  0  0  0  0  0  1  0  0    // v3   
+  0  0  0  0  0  0  1  0    // v4  
+  0  0  0  0  0  0  0  1    // v5  
+  0  1  0  0  0  0  0  0    // out  
+]  
 
-//L
-//1 out x v1 v2 v3 v4 v5
-[
-  0  0  1  0  0  0  0  0    // x
-  0  0  1  0  0  0  0  0    // x
-  3  0  0  0  0  0  0  0    // 3
-  5  0  0  0  0  0  0  0    // 5
- 10  0  0  0  0  0  0  0    // 10
-  3  0  0  0  0  1  1  1    // (6bis)
-]
+//L  
+//1 out x v1 v2 v3 v4 v5  
+[  
+  0  0  1  0  0  0  0  0    // x  
+  0  0  1  0  0  0  0  0    // x  
+  3  0  0  0  0  0  0  0    // 3  
+  5  0  0  0  0  0  0  0    // 5  
+ 10  0  0  0  0  0  0  0    // 10  
+  3  0  0  0  0  1  1  1    // (6bis)  
+]  
 
-//R
-//1 out x v1 v2 v3 v4 v5
-[
-  0  0  1  0  0  0  0  0  // x
-  0  0  0  1  0  0  0  0  // v1
-  0  0  0  0  1  0  0  0  // v2
-  0  0  0  1  0  0  0  0  // v1
-  0  0  1  0  0  0  0  0  // x
-  1  0  0  0  0  0  0  0  // (6bis)
-]
+//R  
+//1 out x v1 v2 v3 v4 v5  
+[  
+  0  0  1  0  0  0  0  0  // x  
+  0  0  0  1  0  0  0  0  // v1  
+  0  0  0  0  1  0  0  0  // v2  
+  0  0  0  1  0  0  0  0  // v1  
+  0  0  1  0  0  0  0  0  // x  
+  1  0  0  0  0  0  0  0  // (6bis)  
+]  
 
 Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond peu ou prou au coordonnées initialement proposées.
 w = [ 1 out x v1 v2 v3 v4 v5] on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si x = 5 alors on aura comme vecteur témoins les valeurs suivantes :
