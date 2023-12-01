@@ -88,7 +88,7 @@ Nous donnons en annexe une liste de lecture permettant de rentrer plus facilemen
 
 Notre objectif étant que le protocole soit compréhensible dans cette première lecture.
 
-Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait une polynôme sans divulguer l'équation du polynome. Partons du polynôme : f(x) = 3x^3+5x^2+10x+3 que seul le prouveur connait.
+Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait une polynôme sans divulguer l'équation du polynome. Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ que seul le prouveur connait.
 
 La question est la suivante, en tant que prouveur "Comment prouver à une personne que je connais ce polynôme" sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
 
@@ -102,8 +102,11 @@ Cette transformation se fait en trois étapes :
   3. Extension du système de courbes quadratiques pour équilibrer les équations
 
 # Circuit R1CS
-Le circuit R1CS permet de réexprimer le polynôme initial dans un ensemble portes de calcul ne contenant que des additions et des multiplications. Pour faire simple les portes illustrent les multiplications, les passages de porte les additions.
-`f(x) = 3x^3+5x^2+10x+3`
+Le circuit R1CS permet de réexprimer le polynôme initial dans un ensemble portes de calcul ne contenant que des multiplications. Les additions se font en regroupant les signaux avant d'arriver dans les portes. 
+Le schéma suivant illustre une porte, avec une entrée gauche, une entrée droite, une multiplication et son signal de sortie. 
+<img src="./porte.png" width="100">
+
+$f(x) = 3x^3+5x^2+10x+3$
 
 ```
 v1 = x * x   (1)  
@@ -114,13 +117,16 @@ v5 = 10 * x  (5)
 out = v3 + v4 + v5 + 3 (6)  
 out = (v3 + v4 + v5 + 3) * 1 (6bis)  
 ```
+Le schéma suivant présente le circuit équivalent sous forme de portes. 
+<img src="./circuit.png">
+La création du circuit suit des règles standard de création et il existe des langages comme circom qui le fabrique automatiquement à partir de l'expression du polynôme. 
 
 Cette série d'opération va être représentée par une matrice contenant les coefficients de chaque opération.
 Les colonnes de la matrice représentent les variables. Les lignes représentent la série d'opérations à appliquer.
 Chaque opération unitaire est convertie par une ligne dans la matrice.
 
 Les colonnes de la matrice sont donc `[ 1 out x v1 v2 v3 v4 v5 ]`.  
-Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : L * R = O qui signifie : la sortie Left(L) * Right(O) = Out(O).    
+Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : `L * R = O`
 
 ```
 //L    
