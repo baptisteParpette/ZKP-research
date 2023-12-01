@@ -3,7 +3,6 @@ import numpy as np
 from numpy import poly1d
 from scipy.interpolate import lagrange
 
-#np.set_printoptions(threshold=1000)
 np.set_printoptions(linewidth=np.nan)
 
 def calculPolyLagrange(array):
@@ -30,7 +29,7 @@ L = np.array([
  [3,0,0,0,0,1,1,1]
 ])
 U = calculPolyLagrange(L)
-print("U :\n", U)
+#print("U :\n", U)
 
 R = np.array([
 [0,0,1,0,0,0,0,0],
@@ -41,7 +40,7 @@ R = np.array([
 [1,0,0,0,0,0,0,0]
 ])
 V = calculPolyLagrange(R)
-print("V :\n", V)
+#print("V :\n", V)
 
 
 O = np.array([
@@ -53,7 +52,7 @@ O = np.array([
 [0,1,0,0,0,0,0,0]
 ])
 W = calculPolyLagrange(O)
-print("W :\n", W)
+#print("W :\n", W)
 
 witness = [1, 553, 5, 25, 125, 375, 125, 50]
 
@@ -62,8 +61,7 @@ Uw = np.matmul(U, witness)
 Vw = np.matmul(V, witness)
 #print(Vw)
 Ww = np.matmul(W, witness)
-print(Ww)
-
+#print(Ww)
 
 t = poly1d([1, -1])*poly1d([1, -2])*poly1d([1, -3])*poly1d([1, -4])*poly1d([1, -5])*poly1d([1, -6])
 
