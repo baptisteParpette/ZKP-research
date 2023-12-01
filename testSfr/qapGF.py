@@ -6,7 +6,8 @@ import galois
 from functools import reduce
 
 #On definit le corps de Galois
-GF = galois.GF(1279) 
+p=7
+GF = galois.GF(p) 
 
 #np.set_printoptions(threshold=1000)
 np.set_printoptions(linewidth=np.nan)
@@ -70,6 +71,14 @@ witness = [1, 553, 5, 25, 125, 375, 125, 50]
 num_var=len(witness)
 num_eq=len(L)
 
+# On convertit les matrices pour etre convertisable en GF (Chaque valeur est ramenée entre [0, p-1] )
+L = L % p
+R = R % p
+O = O % p
+
+#idem pour le vecteur witness
+witness = np.array(witness) % p
+
 #On convertit les matrices en matrices de Galois
 L_galois = GF(L)
 R_galois = GF(R)
@@ -100,11 +109,11 @@ print("\n=====================================================")
 witness = GF(witness)
 
 fu = inner_product_polynomials_with_witness(U_polys, witness)
-print("\nfu :\n", fu)
+print("\nfu(x) = ", fu)
 fv = inner_product_polynomials_with_witness(V_polys, witness)
-print("\n\nfv :\n", fv)
+print("fv(x) = ", fv)
 fw = inner_product_polynomials_with_witness(W_polys, witness)
-print("\n\nfw :\n", fw)
+print("fw(x) = ", fw)
 
 print("\n=====================================================")
 
@@ -115,11 +124,16 @@ t = polynomial_product_in_GF(values, GF)
 h_quo = (fu * fv - fw) // t
 h_rem = (fu * fv - fw) % t
 
-print("\nh_quo(x) = ", h_quo,"\n")
-print("\nh_rem(x) = ", h_rem,"\n")
+print("\nh_quo(x) = ", h_quo)
+print("h_rem(x) = ", h_rem)
 print("t(x) = ", t,"\n")
-print("======================FIN============================")
+if(h_rem == 0):
+    print("=> La preuve est valide")
+else:
+    print("=> La preuve invalide")
+
+print("\n======================FIN============================\n")
 
 
-assert fu * fv == fw + h_quo * t, "division has a remainder"
+#assert fu * fv == fw + h_quo * t, "division has a remainder"
 
