@@ -360,7 +360,7 @@ U:
  [ 42    , 0, -9.   , 0, 0, -1    , -1    , -1   ]
 ]
 ```
-![Courbes U](U.png)
+![Courbes U](blob/main/U.png)
 $Uw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
 
 ```
@@ -374,7 +374,7 @@ V:
  [-1    , 0,  12    , -30    ,  20    , 0, 0, 0]
 ]
 ```
-![Courbes V](V.png)
+![Courbes V](blob/main/V.png)
 $Vw(x) = -7.492x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809$
 
 ```
@@ -388,7 +388,7 @@ W:
  [0, -1    , 0,  6    , -15    ,  20    , -15    ,  6    ]
 ]
 ```
-![Courbes W](W.png)
+![Courbes W](blob/main/W.png)
 $Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
 
 *Attention les polynômes Uw, Vw, Ww indiqués ici sont arrondis par les affichages. Les erreurs d'arrondis peuvent faire dévier fortement les courbes...*
