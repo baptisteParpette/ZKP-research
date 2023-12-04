@@ -54,7 +54,8 @@ O = np.array([
 W = calculPolyLagrange(O)
 #print("W :\n", W)
 
-witness = [1, 553, 5, 25, 125, 375, 125, 50]
+#witness = [1, 553, 5, 25, 125, 375, 125, 50]
+witness = [1, 159, 3, 9, 27, 81, 45, 30]
 
 Uw = np.matmul(U, witness)
 #print(Uw)

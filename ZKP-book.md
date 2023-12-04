@@ -463,12 +463,72 @@ $f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+87
 Le tracé de la fonction résultante et du reste permet de visualiser concrêtement le caractère hortogonal de ces fonctions.
 (visual)
 
-
 Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le prouveur et le vérifieur.
+l'étape suivante consiste à porter nos équations dans un espace plus efficace à calculer. A savoir passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques.
 
-l'étape suivante va consister à porter ce principe dans un espace plus efficace à calculer. A savoir passer sur de l'arithmétique modulaire et projet les données dans l'espace des courbes elliptiques.
+# L'espace de galois
+Tous les calculs peuvent se faire dans un espace de galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier. 
+Par exemple, si on choisi l'espace de Galois de valeur 7, la matrice L et le vecteur témoins sont modifiés en conséquence. En python, ils doivent être rendus compatibles avant d'être convertis en valeurs appartenant au corps associé. 
 
-# Simplifier les équations
+```python
+import galois
+
+p=7              // Ordre 
+GF = galois.GF(p)
+
+L = np.array([
+ [0,0,1,0,0,0,0,0],
+ [0,0,1,0,0,0,0,0],
+ [3,0,0,0,0,0,0,0],
+ [5,0,0,0,0,0,0,0],
+[10,0,0,0,0,0,0,0],
+ [3,0,0,0,0,1,1,1]
+])
+L = L % p
+L_galois = GF(L)
+print(L_galois)
+
+witness = [1, 553, 5, 25, 125, 375, 125, 50]
+witness = np.array(witness) % p
+witness = GF(witness)
+print(witness)
+```
+
+```shell
+➜  git:(main) ✗ python3 testGF.py 
+L
+---
+[[ 0  0  1  0  0  0  0  0]
+ [ 0  0  1  0  0  0  0  0]
+ [ 3  0  0  0  0  0  0  0]
+ [ 5  0  0  0  0  0  0  0]
+ [10  0  0  0  0  0  0  0]
+ [ 3  0  0  0  0  1  1  1]]
+---
+[[0 0 1 0 0 0 0 0]
+ [0 0 1 0 0 0 0 0]
+ [3 0 0 0 0 0 0 0]
+ [5 0 0 0 0 0 0 0]
+ [3 0 0 0 0 0 0 0]
+ [3 0 0 0 0 1 1 1]]
+
+Witness
+-------
+[1, 553, 5, 25, 125, 375, 125, 50]
+[1 0 5 4 6 4 6 1]
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Ils sont utilisés pour prouver qu'une information est vraie sans révéler l'information elle-même. Les zk-SNARKs sont utilisés dans de nombreuses blockchains, notamment Zcash, Ethereum et Tezos.
