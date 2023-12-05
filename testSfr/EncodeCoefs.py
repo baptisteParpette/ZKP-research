@@ -2,8 +2,8 @@ import sys;
 from py_ecc.bn128 import G1, multiply, add, curve_order, eq, neg
 import galois
 
-GF = galois.GF(curve_order)
-#GF = galois.GF(101)
+#GF = galois.GF(curve_order)
+GF = galois.GF(101)
 
 # Montrer que si x a une valeur :  E(P(x)) <==> c0E(x/G)+c1E(x/G^2)+)
 # L'encodage du polynome à la coordonnée X, et également à la somme des coefficients des valeurs de x encodées
@@ -16,7 +16,7 @@ GF = galois.GF(curve_order)
 p = galois.Poly([1, -2, -8], field=GF)
 
 # evaluate at 8
-tau = GF(8)
+tau = GF(6)
 print("Evaluation en x = ", tau)
 
 res = int(p(tau)) # Je ne comprends pas ce int() 

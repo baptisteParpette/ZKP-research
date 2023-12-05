@@ -76,6 +76,9 @@ t = generateT(len(L), GF)
 h_quo = (Uw * Vw - Ww) // t
 h_rem = (Uw * Vw - Ww) % t
 
+print("Uw = ", Uw, "\n")
+print("Vw = ", Vw, "\n")
+print("Ww = ", Ww, "\n")
 print("t(x) = ", t,"\n")
 print("\nh_quo(x) = ", h_quo)
 print("h_rem(x) = ", h_rem)
