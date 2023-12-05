@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 import galois
+from py_ecc.bn128 import curve_order
 
 def calculPolyLagrangeGF(array):
     (horizontal, vertical) = array.shape
@@ -26,7 +27,7 @@ def generateT(size, ordre):
         result_poly *= galois.Poly([1, -val], field=ordre)
     return result_poly 
 
-p=7
+p = curve_order
 GF = galois.GF(p) 
 
 np.set_printoptions(linewidth=np.nan)
