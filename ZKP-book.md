@@ -558,6 +558,15 @@ else:
     print("=> La preuve invalide")
 ```
 
+Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir d'une part un calcul rapide et d'autre par une preuve plus succincte. 
+
+
+
+
+
+# outils
+https://www.desmos.com/calculator?lang=fr
+https://www.geogebra.org/?lang=fr
 
 
 
