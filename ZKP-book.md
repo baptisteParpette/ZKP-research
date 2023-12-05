@@ -467,60 +467,96 @@ Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas s
 l'étape suivante consiste à porter nos équations dans un espace plus efficace à calculer. A savoir passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques.
 
 # L'espace de galois
-Tous les calculs peuvent se faire dans un espace de galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier. 
-Par exemple, si on choisi l'espace de Galois de valeur 7, la matrice L et le vecteur témoins sont modifiés en conséquence. En python, ils doivent être rendus compatibles avant d'être convertis en valeurs appartenant au corps associé. 
+Tous les calculs peuvent se faire dans un espace de galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appélé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7, la matrice L et le vecteur témoins sont modifiés en conséquence. En python, ils doivent être rendus compatibles avant d'être convertis en valeurs appartenant au corps associé. Le code suivant indique la même preuve que précédemment mais dans le corps de galois d'ordre 7. 
+Nous utilisons deux fonctions spécifiques : `calculPolyLagrangeGF` calcul les coefficients de lagrange dans le le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance. 
 
 ```python
+import sys
+import numpy as np
 import galois
 
-p=7              // Ordre 
-GF = galois.GF(p)
+def calculPolyLagrangeGF(array):
+    (horizontal, vertical) = array.shape
 
-L = np.array([
+    x = GF(np.arange(1, horizontal+1)) # x = [1, 2, 3, 4]
+
+    tL = np.transpose(array)
+    res = GF(np.zeros((vertical, horizontal), dtype=int))
+
+    for i in range(vertical):
+        r = galois.lagrange_poly(x,tL[i])
+        res[i] = r.coefficients()
+
+    return(np.transpose(res))
+
+def generateT(size, ordre):
+    '''
+    (6) = (x-1)(x-2)(x-3)(x-4)(x-5)(x-6)
+    '''
+    result_poly = galois.Poly([1], field=ordre)  # Start with the polynomial '1' in the given field
+    for val in range(1, size+1):
+        # Multiply the result by (x - val) for each val in values
+        result_poly *= galois.Poly([1, -val], field=ordre)
+    return result_poly 
+
+p=7
+GF = galois.GF(p) 
+
+np.set_printoptions(linewidth=np.nan)
+
+#On part des matrices initiales. Indépendantes du corps de calcul
+L = GF(np.array([
  [0,0,1,0,0,0,0,0],
  [0,0,1,0,0,0,0,0],
  [3,0,0,0,0,0,0,0],
  [5,0,0,0,0,0,0,0],
 [10,0,0,0,0,0,0,0],
  [3,0,0,0,0,1,1,1]
-])
-L = L % p
-L_galois = GF(L)
-print(L_galois)
+]) % p)
+
+R = GF(np.array([
+[0,0,1,0,0,0,0,0],
+[0,0,0,1,0,0,0,0],
+[0,0,0,0,1,0,0,0],
+[0,0,0,1,0,0,0,0],
+[0,0,1,0,0,0,0,0],
+[1,0,0,0,0,0,0,0]
+]) % p)
+
+O = GF(np.array([
+[0,0,0,1,0,0,0,0],
+[0,0,0,0,1,0,0,0],
+[0,0,0,0,0,1,0,0],
+[0,0,0,0,0,0,1,0],
+[0,0,0,0,0,0,0,1],
+[0,1,0,0,0,0,0,0]
+]) % p)
 
 witness = [1, 553, 5, 25, 125, 375, 125, 50]
 witness = np.array(witness) % p
 witness = GF(witness)
-print(witness)
+
+U_polys = calculPolyLagrangeGF(L);
+V_polys = calculPolyLagrangeGF(R);
+W_polys = calculPolyLagrangeGF(O);
+
+Uw = galois.Poly(np.matmul(U_polys, witness))
+Vw = galois.Poly(np.matmul(V_polys, witness))
+Ww = galois.Poly(np.matmul(W_polys, witness))
+
+t = generateT(len(L), GF)
+
+h_quo = (Uw * Vw - Ww) // t
+h_rem = (Uw * Vw - Ww) % t
+
+print("t(x) = ", t,"\n")
+print("\nh_quo(x) = ", h_quo)
+print("h_rem(x) = ", h_rem)
+if(h_rem == 0):
+    print("=> La preuve est valide")
+else:
+    print("=> La preuve invalide")
 ```
-
-```shell
-➜  git:(main) ✗ python3 testGF.py 
-L
----
-[[ 0  0  1  0  0  0  0  0]
- [ 0  0  1  0  0  0  0  0]
- [ 3  0  0  0  0  0  0  0]
- [ 5  0  0  0  0  0  0  0]
- [10  0  0  0  0  0  0  0]
- [ 3  0  0  0  0  1  1  1]]
----
-[[0 0 1 0 0 0 0 0]
- [0 0 1 0 0 0 0 0]
- [3 0 0 0 0 0 0 0]
- [5 0 0 0 0 0 0 0]
- [3 0 0 0 0 0 0 0]
- [3 0 0 0 0 1 1 1]]
-
-Witness
--------
-[1, 553, 5, 25, 125, 375, 125, 50]
-[1 0 5 4 6 4 6 1]
-```
-
-
-
-
 
 
 
