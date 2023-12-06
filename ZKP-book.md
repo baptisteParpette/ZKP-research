@@ -677,7 +677,6 @@ u0 = multiply(X0, 0)
 encodeCoeffU=(add(add(add(add(add(u0, u1), u2),u3),u4),u5))
 print("U=",encodeCoeffU)
 
-
 #  !!!!   Verification a ne jamais faire : ici pour montrer que le code fonctionne
 u = galois.Poly([4, 3, 5, 3, 4, 0], field=GF)
 res = int(u(tau))     # tau est normalement détruit
@@ -687,9 +686,36 @@ print("Uprouf = ", multiply(G1, res))
 print(eq(multiply(G1, res), (add(add(add(add(add(u0, u1), u2),u3),u4),u5))))
 
 ```
-La valeur U= (11094783132397955566395296115909392203039607592213320683761560225620969561929, 1007716543716279696673570393506213990560111882536049416795170313373045602298). Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
+La valeur U= (1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106). Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
+
+On peut faire pareil pour U, V, W, et HT. Le code suivant finira de montrer tous les calculs.
 
 ### La multiplication sur la courbe elliptique
+Le produit A * B ne donne pas de résultat sur la courbe elliptique. Il faut passer par un principe de pairing, ou de mapping (qui n'est pas entièrement clair). Le principe est que la multiplication d'un point par un autre point doit se faire sur deux courbes différentes et fourni un point sur une troisième courbe. Ainsi le mapping se présente ainsi :
+Si on a 3 points A, B, C sur une courbe bien choisie (bn128), et que A * B = C, alors on peut projeter les points ainsi :
+
+mapping(A_G2, B_G1) == mapping(C_G2, G1) // Le mapping s'effectue sur la courbe G12
+Le code suivant illustre un exemple de mapping sur illustrant que map(5*G2, 6*G1) == map(30*G2, G1). Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification.
+
+```python
+from py_ecc.bn128 import multiply, G1, G2, pairing
+
+A = multiply(G2, 5)
+B = multiply(G1, 6)
+C = multiply(G2, 5*6)
+
+print(pairing(A, B) == pairing(C, G1))
+```
+
+Par rapport à nos équations Uw * Vw = Ww + HT
+on devrait aboutir au pairing suivant. 
+
+`pairing(Uw_G2, Vw_G1) = pairing((Ww+HT), G1)`
+
+Si cette équation est vérifiée alors le code démontre que le prouveur connait une équation sans en divulguer les coefficients au vérifieur.
+
+
+
 
 
 # outils
