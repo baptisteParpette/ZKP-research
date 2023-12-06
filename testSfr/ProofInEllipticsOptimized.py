@@ -6,7 +6,7 @@
 # h_quo(x) =  3x^4 + x^3 + x^2 + 2x
 
 import sys;
-from py_ecc.bn128 import G1, G2, multiply, add, curve_order, eq, neg, pairing
+from py_ecc.optimized_bn128 import G1, G2, multiply, add, curve_order, eq, neg, pairing
 import galois
 
 GF = galois.GF(curve_order)
