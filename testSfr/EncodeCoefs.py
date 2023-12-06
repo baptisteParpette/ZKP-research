@@ -24,13 +24,14 @@ print(res)
 
 # Encode(P(30))
 encodePolyResult = multiply(G1, res)
+print(encodePolyResult)
 
 # 1*Encode(30^2)-2*Encode(30)-8*Encode(1)
 X2 = multiply(multiply(G1, int(tau**2)), 1)
 X1 = multiply(neg(multiply(G1, int(tau))), 2)
 X0 = multiply(neg(G1), 8)
-
 encodeCoeffResult=(add(add(X0, X1), X2))
+print(encodeCoeffResult)
 
 if eq(encodePolyResult, encodeCoeffResult):
     print("elliptic curve points are equal @", encodeCoeffResult)

@@ -558,10 +558,138 @@ else:
     print("=> La preuve invalide")
 ```
 
-Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir d'une part un calcul rapide et d'autre par une preuve plus succincte. 
+Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir une preuve plus succincte. 
+
+# Projection sur les courbes elliptiques
+Dans la preuve précédente, le prouveur montre au vérifieur les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. 
+Le vérifieur peut fabriquer le polynôme t, et vérifier que la division est sans reste. Mais le vérifieur accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un prouveur. 
+
+Pour palier cela, prouveur et verifieur sont mis en relation par un tier de confiance le préparateur(setup) qui va imposer des valeurs de références uniques au deux participants. 
+
+Le principe est le suivant. On part de l'équation : 
+Uw * Vw = Ww + HT
+
+Ce sont tous des polynômes, qui peuvent être évalués à n'importe quelle coordonnée à certaines coordonnées. 
+
+Prenons par-exemple Uw = $4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x$
+En choisissant arbitrairement `x = 5`, on peut écire `4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055`
+Une courbe elliptique permet de fournir une valeur représentante qui montre que la solution est connue mais sans qu'on puisse remonter à l'équation source. (C'est une forme de Zkp, mais sans vérification possible).
+$Elliptic(Uw(5)) = 4*Elliptic(5**5) + 3*Elliptic(5**4) + 5*Elliptic(5**3) + 3*Elliptic(5**2) - 4*Elliptic(5) + 0$
+
+Les courbes elliptiques fonctionnent ainsi : 
+On part d'un point sur la courbe, appelé G. En fonction des courbes considérés les points initiaux peuvent avoir plusieurs types de coordonnées. G1 : 1 point à 2 dimensions, G2 : 2 points à 2 dimensions, G12 : 12 points à 2 dimensions.
+Si on ajoute G à G, on trouve le point suivant sur la courbe. 5*G1 déplace G1 sur la courbe de 5 sauts, et 5G1 est toujours sur la courbe. 
+Par rapport à notre exemple : 
+$15055G1 = 4*3125G1 + 3*625G1 + 5*125G1 + 3*25G1 - 4*5G1$
+$15055G1 = 15055G1$
+Le code python suivant implante cette égalité. 
+**Remarque Importante : dans cette exemple, j'ai pris une des courbes précédente, en changeant le dernier coefficient par son négatif pour illustrer la négation**
+
+```python
+from py_ecc.bn128 import G1, G2, multiply, add, neg, eq
+#4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055
+
+print("Uw(5) =", multiply(G1, 15055))
+
+X5 = multiply(G1, 5**5)
+X4 = multiply(G1, 5**4)
+X3 = multiply(G1, 5**3)
+X2 = multiply(G1, 5**2)
+X1 = multiply(G1, 5)
+X0 = G1
+
+c5 = multiply(X5, 4)
+c4 = multiply(X4, 3)
+c3 = multiply(X3, 5)
+c2 = multiply(X2, 3)
+c1 = multiply(neg(X1), 4)
+
+print("Somme(coefficient) = ", add(add(add(add(c1,c2),c3),c4),c5))
+
+print(multiply(G1, 15055) == add(add(add(add(c1,c2),c3),c4),c5))
+```
+
+Le point 15055G1 (2708568011129098481813750608442309814741431019776566886222041314305674896534, 12627231381848946543670844035528126888439204587944747555252932693150421290218) une valeur qui représente le polynôme en un point particulier.
+Il est impossible de remonter au polynôme source, et si le préparateur est un tier de confiance, on suppose qu'il a bien calculé la valeur du polynôme en un point particulier, que ni le prouveur, ni le vérifieur ne peuvent contester. 
+
+On arrive donc à la preuve succincte :
+Si Uw * Vw = Ww + HT sont tous des polynomes, le prouveur peux en calculer des projections équivalente sur des courbes elliptiques. Si 
+
+A = Encode(Uw, tau)  
+B = Enconde(Vw, tau)  
+C = Encode(Ww + HT, tau)   
+
+Sont bien fabriquées par le préparateur, alors il est facile au vérifieur de controler que A*B = C. 
+Pour être précis, nous devons résoudre deux soucis : 
+
+1. Envoyer Uw, Vw, Ww au préparateur est une divulgation de connaissances...
+2. La multiplication Uw*Vw n'a aucun sens dans G1 il faut passer par du pairing. 
+
+### Ne pas envoyer Uw au vérifieur
+Dans l'exemple précédent, on peut constater que X0 à X5 sont des valeurs uniquement connues du préparateur, qui choisi aléatoirement la valeur de tau initiale, et c1 à c5 permettent de réaliser le calcul sans en notifier le préparateur. 
+
+A, B, C se caculent donc ainsi :   
+
+X0 à Xn sont fournis par le préparateur
+T0 à Tn sont connus et également fournis par le préparateur
+
+Le prouveur fini sa preuve en calculant :
+A = u[n]*Xn+u[n-1]*X[n-1]+...+u0X0
+B = 
+C =
+
+Avec u[n]..u0 les coefficients du polynome Uw
+Pour HT, le calcul se fait en appliquant H(T)
+
+En résumé le prouveur est capable de calculer A, B et C sans divulguer d'information au préparateur. 
+Le préparateur envoi les coefficient X0 à Xn qui sont les points de courbe aux différentes puissances, à une coordonnée initiale inconnue de tous sauf du préparateur, qui peut être détruite une fois les X calculés.
+
+Un élément très important est que le coût de calcul est déporté vers le préparateur, qui calcule une fois pour toute les coefficients coûteux X0-Xn.
+
+Le code suivant distingue le calcul des puissances de tau, réalisé par le préparateur du calcul de la valeur A réalisée par le prouveur.
+```python
+import sys;
+from py_ecc.bn128 import G1, multiply, add, curve_order, eq, neg
+import galois
+
+# Travail du préparateur
+#GF = galois.GF(curve_order)
+GF = galois.GF(36209)               # BUG: must be higher order than res
+
+tau = GF(6)                         # variable tau choisie, dans l'ordre de Galois, qui pourra être détruite
+
+X5 = multiply(G1, int(tau**5))      # toutes les puissances de coefficients nécessaires pour tous les calculs
+X4 = multiply(G1, int(tau**4))
+X3 = multiply(G1, int(tau**3))
+X2 = multiply(G1, int(tau**2))
+X1 = multiply(G1, int(tau))
+X0 = G1
 
 
+# Travail du prouveur
+# 4x^5 + 3x^4 + 5x^3 + 3x^2 + 4x 
+u5 = multiply(X5, 4)
+u4 = multiply(X4, 3)
+u3 = multiply(X3, 5)
+u2 = multiply(X2, 3)
+u1 = multiply(X1, 4)
+u0 = multiply(X0, 0)
+encodeCoeffU=(add(add(add(add(add(u0, u1), u2),u3),u4),u5))
+print("U=",encodeCoeffU)
 
+
+#  !!!!   Verification a ne jamais faire : ici pour montrer que le code fonctionne
+u = galois.Poly([4, 3, 5, 3, 4, 0], field=GF)
+res = int(u(tau))     # tau est normalement détruit
+print("res: ", res)
+print("Uprouf = ", multiply(G1, res))
+
+print(eq(multiply(G1, res), (add(add(add(add(add(u0, u1), u2),u3),u4),u5))))
+
+```
+La valeur U= (11094783132397955566395296115909392203039607592213320683761560225620969561929, 1007716543716279696673570393506213990560111882536049416795170313373045602298). Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
+
+### La multiplication sur la courbe elliptique
 
 
 # outils

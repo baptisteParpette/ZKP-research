@@ -27,7 +27,8 @@ def generateT(size, ordre):
         result_poly *= galois.Poly([1, -val], field=ordre)
     return result_poly 
 
-p = curve_order
+# p = curve_order
+p = 101
 GF = galois.GF(p) 
 
 np.set_printoptions(linewidth=np.nan)
