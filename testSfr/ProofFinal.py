@@ -21,7 +21,7 @@ if (h_rem != 0):
     sys.exit()
 print("Les équations sont bonnes")
 
-# La partie du vérifieur. Il prépare, X sur G1 et X sur G2 et T sur G2
+# La partie du préparateur :  X sur G1 et X sur G2 et T sur G2
 tau = GF(123)
 
 XG1_6 = multiply(G1, int(tau**6))
@@ -71,7 +71,7 @@ w0 = multiply(XG1_0, 3647)
 encodeCoeffWwG1=(add(add(add(add(add(w0, w1), w2),w3),w4),w5))
 
 
-# Le vérifieurs reçoit 
+# Le vérifieur reçoit 
 print("Le vérifieur reçoit du prouveur")
 print("Uw=",encodeCoeffUwG1)
 print("Vw=",encodeCoeffVwG2)
