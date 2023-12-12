@@ -1,24 +1,24 @@
 # Preuves à divulgation nulle de connaissance (ZKP)
 
-Les preuves à divulgation nulle de connaissances (Zero Knowledge Proofs) couvrent un concept spécifique dans le domaine de la cryptographie. Elles permettent à une partie ; le **prouveur** ; de montrer à une autre partie ; le **vérifieur** ; qu'une **affirmation** est vraie, sans révéler d'information supplémentaire ; elle reposent également sur un **tiers de confiance** qui défini l'espace de travail de la preuve.
+Les preuves à divulgation nulle de connaissances (Zero Knowledge Proofs) couvrent un concept spécifique dans le domaine de la cryptographie. Elles permettent à une partie ; le ****prouveur**** ; de montrer à une autre partie ; le ****vérifieur**** ; qu'une **affirmation** est vraie, sans révéler d'information supplémentaire ; elle reposent également sur un **tiers de confiance** qui défini l'espace de travail de la preuve.
 
 ### Exemples simples
 
 Exemple 1 (Où est Charlie ?)
 ---------
-Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le prouveur est celui qui indique où est le personnage, le vérifieur peut voir sur le dessin que Charlie est au bon endroit indiqué. Le tiers de confiance peut être vu comme une personne qui garantie au vérifier que Charlie est bien présent quelque part sur l'image ou que l'image n'a pas été remplacée.
+Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le **prouveur** est celui qui indique où est le personnage, le **vérifieur** peut voir sur le dessin que Charlie est au bon endroit indiqué. Le tiers de confiance peut être vu comme une personne qui garantie au vérifier que Charlie est bien présent quelque part sur l'image ou que l'image n'a pas été remplacée.
 
-Dans une approche ZKP le prouveur peut montrer au vérifieur qu'il sait où se trouve Charlie sans divulguer sa position.
+Dans une approche ZKP le **prouveur** peut montrer au **vérifieur** qu'il sait où se trouve Charlie sans divulguer sa position.
 
-Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. C'est à dire au moins 3 fois la dimension de l'image sur ses deux dimensions. Dans ce cache, un trou est fait de la dimension du personnage de Charlie et positionne ce trou sur "l'image de Charlie". Le cache recouvre largement l'image et ne divulgue que Charlie, mais pas sa position dans l'image. Le cache couvrant les coordonnées de l'image. Le vérifieur voit charly à travers le trou, mais ne sait pas à quelles coordonnées dans l'image il se trouve. En repartant le vérifieur sais que le prouveur à trouvé Charlie, mais le vérifieur ne sais pas où il se trouve. Il y a eu preuve de l'affirmation sans divulgation de la coordonnée.
+Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. C'est à dire au moins 3 fois la dimension de l'image sur ses deux dimensions. Dans ce cache, un trou est fait de la dimension du personnage de Charlie et positionne ce trou sur "l'image de Charlie". Le cache recouvre largement l'image et ne divulgue que Charlie, mais pas sa position dans l'image. Le cache couvrant les coordonnées de l'image. Le **vérifieur** voit charly à travers le trou, mais ne sait pas à quelles coordonnées dans l'image il se trouve. En repartant le **vérifieur** sais que le **prouveur** à trouvé Charlie, mais le **vérifieur** ne sais pas où il se trouve. Il y a eu preuve de l'affirmation sans divulgation de la coordonnée.
 
 Exemple 2 (Résolution de sudoku)
 ---------
-Le jeu de sudoku consiste à répartir des chiffres de 1 à 9 dans une grille 9x9 formée de 9 pavés de 3x3. Pour être résolue la grille doit comporter tous les chiffres uniques de 1 à 9 sur toutes les lignes, toutes les colonnes et tous les pavés de 9 cases. Pour contraindre le système, la grille est initialement peuplée de valeurs qui par déduction amènent à une solution unique. Le jeu consiste à répartir les 27 séries de 9 valeurs de toutes les zones de la grille (lignes, colonnes, pavés). Dans la solution de base, le prouveur est celui qui montre que tous les chiffres sont présents et répartis dans la grille.
+Le jeu de sudoku consiste à répartir des chiffres de 1 à 9 dans une grille 9x9 formée de 9 pavés de 3x3. Pour être résolue la grille doit comporter tous les chiffres uniques de 1 à 9 sur toutes les lignes, toutes les colonnes et tous les pavés de 9 cases. Pour contraindre le système, la grille est initialement peuplée de valeurs qui par déduction amènent à une solution unique. Le jeu consiste à répartir les 27 séries de 9 valeurs de toutes les zones de la grille (lignes, colonnes, pavés). Dans la solution de base, le **prouveur** est celui qui montre que tous les chiffres sont présents et répartis dans la grille.
 
-Dans une approche ZKP, le prouveur peut montrer au vérifieur qu'il connait la solution sans divulguer la répartition des chiffres.
+Dans une approche ZKP, le **prouveur** peut montrer au **vérifieur** qu'il connait la solution sans divulguer la répartition des chiffres.
 
-Pour cela, il ne marque pas la solution directement sur la grille, mais sur des étiquettes mobiles qu'il colle sur les cases vides de la grilles. Chaque case contient une étique avec la valeur solution. Ces étiquettes sont retournée afin que le vérifieur ne puisse pas voir les valeurs solution. Pour que la preuve ZKP fonctionne, le vérifieur pose 18  questions. Chaque question consiste à demander l'ensemble des étiquettes constituant une des zone de répartition (ligne, colonne ou pavé). Le prouveur prend les étiquettes les mélange caché et dévoile au vérifieur que les 9 chiffres sont bien présents de manière unique. Puis il replace les étiquettes face cachées sur leur emplacement. En répétant ce processus 18 fois, le vérifier est convaincu à 100% que le prouver connait bien la solution à la grille, mais le vérifier ne connait pas la position des différentes valeurs dans la grille.
+Pour cela, il ne marque pas la solution directement sur la grille, mais sur des étiquettes mobiles qu'il colle sur les cases vides de la grilles. Chaque case contient une étique avec la valeur solution. Ces étiquettes sont retournée afin que le **vérifieur** ne puisse pas voir les valeurs solution. Pour que la preuve ZKP fonctionne, le **vérifieur** pose 18  questions. Chaque question consiste à demander l'ensemble des étiquettes constituant une des zone de répartition (ligne, colonne ou pavé). Le **prouveur** prend les étiquettes les mélange caché et dévoile au **vérifieur** que les 9 chiffres sont bien présents de manière unique. Puis il replace les étiquettes face cachées sur leur emplacement. En répétant ce processus 18 fois, le vérifier est convaincu à 100% que le prouver connait bien la solution à la grille, mais le vérifier ne connait pas la position des différentes valeurs dans la grille.
 
 Cette preuve est dite interactive, car elle peut se terminer avant la fin des 18 intérations. En effet, au fur et à mesure des itérations le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
 
@@ -26,10 +26,10 @@ Ces deux exemples donnent une intuition sur le principe de fonctionnement des ap
 
 Il existe de nombreux exemples plus ou moins intuitifs sur les méchanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynomes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire.
 
-<!-- Par exemple, si vous savez qu'il s'agit d'un ensemble de 10 courbes, et que le prouveur annonce qu'il pense que toutes les courbes de cet ensemble passent par des points de coordonnées (12, 100), (20, 230), (32, 430), (1233,2301), (124, 131389), (1212,101281818) et (13123, 12239191281), il y a de fortes chance qu'il connaisse l'ensemble. Le mécanisme  zkSNARK consiste à construire cet ensemble de courbes afin de permettre à un prouveur qu'il connait une solution type que le verifier peut facilement controler.
+<!-- Par exemple, si vous savez qu'il s'agit d'un ensemble de 10 courbes, et que le **prouveur** annonce qu'il pense que toutes les courbes de cet ensemble passent par des points de coordonnées (12, 100), (20, 230), (32, 430), (1233,2301), (124, 131389), (1212,101281818) et (13123, 12239191281), il y a de fortes chance qu'il connaisse l'ensemble. Le mécanisme  zkSNARK consiste à construire cet ensemble de courbes afin de permettre à un **prouveur** qu'il connait une solution type que le verifier peut facilement controler.
 Pour ceci le vérifier connait une courbe de référence publique (x-1)(x-2)(x-3).... Cette courbe coupe l'axe des x aux coordonnées (0, 1), (0, 2) (0, 3) (0, 4). D'autre part le vérifier possède un certain nombre de coefficient de courbes qui sont indirectement liés au système d'équation initial. Le prouver fourni un vecteur solution de valeurs [x1,...xn] que le vérifier peu appliquer à son système de courbe. Le vérifier peut alors controler que sa courbe publique est un diviseur exact de la courbe déduite à partir du vecteur solution appliqué au système de coefficients. -->
 
-<!-- Le prouver indique qu'il connait une solution [x1,...xn], sans que le vérifieur puisse remonter aux courbes initiales. -->
+<!-- Le prouver indique qu'il connait une solution [x1,...xn], sans que le **vérifieur** puisse remonter aux courbes initiales. -->
 
 
 <!-- Voici des exemples simplifier :
@@ -58,7 +58,7 @@ Pour quoi preuve soit considerer comme un ZKP, elle doit repondre à 3 propriét
 
 ### Comment cela fonctionne-t-il?
 
-Sans entrer dans les détails techniques, le fonctionnement des ZKP repose sur des problèmes mathématiques complexes qui sont difficiles à résoudre sans connaître certaines informations secrètes. Le prouveur utilise ces informations secrètes pour générer une preuve, et le vérificateur peut alors vérifier cette preuve sans jamais connaître les informations secrètes. Le verifieur à la possibilité de lancer des challenges au prouver afin de se convaincre qu'il connait pas le secret.
+Sans entrer dans les détails techniques, le fonctionnement des ZKP repose sur des problèmes mathématiques complexes qui sont difficiles à résoudre sans connaître certaines informations secrètes. Le **prouveur** utilise ces informations secrètes pour générer une preuve, et le vérifieur peut alors vérifier cette preuve sans jamais connaître les informations secrètes. Le verifieur à la possibilité de lancer des challenges au prouver afin de se convaincre qu'il connait pas le secret.
 
 [mettre un schema des echange dans un ZKPi]
 
@@ -82,17 +82,17 @@ Aventage et inconveniant :
 --------- -->
 
 ### zk-SNARK
-Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Non-interactif, veut dire que la preuve est validée en un seul échange, succcincte veut dire que le temps de calcul pour le vérifieur doit être rapide. Groth16 est un implantation du protocole sk-Snark et nous proposons ici de présenter le fonctionnement général et justifier les différentes étapes. Nous expliquerons cela sans faire appel à de trop grandes notions théoriques mathématiques, tout en illustrant de lignes de code les exemples les plus importants.
+Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Non-interactif, veut dire que la preuve est validée en un seul échange, succcincte veut dire que le temps de calcul pour le **vérifieur** doit être rapide. Groth16 est un implantation du protocole sk-Snark et nous proposons ici de présenter le fonctionnement général et justifier les différentes étapes. Nous expliquerons cela sans faire appel à de trop grandes notions théoriques mathématiques, tout en illustrant de lignes de code les exemples les plus importants.
 
 Nous donnons en annexe une liste de lecture permettant de rentrer plus facilement dans certains détails. Ce document est fortement inspiré de deux sources.
 
 Notre objectif étant que le protocole soit compréhensible dans cette première lecture.
 
-Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait une polynôme sans divulguer l'équation du polynome. Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ que seul le prouveur connait.
+Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait une polynôme sans divulguer l'équation du polynome. Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ que seul le **prouveur** connait.
 
-La question est la suivante, en tant que prouveur "Comment prouver à une personne que je connais ce polynôme" sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
+La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme" sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
 
-Si j'indique au vérifieur les couples de valeurs : (0, 3) (1, 21), (2, 67) (3, 159), il peut alors confirmer que je connais cette courbe, car il n'y a qu'une seule courbe de degré 3 qui passe par 4 points. Mais il y a de fortes chances qu'il puisse remonter à la courbe source également. Je n'ai pas pu "cacher" la courbe. D'autre part, j'aurais pu inventer ces points de toute pièce...  En gardant le principe de divulgation de certaines coordonnées, nous avons deux challenges à résoudre : indiquer que je connais le polynôme sans en donner les coefficients afin que le vérifieur puisse vérifier qu'une courbe associée existe, masquer ces informations afin que le verifier ne puisse pas remonter au polynôme source tout en garantissant que le masqage ne me permet pas de choisir des chiffres au hasard.
+Si j'indique au **vérifieur** les couples de valeurs : (0, 3) (1, 21), (2, 67) (3, 159), il peut alors confirmer que je connais cette courbe, car il n'y a qu'une seule courbe de degré 3 qui passe par 4 points. Mais il y a de fortes chances qu'il puisse remonter à la courbe source également. Je n'ai pas pu "cacher" la courbe. D'autre part, j'aurais pu inventer ces points de toute pièce...  En gardant le principe de divulgation de certaines coordonnées, nous avons deux challenges à résoudre : indiquer que je connais le polynôme sans en donner les coefficients afin que le **vérifieur** puisse vérifier qu'une courbe associée existe, masquer ces informations afin que le verifier ne puisse pas remonter au polynôme source tout en garantissant que le masqage ne me permet pas de choisir des chiffres au hasard.
 
 Le premier challenge, consiste à transformer l'équation vers un ensemble de polynomes uniques qui possèdent la même solution que le polynme initial. Le polynôme initial est transformé dans un système d'équations qui présente le même ensemble de solutions que le polynôme initial, mais qui rend fortement improbable de remonter au polynôme source.
 
@@ -168,7 +168,7 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
 ```
 
 
-Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au vérifieur. Il correspond aux variables internes et externes du circuit.
+Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au **vérifieur**. Il correspond aux variables internes et externes du circuit.
 `w = [ 1 out x v1 v2 v3 v4 v5]` on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si `x = 5` alors on aura comme vecteur témoins les valeurs suivantes :  `w = [ 1 553 5 25 125 375 125 50]`  
   
 `Lw * Rw = Ow`  
@@ -366,7 +366,7 @@ U:
  [ 42    , 0, -9.   , 0, 0, -1    , -1    , -1   ]
 ]
 ```
-![Courbes U](https://github.com/baptisteParpette/ZKP-research/blob/0d23c200e4dcbaa024fc2729017e10963d43c41a/U.png)
+![Courbes U](./U.png)
 $Uw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
 
 ```
@@ -463,7 +463,7 @@ $f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+87
 Le tracé de la fonction résultante et du reste permet de visualiser concrêtement le caractère hortogonal de ces fonctions.
 (visual)
 
-Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le prouveur et le vérifieur.
+Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le **prouveur** et le **vérifieur**.
 l'étape suivante consiste à porter nos équations dans un espace plus efficace à calculer. A savoir passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques.
 
 # L'espace de galois
@@ -561,20 +561,20 @@ else:
 Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir une preuve plus succincte. 
 
 # Projection sur les courbes elliptiques
-Dans la preuve précédente, le prouveur montre au vérifieur les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. 
-Le vérifieur peut fabriquer le polynôme t, et vérifier que la division est sans reste. Mais le vérifieur accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un prouveur. 
+Dans la preuve précédente, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. 
+Le **vérifieur** peut fabriquer le polynôme t, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
 
-Pour palier cela, prouveur et verifieur sont mis en relation par un tier de confiance le préparateur(setup) qui va imposer des valeurs de références uniques au deux participants. 
+Pour palier cela, **prouveur** et verifieur sont mis en relation par un tier de confiance le **confident** *Trusted setup* en anglais, qui va imposer des valeurs de références uniques au deux participants. 
 
 Le principe est le suivant. On part de l'équation : 
-Uw * Vw = Ww + HT
+$Uw * Vw = Ww + HT$
 
 Ce sont tous des polynômes, qui peuvent être évalués à n'importe quelle coordonnée à certaines coordonnées. 
 
 Prenons par-exemple Uw = $4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x$
 En choisissant arbitrairement `x = 5`, on peut écire `4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055`
 Une courbe elliptique permet de fournir une valeur représentante qui montre que la solution est connue mais sans qu'on puisse remonter à l'équation source. (C'est une forme de Zkp, mais sans vérification possible).
-$Elliptic(Uw(5)) = 4*Elliptic(5**5) + 3*Elliptic(5**4) + 5*Elliptic(5**3) + 3*Elliptic(5**2) - 4*Elliptic(5) + 0$
+$Ell(Uw(5)) = 4*Ell(5^5) + 3*Ell(5^4) + 5*Ell(5^3) + 3*Ell(5^2)-4*Elli(5)+0$
 
 Les courbes elliptiques fonctionnent ainsi : 
 On part d'un point sur la courbe, appelé G. En fonction des courbes considérés les points initiaux peuvent avoir plusieurs types de coordonnées. G1 : 1 point à 2 dimensions, G2 : 2 points à 2 dimensions, G12 : 12 points à 2 dimensions.
@@ -583,7 +583,7 @@ Par rapport à notre exemple :
 $15055G1 = 4*3125G1 + 3*625G1 + 5*125G1 + 3*25G1 - 4*5G1$
 $15055G1 = 15055G1$
 Le code python suivant implante cette égalité. 
-**Remarque Importante : dans cette exemple, j'ai pris une des courbes précédente, en changeant le dernier coefficient par son négatif pour illustrer la négation**
+**Remarque Importante : dans cette exemple, j'ai pris une des courbes précédentes, en changeant le dernier coefficient par son négatif pour illustrer la fonction `neg`**
 
 ```python
 from py_ecc.bn128 import G1, G2, multiply, add, neg, eq
@@ -604,55 +604,61 @@ c3 = multiply(X3, 5)
 c2 = multiply(X2, 3)
 c1 = multiply(neg(X1), 4)
 
-print("Somme(coefficient) = ", add(add(add(add(c1,c2),c3),c4),c5))
+sommeCoefs = add(add(add(add(c1,c2),c3),c4),c5)
+print("Somme(coefficient) = ", sommeCoefs)
 
-print(multiply(G1, 15055) == add(add(add(add(c1,c2),c3),c4),c5))
+print(multiply(G1, 15055) == sommeCoefs)
 ```
 
-Le point 15055G1 (2708568011129098481813750608442309814741431019776566886222041314305674896534, 12627231381848946543670844035528126888439204587944747555252932693150421290218) une valeur qui représente le polynôme en un point particulier.
-Il est impossible de remonter au polynôme source, et si le préparateur est un tier de confiance, on suppose qu'il a bien calculé la valeur du polynôme en un point particulier, que ni le prouveur, ni le vérifieur ne peuvent contester. 
+Le point résulant `15055G1` 
+```
+(2708568011129098481813750608442309814741431019776566886222041314305674896534, 12627231381848946543670844035528126888439204587944747555252932693150421290218)
+``` 
+représente une valeur du polynôme en un point particulier.
+Il est impossible de remonter au polynôme source, et si le **confident** est un tier de confiance, on suppose qu'il a calculé cette valeur et que ni le **prouveur**, ni le **vérifieur** ne peuvent contester. 
 
 On arrive donc à la preuve succincte :
-Si Uw * Vw = Ww + HT sont tous des polynomes, le prouveur peux en calculer des projections équivalente sur des courbes elliptiques. Si 
+Si `Uw * Vw = Ww + HT` sont tous des polynomes, le **prouveur** peux en calculer des projections équivalente sur des courbes elliptiques. 
 
+Si 
 A = Encode(Uw, tau)  
-B = Enconde(Vw, tau)  
+B = Encode(Vw, tau)  
 C = Encode(Ww + HT, tau)   
 
-Sont bien fabriquées par le préparateur, alors il est facile au vérifieur de controler que A*B = C. 
-Pour être précis, nous devons résoudre deux soucis : 
+Sont fabriqués par le **prouveur**, alors il est facile au **vérifieur** de controler que `A*B = C`. 
+Avant cela, nous devons résoudre deux problèmes : 
 
-1. Envoyer Uw, Vw, Ww au préparateur est une divulgation de connaissances...
-2. La multiplication Uw*Vw n'a aucun sens dans G1 il faut passer par du pairing. 
+1. Envoyer Uw, Vw, Ww au **confident** est une divulgation de connaissances...
+2. La multiplication Uw*Vw n'a aucun sens ni dans G1, ni dans G2 il faut passer par un mécanisme de pairing. 
 
-### Ne pas envoyer Uw au vérifieur
-Dans l'exemple précédent, on peut constater que X0 à X5 sont des valeurs uniquement connues du préparateur, qui choisi aléatoirement la valeur de tau initiale, et c1 à c5 permettent de réaliser le calcul sans en notifier le préparateur. 
+### 1. Ne pas envoyer Uw au **confident**
+Dans l'exemple précédent, on peut constater que X0 à X5 sont des valeurs  connues uniquement du **confident**, qui choisi aléatoirement la valeur de tau initiale, et c1 à c5 permettent de réaliser le calcul sans en notifier le **confident**. 
 
-A, B, C se caculent donc ainsi :   
+A, B, C se calculent ainsi :   
 
-X0 à Xn sont fournis par le préparateur
-T0 à Tn sont connus et également fournis par le préparateur
+$X0...Xn$ sont fournis par le **confident**
+$T0...Tn$ sont calculés et fournis par le **confident**
 
-Le prouveur fini sa preuve en calculant :
-A = u[n]*Xn+u[n-1]*X[n-1]+...+u0X0
-B = 
-C =
+Le **prouveur** fini sa preuve en calculant :
+$A = u[n]*Xn+u[n-1]*X[n-1]+...+u0X0$
+$B = v[n]*Xn+v[n-1]*X[n-1]+...+u0X0$$ 
 
-Avec u[n]..u0 les coefficients du polynome Uw
-Pour HT, le calcul se fait en appliquant H(T)
 
-En résumé le prouveur est capable de calculer A, B et C sans divulguer d'information au préparateur. 
-Le préparateur envoi les coefficient X0 à Xn qui sont les points de courbe aux différentes puissances, à une coordonnée initiale inconnue de tous sauf du préparateur, qui peut être détruite une fois les X calculés.
+Avec $u[n]..u0$ les coefficients du polynome $Uw$
+Pour $HT$, le calcul se fait en appliquant $Hv(Tp)$
 
-Un élément très important est que le coût de calcul est déporté vers le préparateur, qui calcule une fois pour toute les coefficients coûteux X0-Xn.
+En résumé le **prouveur** est capable de calculer A, B sans divulguer d'information au **confident**. 
+Le **confident** envoi les coefficient X0 à Xn qui sont les points de courbe aux différentes puissances, à une coordonnée initiale inconnue de tous sauf du **confident**, qui peut être détruite une fois les X calculés.
 
-Le code suivant distingue le calcul des puissances de tau, réalisé par le préparateur du calcul de la valeur A réalisée par le prouveur.
+Une partie du coût de calcul est déporté vers le **confident**, qui calcule une fois pour toute les coefficients $X0-Xn$.
+
+Le code suivant distingue le calcul des puissances de tau, réalisé par le **confident** du calcul de la valeur A réalisée par le **prouveur**.
 ```python
 import sys;
 from py_ecc.bn128 import G1, multiply, add, curve_order, eq, neg
 import galois
 
-# Travail du préparateur
+# Travail du **confident**
 #GF = galois.GF(curve_order)
 GF = galois.GF(36209)               # BUG: must be higher order than res
 
@@ -666,7 +672,7 @@ X1 = multiply(G1, int(tau))
 X0 = G1
 
 
-# Travail du prouveur
+# Travail du **prouveur**
 # 4x^5 + 3x^4 + 5x^3 + 3x^2 + 4x 
 u5 = multiply(X5, 4)
 u4 = multiply(X4, 3)
@@ -686,16 +692,19 @@ print("Uprouf = ", multiply(G1, res))
 print(eq(multiply(G1, res), (add(add(add(add(add(u0, u1), u2),u3),u4),u5))))
 
 ```
-La valeur U= (1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106). Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
+La valeur $U=(1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106)$. Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
 
-On peut faire pareil pour U, V, W, et HT. Le code suivant finira de montrer tous les calculs.
+On peut faire pareil pour U, V. 
 
 ### La multiplication sur la courbe elliptique
-Le produit A * B ne donne pas de résultat sur la courbe elliptique. Il faut passer par un principe de pairing, ou de mapping (qui n'est pas entièrement clair). Le principe est que la multiplication d'un point par un autre point doit se faire sur deux courbes différentes et fourni un point sur une troisième courbe. Ainsi le mapping se présente ainsi :
+Le produit A * B ne donne pas de résultat sur la courbe elliptique. Il faut passer par un principe de pairing. Le principe est que la multiplication d'un point par un autre point doit se faire sur deux courbes différentes et le résultat est un point sur une troisième courbe. Ainsi le mapping se présente ainsi :
 Si on a 3 points A, B, C sur une courbe bien choisie (bn128), et que A * B = C, alors on peut projeter les points ainsi :
 
-mapping(A_G1, B_G2) == mapping(C_G1, G2) // Le mapping s'effectue sur la courbe G12
-Le code suivant illustre un exemple de mapping sur illustrant que map(5*G1, 6*G2) == map(30*G1, G2). Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification.
+```python
+mapping(B_G2, A_G1) == mapping(G2, C_G1) # Le mapping s'effectue sur la courbe G12, mais le point n'est pas nécessairement accessible.
+```
+
+Le code suivant illustre un exemple d'équivalence de mapping `map(5*G1, 6*G2) == map(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification.
 
 ```python
 from py_ecc.bn128 import multiply, G1, G2, pairing
@@ -707,12 +716,12 @@ C = multiply(G1, 5*6)
 print(pairing(B, A) == pairing(G2, C)) # un bug de librairie python oblige de faire G2 -> G1
 ```
 
-Par rapport à nos équations Uw * Vw = Ww + HT
+Par rapport à nos équations `Uw * Vw = Ww + HT`
 on devrait aboutir au pairing suivant. 
 
-`pairing(Uwp_G1v, Vwp_G2v) = pairing((Ww_G1v+HpTv_G1v), G2)`
+`pairing(Uwp_G1c, Vwp_G2c) = pairing((Wwp_G1c+HpTv_G1c), G2)`
 
-Si cette équation est vérifiée alors le code démontre que le prouveur connait une équation sans en divulguer les coefficients au vérifieur. Les suffixes v et p indiquent d'où proviennent les données
+Si cette équation est vérifiée alors le code démontre que le **prouveur** connait une équation sans en divulguer les coefficients au **vérifieur**. Les suffixes v et p indiquent d'où proviennent les données
 
 Le code suivant cacule la preuve de bout en bout. 
 
@@ -740,7 +749,7 @@ if (h_rem != 0):
     sys.exit()
 print("Les équations sont bonnes")
 
-# La partie du vérifieur. Il prépare, X sur G1 et X sur G2 et T sur G2
+# La partie du **vérifieur**. Il prépare, X sur G1 et X sur G2 et T sur G2
 tau = GF(123)
 
 
@@ -765,7 +774,7 @@ TG2_2=multiply(TG2_0, (int(tau**2)))
 TG2_3=multiply(TG2_0, (int(tau**3)))
 TG2_4=multiply(TG2_0, (int(tau**4)))
 
-# La partie du prouveur
+# La partie du **prouveur**
 u5 = multiply(XG2_5, 14774563938491510775016323878048660684770145970280823181996287825938670734546)
 u4 = multiply(XG2_4, 3648040478639879203707734290876212514758060733402672390616367364429301415868)
 u3 = multiply(XG2_3, 10032111316259667810196269299909584415584667016857349074195010252180578894213)
@@ -790,15 +799,15 @@ w1 = multiply(XG2_1, 80256890530077342481570154399276675324677336134858792593560
 w0 = multiply(XG2_0, 3647)
 encodeCoeffWwG2=(add(add(add(add(add(w0, w1), w2),w3),w4),w5))
 
-# Le vérifieurs reçoit 
-print("Le vérifieur reçoit du prouveur")
+# Le **vérifieur**s reçoit 
+print("Le **vérifieur** reçoit du **prouveur**")
 print("Uw=",encodeCoeffUwG2)
 print("Vw=",encodeCoeffVwG1)
 print("Ww=",encodeCoeffWwG2)
 print("Les coefficients du polynôme h=", [0, 18568526036276985146872367540559921700118529133019602468237309884945144207081, 8414813370729321363219173764287796867375260091715497647688420720616921933174, 2760350628837508597472185613429667469500265954941355442233051305751504736345, 1240333762737558929260629658897912255017740649356908612809564903905962484152, 19213013187503363806194067265281385911059119862587407923912868119327654122536])
 
-print("Il recoit également du préparateur, les coefficients de T[tau] pour tous les degrés de h")
-print("Il combine les coefficients de h du prouveur, avec les coeffient de T[tau] du préparateur")
+print("Il recoit également du **confident**, les coefficients de T[tau] pour tous les degrés de h")
+print("Il combine les coefficients de h du **prouveur**, avec les coeffient de T[tau] du **confident**")
 ht4  = multiply(TG2_4, 18568526036276985146872367540559921700118529133019602468237309884945144207081)
 ht3  = multiply(TG2_3, 8414813370729321363219173764287796867375260091715497647688420720616921933174)
 ht2  = multiply(TG2_2, 2760350628837508597472185613429667469500265954941355442233051305751504736345)
@@ -806,7 +815,7 @@ ht1  = multiply(TG2_1, 124033376273755892926062965889791225501774064935690861280
 ht0  = multiply(TG2_0, 19213013187503363806194067265281385911059119862587407923912868119327654122536)
 encodeCoeffHTG2=(add(add(add(add(ht0, ht1), ht2),ht3),ht4))
 
-print("Le vérifieur peut alors réaliser le test suivant")
+print("Le **vérifieur** peut alors réaliser le test suivant")
 print(" Pairing(U(proof surG2), V(proof surG1) == Pairing((W(proof sur G2) + Ecode(coefh sur TG2)), G1) ")
 
 LPairing = pairing(encodeCoeffUwG2, encodeCoeffVwG1)
@@ -909,7 +918,7 @@ article de ref de groth16 : [260.pdf (iacr.org)](https://eprint.iacr.org/2016/26
 
 
 
-Groth16 est spécifiquement un protocole de preuve pour les preuves succinctes non interactives d'argument de connaissance (zk-SNARKs). Il est particulièrement connu pour être très efficace en termes de taille de preuve et de temps de vérification. Dans un zk-SNARK, le prouveur peut générer une preuve que certains éléments d'entrée satisfont une certaine relation sans révéler les éléments eux-mêmes. Cette preuve peut être vérifiée très rapidement, même si la relation est complexe.
+Groth16 est spécifiquement un protocole de preuve pour les preuves succinctes non interactives d'argument de connaissance (zk-SNARKs). Il est particulièrement connu pour être très efficace en termes de taille de preuve et de temps de vérification. Dans un zk-SNARK, le **prouveur** peut générer une preuve que certains éléments d'entrée satisfont une certaine relation sans révéler les éléments eux-mêmes. Cette preuve peut être vérifiée très rapidement, même si la relation est complexe.
 
 Le zk-SNARK Groth16 est largement utilisé car il permet de créer des preuves très petites qui peuvent être vérifiées en un temps constant, indépendamment de la complexité de l'affirmation. C'est essentiel pour les applications blockchain où la bande passante et le temps de calcul sont des ressources précieuses.
 
@@ -1197,7 +1206,7 @@ Site de vulgarisation des maths pour les programmeur crypto
   - Très bon article sur le principe de y^2 = X^3 + 3 (mod 27)
     - Base des zkp : x + y = 5, je peux prouver que je connais deux chiffres x et y solution, sans les donner.
     -      Je peux donner : GX, et GY.
-    -        Grace aux courbes elliptiques le vérifieur peut faire
+    -        Grace aux courbes elliptiques le **vérifieur** peut faire
     -                GX + GY = 5G
     - ==> On suppose qu'un attaquant qui connait GX, ne peux pas revenir à X. C'est le principe des algorithmes discrets
     - ==> Si un attaqueur imagine x et y, il peut par contre vérifier que ce sont les bonnes valeur sur les points de la courbe elliptique
