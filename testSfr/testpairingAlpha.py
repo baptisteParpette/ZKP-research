@@ -23,7 +23,7 @@ somme = pairing(betaG2, alphaG1)
 
 print("-->", pairing(Bprime, Aprime))
 
-print("--->", somme + pairing(G2, CG1))
+print("--->", (int)((somme * pairing(G2, CG1)).coeffs[0])%curve_order)
 
 #print("-->", Cpairing + somme)
 #print("-->", pairingC + somme)
