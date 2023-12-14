@@ -536,9 +536,9 @@ witness = [1, 553, 5, 25, 125, 375, 125, 50]
 witness = np.array(witness) % p
 witness = GF(witness)
 
-U_polys = calculPolyLagrangeGF(L);
-V_polys = calculPolyLagrangeGF(R);
-W_polys = calculPolyLagrangeGF(O);
+U_polys = calculPolyLagrangeGF(L)
+V_polys = calculPolyLagrangeGF(R)
+W_polys = calculPolyLagrangeGF(O)
 
 Uw = galois.Poly(np.matmul(U_polys, witness))
 Vw = galois.Poly(np.matmul(V_polys, witness))
