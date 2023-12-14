@@ -3,6 +3,33 @@ import numpy as np
 import galois
 from py_ecc.bn128 import curve_order, multiply, G1, G2, add
 
+def calculA(alphaG1, witness, u, powerTauG1, r, deltaG1):
+    transpose = np.transpose(u)
+    (nbVariables, nbPortes) = transpose.shape
+    print(transpose)
+
+    print("alphaG1", alphaG1)
+    print("witness", witness)
+    print("u", u)
+    print("powerTauG1", powerTauG1)
+    print("r", r)
+    print("deltaG1", deltaG1)
+
+   
+    sommeUwiTG1 = G1
+    for i in range(0, nbVariables):
+
+        for j in range(0, nbPortes):
+            #print(j, i, u[j, i], "T", nbPortes-j-1)
+            print(u[j, i], "->", powerTauG1[nbPortes-j-1])
+            UiTG1 = multiply(powerTauG1[nbPortes-j-1], (int)(u[j, i]))
+        
+        sommeUwiTG1 = add(sommeUwiTG1, multiply(UiTG1, (int)(witness[i])))
+ 
+    return add(add(alphaG1, sommeUwiTG1), multiply(deltaG1, (int)(r)))
+
+
+
 def multCoeffs(decalage, matrice, tau): # alpha*u(tau)|beta*v[tau)|w[tau]
     mtranspose = np.transpose(matrice)
     (nbVariables, nbPortes) = mtranspose.shape
@@ -132,20 +159,29 @@ O = GF(np.array([
 [0,1,0,0,0,0,0,0]
 ]) % p)
 
-#witness = [1, 553, 5, 25, 125, 375, 125, 50]
+witness = [GF(1%p), GF(553%p), GF(5%p), GF(25%p), GF(125%p), GF(375%p), GF(125%p), GF(50%p)]
 #witness = np.array(witness) % p
 #witness = GF(witness)
 
 U = calculPolyLagrangeGF(L);
 V = calculPolyLagrangeGF(R);
 W = calculPolyLagrangeGF(O);
-print(U)
-print(V)
-print(W)
+#print(U)
+#print(V)
+#print(W)
 
-(gamma1G1, gamma2G2) = trustedSetup(U,V,W)
-print(gamma1G1)
-print(gamma2G2)
+#(alphaG1, betaG1, deltaG1, powerTauG1, txiG1, pubG1, privG1)
+#(gamma1G1, gamma2G2) = trustedSetup(U,V,W)
+#print(gamma1G1)
+#print(gamma2G2)
+((alphaG1, betaG1, deltaG1, powerTauG1, txiG1, pubG1, privG1), (betaG2, gammaG2, delaG2, powertauG2)) = trustedSetup(U,V,W)
+
+r = GF(13)
+Aprime = calculA(alphaG1, witness, U, powerTauG1, r, deltaG1) 
+print(Aprime)
+
+s = GF(17)
+
 
 #Uw = galois.Poly(np.matmul(U_polys, witness))
 #Vw = galois.Poly(np.matmul(V_polys, witness))
