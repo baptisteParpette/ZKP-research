@@ -14,8 +14,8 @@ def multCoeffs(decalage, matrice, tau): # alpha*u(tau)|beta*v[tau)|w[tau]
     return res
 
 def calculParams(betas, alphas, ws, gamma, delta):
-    print(betas)
-    print(nbPublicVars)
+    #print(betas)
+    #print(nbPublicVars)
     public = []
     for i in range(0, nbPublicVars):
         #print(i)
@@ -29,7 +29,7 @@ def calculParams(betas, alphas, ws, gamma, delta):
     return(public, private)
 
 def trustedSetup(U, V, W):
-    (nbVariables, nbPortes) = U.shape # U, V et W ont la même forme  3x^(nbPortes)+3x^(nbPortes-1)...
+    (nbPortes, nbVariables) = U.shape # U, V et W ont la même forme  3x^(nbPortes)+3x^(nbPortes-1)...
 
     tau = GF(75)  # Variable aléatoire. x dans papier groth16
 
@@ -46,11 +46,11 @@ def trustedSetup(U, V, W):
     #print((int)(tau**3))
 
     tXi = []
-    t = generateT(nbVariables, GF) # x^6 + 80x^5 + 74x^4 + 73x^3 + 8x^2 + 54x + 13 (x-1)(x-2)...(x-n)
-    for i in range(0, nbPortes):
+    t = generateT(nbPortes, GF) # x^6 + 80x^5 + 74x^4 + 73x^3 + 8x^2 + 54x + 13 (x-1)(x-2)...(x-n)
+    for i in range(0, nbPortes-1):
       tXi.append(puissancesXi[i]*t(tau)/delta)
 
-    print(U)
+    #print(U)
     betaUiX = multCoeffs(beta, U, tau)
     alphaViX = multCoeffs(alpha, V, tau)
     WiW = multCoeffs(1, W, tau)
@@ -69,7 +69,7 @@ def trustedSetup(U, V, W):
        multiply(G2, int(beta)),
        multiply(G2, int(gamma)),
        multiply(G2, int(delta)), 
-      [multiply(G1,int(elem)) for elem in puissancesXi]
+      [multiply(G2,int(elem)) for elem in puissancesXi]
       )
     )
 
@@ -139,9 +139,9 @@ O = GF(np.array([
 U = calculPolyLagrangeGF(L);
 V = calculPolyLagrangeGF(R);
 W = calculPolyLagrangeGF(O);
-#print(U)
-#print(V)
-#print(W)
+print(U)
+print(V)
+print(W)
 
 (gamma1G1, gamma2G2) = trustedSetup(U,V,W)
 print(gamma1G1)
