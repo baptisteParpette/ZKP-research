@@ -462,6 +462,7 @@ def verifier(pi,a,sigma_2,sigma_1,l):
     G1_alpha, G1_beta, G1_delta, G1_x_power_i,G1_x_power_i_t_x,G1_public_polys,G1_private_polys = sigma_1
     
     lhs = pairing(B_2, A_1) #A_1*B_2
+    print("lhs", lhs)
 
     D=None
     for i in range(0, l+1):

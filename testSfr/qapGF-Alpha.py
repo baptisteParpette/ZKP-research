@@ -185,11 +185,13 @@ W = calculPolyLagrangeGF(O)
 
 r = GF(13)
 AprimeG1 = calculAB(alphaG1, witness, U, powerTauG1, r, deltaG1) 
+print("AprimeG1", AprimeG1)
 
 s = GF(17)
 BprimeG2 = calculAB(betaG2, witness, V, powerTauG2, s, deltaG2)
 BprimeG1 = calculAB(betaG1, witness, V, powerTauG1, s, deltaG1)
-#print(Bprime)
+print("BprimeG1", BprimeG1)
+print("BprimeG2", BprimeG2)
 
 #witness = np.array(witness) % p
 #witness = GF(witness)
@@ -202,11 +204,9 @@ print(t)
 
 h_quo = (Uw * Vw - Ww) // t
 h_rem = (Uw * Vw - Ww) % t
-print(h_rem)
-sys.exit()
 
 CprimeG1 = calculC(witness, privG1, h_quo, txiG1, s, AprimeG1, r, BprimeG1, deltaG1)
-#print(Cprime)
+print("CprimeG1", CprimeG1)
 
 left = pairing(BprimeG2, AprimeG1)
 print(left)
@@ -215,7 +215,7 @@ sommePub = None
 for i in range(0, nbPublicVars):
     sommePub = add(sommePub, multiply(pubG1[i], (int)(witness[i])))
 
-right = pairing(betaG2, alphaG1) + pairing(gammaG2, sommePub) + pairing(deltaG2, CprimeG1)
+right = pairing(betaG2, alphaG1) * pairing(gammaG2, sommePub) * pairing(deltaG2, CprimeG1)
 print(right)
 
 print(right == left)
