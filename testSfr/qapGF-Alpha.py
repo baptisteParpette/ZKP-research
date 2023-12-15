@@ -1,26 +1,25 @@
 import sys
 import numpy as np
 import galois
-from py_ecc.bn128 import curve_order, multiply, G1, G2, add
+from py_ecc.bn128 import curve_order, multiply, G1, G2, add, neg, pairing
 
 def calculC(witness, privG1, h, txiG1, s, alphaG1, r, betaG1, deltaG1):
-   
+  
     htTG1 = None
     for i in range(0, len(h)):
-        #print(i, len(h)-i-1)
         htTG1 = add(htTG1, multiply(txiG1[len(h)-i-1], (int)(h.coeffs[i])))
-    print(htTG1)
 
     privWG1 = None
     for i in range(0, len(privG1)):
         tmp = multiply(privG1[i], (int)(witness[i+nbPublicVars]))
         privWG1 = add(privWG1, tmp)
-   
+
     sA1 = multiply(alphaG1, (int)(s))
     rB1 = multiply(betaG1, (int)(r))
-    rsDeltaG1 = multiply(deltaG1, (int)((-1)*r*s))
 
-    return add(add(add(add(rB1, rsDeltaG1), sA1), htTG1), privWG1)
+    rsDeltaG1 = multiply(deltaG1, (int)(r*s))
+
+    return add(add(add(add(rB1, neg(rsDeltaG1)), sA1), htTG1), privWG1)
 
 
 def calculAB(alphaG1, witness, u, powerTauG1, r, deltaG1):
@@ -133,8 +132,8 @@ def generateT(size, ordre):
         result_poly *= galois.Poly([1, -val], field=ordre)
     return result_poly 
 
-# p = curve_order
-p = 101
+p = curve_order
+#p = 101
 GF = galois.GF(p) 
 nbPublicVars = 2 # [1, out, x, u1, u2...] l = 1 car 1 et out sont publiques
 
@@ -168,13 +167,15 @@ O = GF(np.array([
 [0,1,0,0,0,0,0,0]
 ]) % p)
 
-witness = [GF(1%p), GF(553%p), GF(5%p), GF(25%p), GF(125%p), GF(375%p), GF(125%p), GF(50%p)]
+witness = [1, 553, 5, 25, 125, 375, 125, 50]
+witness = np.array(witness) % p
+witness = GF(witness)
+
+
+#witness = [GF(1%p), GF(553%p), GF(5%p), GF(25%p), GF(125%p), GF(375%p), GF(125%p), GF(50%p)]
 U = calculPolyLagrangeGF(L)
 V = calculPolyLagrangeGF(R)
 W = calculPolyLagrangeGF(O)
-#print(U)
-#print(V)
-#print(W)
 
 #(alphaG1, betaG1, deltaG1, powerTauG1, txiG1, pubG1, privG1)
 #(gamma1G1, gamma2G2) = trustedSetup(U,V,W)
@@ -183,29 +184,42 @@ W = calculPolyLagrangeGF(O)
 ((alphaG1, betaG1, deltaG1, powerTauG1, txiG1, pubG1, privG1), (betaG2, gammaG2, deltaG2, powerTauG2)) = trustedSetup(U,V,W)
 
 r = GF(13)
-Aprime = calculAB(alphaG1, witness, U, powerTauG1, r, deltaG1) 
-#print(Aprime)
+AprimeG1 = calculAB(alphaG1, witness, U, powerTauG1, r, deltaG1) 
 
 s = GF(17)
-Bprime = calculAB(betaG2, witness, V, powerTauG2, s, deltaG2)
+BprimeG2 = calculAB(betaG2, witness, V, powerTauG2, s, deltaG2)
+BprimeG1 = calculAB(betaG1, witness, V, powerTauG1, s, deltaG1)
 #print(Bprime)
 
-witness = np.array(witness) % p
-witness = GF(witness)
-Uw = galois.Poly(np.matmul(U, witness))
-Vw = galois.Poly(np.matmul(V, witness))
-Ww = galois.Poly(np.matmul(W, witness))
+#witness = np.array(witness) % p
+#witness = GF(witness)
+Uw = galois.Poly(np.matmul(U, witness), field=GF)
+Vw = galois.Poly(np.matmul(V, witness), field=GF)
+Ww = galois.Poly(np.matmul(W, witness), field=GF)
 
 t = generateT(len(L), GF)
+print(t)
 
 h_quo = (Uw * Vw - Ww) // t
 h_rem = (Uw * Vw - Ww) % t
+print(h_rem)
+sys.exit()
 
-Cprime = calculC(witness, privG1, h_quo, txiG1, s, alphaG1, r, betaG1, deltaG1)
-print(Cprime)
+CprimeG1 = calculC(witness, privG1, h_quo, txiG1, s, AprimeG1, r, BprimeG1, deltaG1)
+#print(Cprime)
 
+left = pairing(BprimeG2, AprimeG1)
+print(left)
 
-#
+sommePub = None
+for i in range(0, nbPublicVars):
+    sommePub = add(sommePub, multiply(pubG1[i], (int)(witness[i])))
+
+right = pairing(betaG2, alphaG1) + pairing(gammaG2, sommePub) + pairing(deltaG2, CprimeG1)
+print(right)
+
+print(right == left)
+
 #print("Uw = ", Uw, "\n")
 #print("Vw = ", Vw, "\n")
 #print("Ww = ", Ww, "\n")

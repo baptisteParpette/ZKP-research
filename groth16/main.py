@@ -1,3 +1,4 @@
+import sys
 import zktool as zk
 import numpy as np
 import galois
@@ -16,11 +17,12 @@ eq_input=input("Enter an equation (ex: x^3+x+5) : ") #METTRE DES COEFFICIENTS >=
 
 #On definit le corps de Galois
 p=21888242871839275222246405745257275088548364400416034343698204186575808495617
+#p=101
 
 GF=galois.GF(p)
     
-print("=================== GROTH16 IMPLEMENTATION ===================")
-print("Equation: ",eq_input,"\n")
+#print("=================== GROTH16 IMPLEMENTATION ===================")
+#print("Equation: ",eq_input,"\n")
 
 def transformer_equation(enonce):
     lignes = enonce.split('\n')
@@ -28,23 +30,23 @@ def transformer_equation(enonce):
     return lignes_nettoyees
 
 #Les équations va etre automatique determiné avec votre input (Polynome)
-equations = zk.decompose_polynomial(eq_input)
+#equations = zk.decompose_polynomial(eq_input)
 
 # #Voici une méthode rentrer les équations manuellements:
 
 # # Pour tester à la main il faut juste copier coller ses équations dans la variable manual_equation en dessus. Sinon laisser vide (manual_equation="").
-# manual_equation='''
-# v1 = x * x
-# v2 = x * v1
-# v3 = 3 * v2
-# v4 = 5 * v1
-# v5 = 10 * x
-# out = v3 + v4 + v5 + 3
-# '''
+manual_equation='''
+v1 = x * x
+v2 = x * v1
+v3 = 3 * v2
+v4 = 5 * v1
+v5 = 10 * x
+out = v3 + v4 + v5 + 3
+'''
 # manual_equation=""
 
-# if manual_equation:
-#     equations=transformer_equation(manual_equation)
+if manual_equation:
+    equations=transformer_equation(manual_equation)
 
 unique_words = zk.get_unique_words(equations)
 
@@ -340,10 +342,12 @@ def prover(U,V,W,l,sigma_1,sigma_2,a):
     Wa = inner_product_polynomials_with_witness(W_polys, witness)
 
     t_poly=galois.Poly(t,field=GF)
-    # print("t_poly(x) = ",t_poly)
+    print("t_poly(x) = ",t_poly)
 
     h = (Ua * Va - Wa) // t_poly
     h_rem = (Ua * Va - Wa) % t_poly
+    print(h)
+    print(h_rem)
 
     assert h_rem == 0, "h(x) is not a multiple of t(x)"
     # h_75=h(75)
@@ -491,7 +495,9 @@ W=np.array(W)
 # print("V=",V,"\n")
 # print("W=",W,"\n")
 
-a=[1, 135, 5, 25, 125, 130]
+#a=[1, 135, 5, 25, 125, 130] 
+a = [1, 553, 5, 25, 125, 375, 125, 50]
+a=np.array(a) % p
 a=GF(a)
 
 l=1 # car dans a=[1, 135, 5, 25, 125, 130] on donne en public les 2 premiers éléments de a et le reste c'est privée
