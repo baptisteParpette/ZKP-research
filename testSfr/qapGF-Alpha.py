@@ -3,32 +3,41 @@ import numpy as np
 import galois
 from py_ecc.bn128 import curve_order, multiply, G1, G2, add
 
-def calculA(alphaG1, witness, u, powerTauG1, r, deltaG1):
+def calculC(witness, privG1, h, txiG1, s, alphaG1, r, betaG1, deltaG1):
+   
+    htTG1 = None
+    for i in range(0, len(h)):
+        #print(i, len(h)-i-1)
+        htTG1 = add(htTG1, multiply(txiG1[len(h)-i-1], (int)(h.coeffs[i])))
+    print(htTG1)
+
+    privWG1 = None
+    for i in range(0, len(privG1)):
+        tmp = multiply(privG1[i], (int)(witness[i+nbPublicVars]))
+        privWG1 = add(privWG1, tmp)
+   
+    sA1 = multiply(alphaG1, (int)(s))
+    rB1 = multiply(betaG1, (int)(r))
+    rsDeltaG1 = multiply(deltaG1, (int)((-1)*r*s))
+
+    return add(add(add(add(rB1, rsDeltaG1), sA1), htTG1), privWG1)
+
+
+def calculAB(alphaG1, witness, u, powerTauG1, r, deltaG1):
     transpose = np.transpose(u)
     (nbVariables, nbPortes) = transpose.shape
-    print(transpose)
 
-    print("alphaG1", alphaG1)
-    print("witness", witness)
-    print("u", u)
-    print("powerTauG1", powerTauG1)
-    print("r", r)
-    print("deltaG1", deltaG1)
-
-   
-    sommeUwiTG1 = G1
+    sommeUwiTG1 = None
     for i in range(0, nbVariables):
-
+        UiTG1 = None
         for j in range(0, nbPortes):
             #print(j, i, u[j, i], "T", nbPortes-j-1)
-            print(u[j, i], "->", powerTauG1[nbPortes-j-1])
-            UiTG1 = multiply(powerTauG1[nbPortes-j-1], (int)(u[j, i]))
-        
+            #print(u[j, i], "->", powerTauG1[nbPortes-j-1])
+            UiTG1 = add(UiTG1, multiply(powerTauG1[nbPortes-j-1], (int)(u[j, i])))
+            
         sommeUwiTG1 = add(sommeUwiTG1, multiply(UiTG1, (int)(witness[i])))
  
     return add(add(alphaG1, sommeUwiTG1), multiply(deltaG1, (int)(r)))
-
-
 
 def multCoeffs(decalage, matrice, tau): # alpha*u(tau)|beta*v[tau)|w[tau]
     mtranspose = np.transpose(matrice)
@@ -160,12 +169,9 @@ O = GF(np.array([
 ]) % p)
 
 witness = [GF(1%p), GF(553%p), GF(5%p), GF(25%p), GF(125%p), GF(375%p), GF(125%p), GF(50%p)]
-#witness = np.array(witness) % p
-#witness = GF(witness)
-
-U = calculPolyLagrangeGF(L);
-V = calculPolyLagrangeGF(R);
-W = calculPolyLagrangeGF(O);
+U = calculPolyLagrangeGF(L)
+V = calculPolyLagrangeGF(R)
+W = calculPolyLagrangeGF(O)
 #print(U)
 #print(V)
 #print(W)
@@ -174,23 +180,31 @@ W = calculPolyLagrangeGF(O);
 #(gamma1G1, gamma2G2) = trustedSetup(U,V,W)
 #print(gamma1G1)
 #print(gamma2G2)
-((alphaG1, betaG1, deltaG1, powerTauG1, txiG1, pubG1, privG1), (betaG2, gammaG2, delaG2, powertauG2)) = trustedSetup(U,V,W)
+((alphaG1, betaG1, deltaG1, powerTauG1, txiG1, pubG1, privG1), (betaG2, gammaG2, deltaG2, powerTauG2)) = trustedSetup(U,V,W)
 
 r = GF(13)
-Aprime = calculA(alphaG1, witness, U, powerTauG1, r, deltaG1) 
-print(Aprime)
+Aprime = calculAB(alphaG1, witness, U, powerTauG1, r, deltaG1) 
+#print(Aprime)
 
 s = GF(17)
+Bprime = calculAB(betaG2, witness, V, powerTauG2, s, deltaG2)
+#print(Bprime)
+
+witness = np.array(witness) % p
+witness = GF(witness)
+Uw = galois.Poly(np.matmul(U, witness))
+Vw = galois.Poly(np.matmul(V, witness))
+Ww = galois.Poly(np.matmul(W, witness))
+
+t = generateT(len(L), GF)
+
+h_quo = (Uw * Vw - Ww) // t
+h_rem = (Uw * Vw - Ww) % t
+
+Cprime = calculC(witness, privG1, h_quo, txiG1, s, alphaG1, r, betaG1, deltaG1)
+print(Cprime)
 
 
-#Uw = galois.Poly(np.matmul(U_polys, witness))
-#Vw = galois.Poly(np.matmul(V_polys, witness))
-#Ww = galois.Poly(np.matmul(W_polys, witness))
-#
-#t = generateT(len(L), GF)
-#
-#h_quo = (Uw * Vw - Ww) // t
-#h_rem = (Uw * Vw - Ww) % t
 #
 #print("Uw = ", Uw, "\n")
 #print("Vw = ", Vw, "\n")
