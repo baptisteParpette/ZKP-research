@@ -1,0 +1,4 @@
+numpy
+galois
+py_ecc
+
