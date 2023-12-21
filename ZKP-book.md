@@ -1,98 +1,75 @@
-# Preuves à divulgation nulle de connaissance (ZKP)
 
-Les preuves à divulgation nulle de connaissances (Zero Knowledge Proofs) couvrent un concept spécifique dans le domaine de la cryptographie. Elles permettent à une partie ; le ****prouveur**** ; de montrer à une autre partie ; le ****vérifieur**** ; qu'une **affirmation** est vraie, sans révéler d'information supplémentaire ; elle reposent également sur un **tiers de confiance** qui défini l'espace de travail de la preuve.
+# Preuves à Divulgation Nulle de Connaissance (ZKP) : Un Outil Cryptographique Clé
+
+Les Preuves à Divulgation Nulle de Connaissance, souvent abrégées en ZKP, représentent une avancée majeure dans le monde de la cryptographie, la science de la protection des informations. Conçues dans les années 1980 par les scientifiques Shafi Goldwasser, Silvio Micali et Charles Rackoff, les ZKP constituent une idée fascinante qui a révolutionné la manière dont les informations sécurisées sont partagées. Imaginez un jeu de devinettes où vous devez convaincre quelqu'un que vous connaissez un secret, mais sans jamais révéler le secret lui-même. C'est exactement ce que permettent les ZKP.
+
+Dans ce jeu, vous êtes le **prouveur**, celui qui détient une information secrète, et vous cherchez à convaincre le **vérifieur**, une autre personne, de la véracité de cette information. La particularité réside dans le fait que vous réalisez cette prouesse sans jamais divulguer aucun détail sur le secret. Cela revient à prouver que vous connaissez la réponse à une énigme sans jamais la révéler.
+
+Les ZKP fonctionnent sur la base d'un **tiers de confiance**, sorte d'arbitre neutre qui établit les règles du jeu. Ce tiers de confiance ne favorise aucun parti, mais fournit un cadre équitable et sûr pour la preuve. Ainsi, les ZKP permettent de confirmer des affirmations tout en préservant la confidentialité et la sécurité des informations.
+
+En somme, les ZKP sont une méthode ingénieuse pour démontrer la véracité d'une affirmation sans en révéler les raisons. Devenus un élément crucial dans le domaine de la sécurité informatique, les ZKP trouvent des applications variées, allant de la protection de la vie privée en ligne à la sécurisation des transactions financières.
 
 ### Exemples simples
 
-Exemple 1 (Où est Charlie ?)
+ Exemple 1 (Où est Charlie ?)
 ---------
-Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le **prouveur** est celui qui indique où est le personnage, le **vérifieur** peut voir sur le dessin que Charlie est au bon endroit indiqué. Le tiers de confiance peut être vu comme une personne qui garantie au vérifier que Charlie est bien présent quelque part sur l'image ou que l'image n'a pas été remplacée.
+Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le **prouveur** est celui qui indique où est le personnage, le **vérifieur** peut voir sur le dessin que Charlie est au bon endroit indiqué. Le tiers de confiance peut être vu comme une personne qui garantit au vérifieur que Charlie est bien présent quelque part sur l'image ou que l'image n'a pas été remplacée.
 
-Dans une approche ZKP le **prouveur** peut montrer au **vérifieur** qu'il sait où se trouve Charlie sans divulguer sa position.
+Dans une approche ZKP, le **prouveur** peut montrer au **vérifieur** qu'il sait où se trouve Charlie sans divulguer sa position.
 
-Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. C'est à dire au moins 3 fois la dimension de l'image sur ses deux dimensions. Dans ce cache, un trou est fait de la dimension du personnage de Charlie et positionne ce trou sur "l'image de Charlie". Le cache recouvre largement l'image et ne divulgue que Charlie, mais pas sa position dans l'image. Le cache couvrant les coordonnées de l'image. Le **vérifieur** voit charly à travers le trou, mais ne sait pas à quelles coordonnées dans l'image il se trouve. En repartant le **vérifieur** sais que le **prouveur** à trouvé Charlie, mais le **vérifieur** ne sais pas où il se trouve. Il y a eu preuve de l'affirmation sans divulgation de la coordonnée.
+Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. Dans ce cache, un petit trou est découpé, juste assez grand pour montrer Charlie, mais rien d'autre. Ce trou est soigneusement positionné de sorte qu'il révèle uniquement le personnage de Charlie dans l'image. Ce faisant, le cache cache efficacement tout le reste de l'image, y compris les coordonnées exactes où Charlie se trouve.
+
+Le vérifieur, alors, est en mesure de voir Charlie à travers ce trou, confirmant ainsi que Charlie est bien présent dans l'image. Cependant, et c'est là que réside l'astuce, le vérifieur ne peut pas déterminer l'emplacement exact de Charlie dans l'image. Il voit bien Charlie, mais les coordonnées précises restent un mystère.
+
+Ainsi, lorsque le vérifieur quitte la scène, il est convaincu que le prouveur a effectivement localisé Charlie, mais sans avoir lui-même accès à cette information spécifique. La position de Charlie reste secrète, et c'est là que réside la beauté des ZKP : prouver une affirmation (Charlie est trouvé) sans divulguer les informations critiques (où exactement Charlie se trouve dans l'image).
 
 Exemple 2 (Résolution de sudoku)
 ---------
-Le jeu de sudoku consiste à répartir des chiffres de 1 à 9 dans une grille 9x9 formée de 9 pavés de 3x3. Pour être résolue la grille doit comporter tous les chiffres uniques de 1 à 9 sur toutes les lignes, toutes les colonnes et tous les pavés de 9 cases. Pour contraindre le système, la grille est initialement peuplée de valeurs qui par déduction amènent à une solution unique. Le jeu consiste à répartir les 27 séries de 9 valeurs de toutes les zones de la grille (lignes, colonnes, pavés). Dans la solution de base, le **prouveur** est celui qui montre que tous les chiffres sont présents et répartis dans la grille.
+Le sudoku est un puzzle captivant qui met au défi les joueurs de remplir une grille de 9x9 cases avec des chiffres allant de 1 à 9. Cette grille est subdivisée en 9 blocs carrés, chacun mesurant 3x3 cases. Pour résoudre le puzzle, chaque ligne, chaque colonne, et chaque bloc carré de 9 cases doivent contenir tous les chiffres de 1 à 9, sans répétitions.
+
+Au début du jeu, certaines cases de la grille sont déjà remplies avec des chiffres. Ces indices initiaux sont placés de manière stratégique pour guider le joueur vers une solution unique. L'objectif du joueur est donc de compléter les 27 groupes de la grille – 9 lignes, 9 colonnes, et 9 blocs – en veillant à ce que chaque groupe contienne tous les chiffres de 1 à 9, une seule fois.
+
+Dans la version classique du jeu, le rôle du **prouveur** revient au joueur qui démontre que la grille a été correctement remplie, en s'assurant que chaque chiffre est bien placé selon les règles.
 
 Dans une approche ZKP, le **prouveur** peut montrer au **vérifieur** qu'il connait la solution sans divulguer la répartition des chiffres.
 
-Pour cela, il ne marque pas la solution directement sur la grille, mais sur des étiquettes mobiles qu'il colle sur les cases vides de la grilles. Chaque case contient une étique avec la valeur solution. Ces étiquettes sont retournée afin que le **vérifieur** ne puisse pas voir les valeurs solution. Pour que la preuve ZKP fonctionne, le **vérifieur** pose 18  questions. Chaque question consiste à demander l'ensemble des étiquettes constituant une des zone de répartition (ligne, colonne ou pavé). Le **prouveur** prend les étiquettes les mélange caché et dévoile au **vérifieur** que les 9 chiffres sont bien présents de manière unique. Puis il replace les étiquettes face cachées sur leur emplacement. En répétant ce processus 18 fois, le vérifier est convaincu à 100% que le prouver connait bien la solution à la grille, mais le vérifier ne connait pas la position des différentes valeurs dans la grille.
+Pour appliquer la méthode des Preuves à Divulgation Nulle de Connaissance (ZKP) au sudoku, le prouveur adopte une approche unique. Au lieu d'inscrire directement les solutions sur la grille, il utilise des étiquettes amovibles qu'il place sur les cases vides. Chaque étiquette porte la valeur correcte pour sa case respective, mais ces étiquettes sont disposées face cachée, de sorte que le vérifieur ne peut pas voir les valeurs.
 
-Cette preuve est dite interactive, car elle peut se terminer avant la fin des 18 intérations. En effet, au fur et à mesure des itérations le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
+Pour mener à bien la démonstration ZKP, le vérifieur interroge le prouveur à travers un ensemble de 18 questions spécifiques. Chaque question cible un ensemble d'étiquettes correspondant à une zone particulière de la grille de sudoku - soit une ligne, une colonne, ou un bloc de 3x3. En réponse, le prouveur recueille les étiquettes de la zone concernée, les mélange à l'abri des regards du vérifieur, puis révèle que chaque chiffre de 1 à 9 est présent une seule fois parmi ces étiquettes, sans toutefois divulguer leur arrangement spécifique. Après cette démonstration, il replace les étiquettes face cachée à leurs emplacements originaux.
 
-Ces deux exemples donnent une intuition sur le principe de fonctionnement des approches par ZKP. Dans le cadre général il s'agit d'arriver à montrer qu'on connait la réponse à une question en révélant des valeurs qui n'ont pas de correlation directe avec la solution. "Charlie est là, mais je n'ai pas sa coordonnée", "les chiffres sont là mais je n'ai pas vu l'organisation".
+En répétant ce processus pour les 18 questions couvrant ainsi toutes les lignes, colonnes et blocs de la grille, le vérifieur devient progressivement convaincu que le prouveur connaît effectivement la solution complète de la grille de sudoku. Cependant, malgré cette conviction, le vérifieur demeure dans l'ignorance quant à la disposition précise des valeurs sur la grille. Ainsi, la méthode ZKP est mise en œuvre avec succès : le prouveur démontre sa connaissance de la solution sans divulguer les détails spécifiques de cette dernière.
 
-Il existe de nombreux exemples plus ou moins intuitifs sur les méchanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynomes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire.
+Cette preuve est dite interactive, car elle peut se terminer avant la fin des 18 itérations. En effet, au fur et à mesure des itérations, le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
 
-<!-- Par exemple, si vous savez qu'il s'agit d'un ensemble de 10 courbes, et que le **prouveur** annonce qu'il pense que toutes les courbes de cet ensemble passent par des points de coordonnées (12, 100), (20, 230), (32, 430), (1233,2301), (124, 131389), (1212,101281818) et (13123, 12239191281), il y a de fortes chance qu'il connaisse l'ensemble. Le mécanisme  zkSNARK consiste à construire cet ensemble de courbes afin de permettre à un **prouveur** qu'il connait une solution type que le verifier peut facilement controler.
-Pour ceci le vérifier connait une courbe de référence publique (x-1)(x-2)(x-3).... Cette courbe coupe l'axe des x aux coordonnées (0, 1), (0, 2) (0, 3) (0, 4). D'autre part le vérifier possède un certain nombre de coefficient de courbes qui sont indirectement liés au système d'équation initial. Le prouver fourni un vecteur solution de valeurs [x1,...xn] que le vérifier peu appliquer à son système de courbe. Le vérifier peut alors controler que sa courbe publique est un diviseur exact de la courbe déduite à partir du vecteur solution appliqué au système de coefficients. -->
+Ces deux exemples donnent une intuition sur le principe de fonctionnement des approches par ZKP. Dans le cadre général, il s'agit d'arriver à montrer qu'on connait la réponse à une question en révélant des valeurs qui n'ont pas de corrélation directe avec la solution. "Charlie est là, mais je n'ai pas sa coordonnée", "les chiffres sont là, mais je n'ai pas vu l'organisation".
 
-<!-- Le prouver indique qu'il connait une solution [x1,...xn], sans que le **vérifieur** puisse remonter aux courbes initiales. -->
+Il existe de nombreux exemples plus ou moins intuitifs sur les mécanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynômes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire.
 
+### Overview
+Dans le vaste domaine des Preuves à Divulgation Nulle de Connaissance (ZKP), certaines avancées technologiques clés ont émergé pour répondre à des besoins spécifiques de performance et de transparence. Parmi ces innovations, les concepts de ZKP succincts, non-interactifs et transparents se distinguent par leurs caractéristiques uniques et leur applicabilité dans divers contextes.
 
-<!-- Voici des exemples simplifier :
+Les **ZKP succincts** révolutionnent l'efficacité en générant des preuves de taille extrêmement réduite. Cette caractéristique est cruciale pour les applications nécessitant un traitement et une vérification rapides, même pour des affirmations complexes. L'atout principal de ces ZKP est leur capacité à réduire considérablement l'espace de stockage et le temps de traitement, rendant ainsi possible leur utilisation dans des systèmes à grande échelle ou des environnements avec des ressources limitées.
 
-- Caverne l'ali baba
+D'autre part, les **ZKP non-interactifs** simplifient le processus de vérification. Contrairement aux ZKP interactifs, où une série de communications entre le prouveur et le vérifieur est nécessaire, les ZKP non-interactifs permettent au prouveur de produire une preuve unique que n'importe quel vérifieur peut ensuite confirmer sans interaction supplémentaire. Cette propriété les rend particulièrement adaptés pour les applications décentralisées, telles que les blockchains et les cryptomonnaies, où l'interaction directe n'est pas toujours possible ou souhaitable.
 
-- Le problème du daltonien et des boulles de couleur -->
-
-<!-- ### Applications //SFR pour moi c'est inutile pour l'instant
-
-Les ZKP ont de nombreuses applications, notamment :
-
-- **Authentification** : Prouver que vous connaissez un mot de passe sans le révéler.
-- **Transactions privées** : Effectuer des transactions sur une blockchain sans révéler les montants ou les participants.
-- **Vote électronique** : Voter sans révéler son choix, tout en prouvant que le vote a été effectué correctement.
-
-### Définition d'un ZKP:
-
-Pour quoi preuve soit considerer comme un ZKP, elle doit repondre à 3 propriété :
-
-- consistance (*completeness*) : Si la proposition (statement) est vrai et que le verifieur est honnete, alors il sera forcement convaincu par un honnete prouver.
-
-- robustesse (*soundness*) : Si la proposition est fausse et que le verifieur est honete, alors il sera impossible de le convaincre de la verasité de la proposition.
-
-- aucun apport d'information (*zero knowledge*) : Si la propositon est vrai, il sera impossible au verifier de retrouver l'information secret.
-
-### Comment cela fonctionne-t-il?
-
-Sans entrer dans les détails techniques, le fonctionnement des ZKP repose sur des problèmes mathématiques complexes qui sont difficiles à résoudre sans connaître certaines informations secrètes. Le **prouveur** utilise ces informations secrètes pour générer une preuve, et le vérifieur peut alors vérifier cette preuve sans jamais connaître les informations secrètes. Le verifieur à la possibilité de lancer des challenges au prouver afin de se convaincre qu'il connait pas le secret.
-
-[mettre un schema des echange dans un ZKPi]
-
-## Les different type de ZKP
-
-Etant donné que les regles pour definir un ZKP sont simples, il y a ensuite des categories qui se sont former avec d'autre propriete afin d'optenir des types de preuve plus adapter aux context dans lequel on les utilise.
-
-### Interactive vs Non-Interactive
-
-Nous avons vu dans l'introduction des ZKP que le verifier et le prouver commiquait ensemble et qu'il pouvait y avoir plusieurs allers retours possible afin d'effectué des challenge, ceci represente les ZKP interactive ou le verifier peux demander un complement de preuve sous forme de challenge. En opposition il existe des ZKP non interactif, dans ce cas de figure c'est au prouver de former une proposition suffisament évolué pour que n'importe quelle verifier honnet puisse etre convaincu directement.
-
-Les iZKP sont possible grace à l'heuristique de Fiat-Shamir (qui se base sur la resistance de collisison des fonction de hashage) En réalité ce sont ses dernière qui sont le plus developper et mise en application, car les peuves interactive sont plus scalable
-
-Aventage et inconveniant :
-
-|        | Avantage                                                                                                                                             | Inconveniant                                                                                                                                                              |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ZKP-I  | Plus simples à comprendre et à mettre en œuvre<br/>Souplesse et Adaptabilité                                                                         | Besoins de communication (ce qui peut être inefficace en termes de temps et de ressources)<br/>Non transférables                                                          |
-| ZKP-NI | Pas besoin d'interaction <br/>Transférabilité : La preuve peut être vérifiée par n'importe qui<br/>Meilleure efficacité pour les systèmes distribués | Complexité<br/>Taille de la preuve : Les preuves non interactives peuvent être plus grandes en taille, ce qui peut être problématique pour le stockage ou la transmission |
-
---------- -->
+Enfin, les **ZKP transparents** abordent les préoccupations en matière de confiance et de sécurité. Ils éliminent le besoin d'une configuration secrète, un processus souvent nécessaire dans les systèmes de preuves classiques. En rendant le processus de génération de preuves entièrement transparent, ces ZKP renforcent la confiance dans leur validité et réduisent le risque de manipulation ou d'erreur.
 
 ### zk-SNARK
-Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Non-interactif, veut dire que la preuve est validée en un seul échange, succcincte veut dire que le temps de calcul pour le **vérifieur** doit être rapide. Groth16 est un implantation du protocole sk-Snark et nous proposons ici de présenter le fonctionnement général et justifier les différentes étapes. Nous expliquerons cela sans faire appel à de trop grandes notions théoriques mathématiques, tout en illustrant de lignes de code les exemples les plus importants.
+Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Pour rappel, non-interactif, veut dire que la preuve est validée en un seul échange, succcincte veut dire que le temps de calcul pour le **vérifieur** doit être rapide. Groth16 est un implantation du protocole zk-SNARK et nous proposons ici de présenter le fonctionnement général et justifier les différentes étapes. Nous expliquerons cela sans faire appel à de trop grandes notions théoriques mathématiques, tout en illustrant de lignes de code les exemples les plus importants.
 
 Nous donnons en annexe une liste de lecture permettant de rentrer plus facilement dans certains détails. Ce document est fortement inspiré de deux sources.
 
 Notre objectif étant que le protocole soit compréhensible dans cette première lecture.
 
-Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait une polynôme sans divulguer l'équation du polynome. Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ que seul le **prouveur** connait.
+Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait un polynôme sans divulguer l'équation du polynome. Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ que seul le **prouveur** connait.
 
-La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme" sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
+La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme ? " sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
 
-Si j'indique au **vérifieur** les couples de valeurs : (0, 3) (1, 21), (2, 67) (3, 159), il peut alors confirmer que je connais cette courbe, car il n'y a qu'une seule courbe de degré 3 qui passe par 4 points. Mais il y a de fortes chances qu'il puisse remonter à la courbe source également. Je n'ai pas pu "cacher" la courbe. D'autre part, j'aurais pu inventer ces points de toute pièce...  En gardant le principe de divulgation de certaines coordonnées, nous avons deux challenges à résoudre : indiquer que je connais le polynôme sans en donner les coefficients afin que le **vérifieur** puisse vérifier qu'une courbe associée existe, masquer ces informations afin que le verifier ne puisse pas remonter au polynôme source tout en garantissant que le masqage ne me permet pas de choisir des chiffres au hasard.
+*[PHOTO POLYNOME AVEC POINT]*
+
+Lorsque je présente au **vérifieur** des paires de valeurs telles que (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le vérifieur pourrait potentiellement retrouver la courbe originale à partir de ces informations, ce qui compromettrait l'objectif de cacher la courbe. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
+
+Nous sommes donc confrontés à deux défis majeurs en maintenant la méthode de révélation de certaines coordonnées : premièrement, démontrer ma connaissance du polynôme sans pour autant divulguer ses coefficients spécifiques, permettant ainsi au **vérifieur** de confirmer l'existence d'une courbe correspondante. Deuxièmement, il est crucial de dissimuler ces informations de manière à empêcher le vérifieur de remonter au polynôme d'origine, tout en garantissant que le masquage ne me donne pas la latitude de sélectionner des valeurs aléatoires.
 
 Le premier challenge, consiste à transformer l'équation vers un ensemble de polynomes uniques qui possèdent la même solution que le polynme initial. Le polynôme initial est transformé dans un système d'équations qui présente le même ensemble de solutions que le polynôme initial, mais qui rend fortement improbable de remonter au polynôme source.
 
@@ -102,12 +79,11 @@ Cette transformation se fait en trois étapes :
   3. Extension du système de courbes quadratiques pour équilibrer les équations
 
 # Circuit R1CS
-Le circuit R1CS permet de réexprimer le polynôme initial dans un ensemble portes de calcul ne contenant que des multiplications. Les additions se font en regroupant les signaux avant d'arriver dans les portes. 
-Le schéma suivant illustre une porte, avec une entrée gauche, une entrée droite, une multiplication et son signal de sortie. 
+Le Circuit R1CS, ou Rank 1 Constraint System, est une structure clé en cryptographie, utilisée pour transformer des équations polynomiales complexes en une série d'opérations élémentaires axées sur la multiplication, avec deux entrées et une sortie:
 <img src="./porte.png" width="100">
+Cette transformation est essentielle pour simplifier le traitement des équations dans des contextes tels que les preuves à divulgation nulle de connaissance.
 
-$f(x) = 3x^3+5x^2+10x+3$
-
+Considérons un exemple concret avec notre polynôme $f(x) = 3x^3 + 5x^2 + 10x + 3$. Sa conversion en circuit R1CS se décompose en étapes successives, où chaque opération polynomiale est transformée en une série de multiplications:
 ```
 v1 = x * x   (1)  
 v2 = x * v1  (2)  
@@ -119,13 +95,11 @@ out = (v3 + v4 + v5 + 3) * 1 (6bis)
 ```
 Le schéma suivant présente le circuit équivalent sous forme de portes. 
 <img src="./circuit.png">
-La création du circuit suit des règles standard de création et il existe des langages comme circom qui le fabrique automatiquement à partir de l'expression du polynôme. 
 
-Cette série d'opération va être représentée par une matrice contenant les coefficients de chaque opération.
-Les colonnes de la matrice représentent les variables. Les lignes représentent la série d'opérations à appliquer.
-Chaque opération unitaire est convertie par une ligne dans la matrice.
 
-Les colonnes de la matrice sont donc `[ 1 out x v1 v2 v3 v4 v5 ]`.  
+Dans le circuit R1CS, chaque étape est représentée par une porte logique, intégrant des entrées et une sortie basées sur la multiplication. Pour s'aligner avec les contraintes du circuit, les additions sont traitées en regroupant les signaux en amont des portes. Ainsi, la dernière étape où `out` est calculé devient une multiplication par 1 pour respecter la forme standard du R1CS : $O = L * R$.
+
+Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice sont donc `[ 1 out x v1 v2 v3 v4 v5 ]`.  
 Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : `L * R = O`
 
 ```
@@ -167,9 +141,10 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
 ]  
 ```
 
+Le cœur de ce système réside dans le vecteur témoin, qui est une représentation concrète des valeurs calculées à chaque étape. Pour une valeur donnée de `x`, par exemple `x = 5`, le vecteur témoin est calculé et contient toutes les valeurs intermédiaires et finales du circuit. Ce vecteur est crucial pour la vérification, car il démontre au **vérifieur** que le prouveur connaît une solution sans révéler explicitement les détails de cette solution.
 
-Le vecteur témoin est un vecteur solution de l'équation qui sera transmis au **vérifieur**. Il correspond aux variables internes et externes du circuit.
 `w = [ 1 out x v1 v2 v3 v4 v5]` on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si `x = 5` alors on aura comme vecteur témoins les valeurs suivantes :  `w = [ 1 553 5 25 125 375 125 50]`  
+  
   
 `Lw * Rw = Ow`  
   
@@ -938,7 +913,7 @@ Le zk-SNARK Groth16 est largement utilisé car il permet de créer des preuves t
 
 - [Zokrates](https://github.com/Zokrates/ZoKrates): The code is written in a language resembling Python.
 - [Circom](https://github.com/iden3/circom): It uses its own domain-specific language.
-- [Pequin](https://github.com/pepper-project/pequin) from the Pepper-Project: This utilizes a C-like language, similar to the gist provided above."
+- [Pequin](https://github.com/pepper-project/pequin) from the Pepper-Project: This utilizes a C-like language, similar to the gist provided above."
 
 
 
@@ -950,11 +925,11 @@ Pour construit le circuit il faudrait factoriser au max pour avoir le moins de c
 
 #### Partie 2 :
 
-"in *GF(p)*:
+"in *GF(p)*:
 
 *p = 21888242871839275222246405745257275088548364400416034343698204186575808495617*
 
-The value *p* is a prime number, so the set under consideration comprises integers ranging from 0 to *p*−1. This specific choice is pivotal because of the Elliptic Curve known as *BN-128*, which we will later employ for encryption. Notably, within the Ethereum blockchain’s framework, *BN-128* and *secp256k1* are the only supported elliptic curves."
+The value *p* is a prime number, so the set under consideration comprises integers ranging from 0 to *p*−1. This specific choice is pivotal because of the Elliptic Curve known as *BN-128*, which we will later employ for encryption. Notably, within the Ethereum blockchain’s framework, *BN-128* and *secp256k1* are the only supported elliptic curves."
 
 
 
@@ -968,11 +943,11 @@ Finally, if we multiply each matrix by witness vector we will get next:
 
 <img src="https://miro.medium.com/v2/resize:fit:393/1*PqHEXvk3CPjalnwvpWCOXw.png" title="" alt="" data-align="center">
 
-Where *Lw*, *Rw*, and *Ow* are vectors. The element-wise multiplication of *Lw* and *Rw* should yield *Ow*. If this equality holds true, it confirms the correctness of our R1CS defined by the matrices *L*, *R*,*O* and vector *w*.
+Where *Lw*, *Rw*, and *Ow* are vectors. The element-wise multiplication of *Lw* and *Rw* should yield *Ow*. If this equality holds true, it confirms the correctness of our R1CS defined by the matrices *L*, *R*,*O* and vector *w*.
 
 #### Partie 3 :
 
-However, in the first article, I emphasized the importance in zkSNARK of maintaining a verifier time that is either constant or close to it — represented as O(1). Evaluating *Lw*×*Rw*=*Ow* by verifiers isn’t inherently O(1) as it’s contingent on the program’s size. Furthermore, introducing encryption into the mix further decelerates execution. Therefore, we need a more concise representation than R1CS, and this is where QAP comes into play
+However, in the first article, I emphasized the importance in zkSNARK of maintaining a verifier time that is either constant or close to it — represented as O(1). Evaluating *Lw*×*Rw*=*Ow* by verifiers isn’t inherently O(1) as it’s contingent on the program’s size. Furthermore, introducing encryption into the mix further decelerates execution. Therefore, we need a more concise representation than R1CS, and this is where QAP comes into play
 
 Homomorphism: Let’s simplify this concept. In Abstract Algebra, we study numbers, categorize them, and then organize them into groups based on specific rules — this is known as Group Theory. Within Group Theory, we also explore the relationships between these groups. At its core, a homomorphism is a mapping between two groups that preserves their inherent structures. Think of it as a bridge that allows us to relate operations in one group to another. Interestingly, the vector space where R1CS resides and the space of polynomials can be thought of as two such groups, and there exists a homomorphism between them. For those diving deeper, it’s worth noting that both vectors and polynomials technically belong to the category of “Rings”. I’ll provide a link at the end of this article for those curious to learn more.
 
@@ -1019,9 +994,9 @@ We now have our initial prover program. To reemphasize, this setup is not yet se
 
 So far, we’ve managed to compress the prover’s work evaluation into three points on elliptic curve: A, B, and C. Here’s a brief recap of how it looked in the beginning:
 
-- The R1CS was represented as a matrix multiplication *Lw*​×*Rw*​=*Cw*​.
-- Then, thanks to homomorphism, the R1CS was transformed into the QAP in polynomial form, given by *U*(*τ*)×*V*(*τ*)=*W*(*τ*)+*H*×*T*(*τ*).
-- Now, it’s represented in the form of elliptic curve points: *A*×*B*=*C*
+- The R1CS was represented as a matrix multiplication *Lw*​×*Rw*​=*Cw*​.
+- Then, thanks to homomorphism, the R1CS was transformed into the QAP in polynomial form, given by *U*(*τ*)×*V*(*τ*)=*W*(*τ*)+*H*×*T*(*τ*).
+- Now, it’s represented in the form of elliptic curve points: *A*×*B*=*C*
 
 ![](https://miro.medium.com/v2/resize:fit:833/1*NbI9W51BYXY2VPO1TBl61A.png)
 
@@ -1031,13 +1006,13 @@ So far, we’ve managed to compress the prover’s work evaluation into three po
 
 # α, β
 
-Although the structure is preserved, we must introduce constraints to this equation to fully realize it as a zkSNARK. When the verifier receives points *A, B*, and *C*, they cannot determine if these points are genuine results of an evaluation or merely a trick by the prover. For this very reason, we need to introduce two additional parameters, *α* (alpha) and *β* (beta). These parameters must be provided by a trusted setup agent:
+Although the structure is preserved, we must introduce constraints to this equation to fully realize it as a zkSNARK. When the verifier receives points *A, B*, and *C*, they cannot determine if these points are genuine results of an evaluation or merely a trick by the prover. For this very reason, we need to introduce two additional parameters, *α* (alpha) and *β* (beta). These parameters must be provided by a trusted setup agent:
 
 ![](https://miro.medium.com/v2/resize:fit:650/1*unZ_bnl1enOtWwD9z_u20A.png)
 
-Now, the prover must compute *(A + α), (B + β), βA, αB*, and *C*. Meanwhile, the verifier will have to compute the *αβ* pairing aka “multiplication” (values provided by the trusted setup) and check if the equation is valid
+Now, the prover must compute *(A + α), (B + β), βA, αB*, and *C*. Meanwhile, the verifier will have to compute the *αβ* pairing aka “multiplication” (values provided by the trusted setup) and check if the equation is valid
 
-We must revisit the matrices *Lp*​, *Rp*​, and *Op*​, which contain the polynomial coefficients. It’s necessary to compute *β*×*Lp*​ and *α*×*Rp*​. Eventually, these calculations will yield the values *βA* and *αB.* Setup agent is responsible for calculating these parameters.
+We must revisit the matrices *Lp*​, *Rp*​, and *Op*​, which contain the polynomial coefficients. It’s necessary to compute *β*×*Lp*​ and *α*×*Rp*​. Eventually, these calculations will yield the values *βA* and *αB.* Setup agent is responsible for calculating these parameters.
 
 As for verifier, unfortunately, python library doesn’t support additions for pairings but if it would it may look like this:
 
@@ -1053,7 +1028,7 @@ Fortunately we can do it in solidity but we have to move A*B to the right side:
 
 ![](https://miro.medium.com/v2/resize:fit:375/1*P9cqqRpz4pbH-HKt7r52sw.png)
 
-***Note****:* Ideally, points A, B, and C should be provided as input parameters to the `verify` function. However, for the sake of simplicity in this demonstration, they have been hardcoded. To witness this in action, you can import this contract into Remix Studio, compile it, and deploy it. You'll observe that the result returns `true`
+***Note****:* Ideally, points A, B, and C should be provided as input parameters to the `verify` function. However, for the sake of simplicity in this demonstration, they have been hardcoded. To witness this in action, you can import this contract into Remix Studio, compile it, and deploy it. You'll observe that the result returns `true`
 
 
 
@@ -1063,24 +1038,24 @@ Until now, this data was treated as private. However, in this example, I aim to 
 
 ![](https://miro.medium.com/v2/resize:fit:543/1*k_1zLzREVWQEmuDFR83xxw.png)
 
-**Note**: The sequence should remain as **[1, out]** followed by [x, y, …, v4]. If there’s a requirement to reveal other data (e.g., *y* and *v*4), you must rearrange these entries so they can be split into two sections. This means that the matrices *L*, *R*, and *O* for the arithmetic circuit will also need adjustments.
+**Note**: The sequence should remain as **[1, out]** followed by [x, y, …, v4]. If there’s a requirement to reveal other data (e.g., *y* and *v*4), you must rearrange these entries so they can be split into two sections. This means that the matrices *L*, *R*, and *O* for the arithmetic circuit will also need adjustments.
 
 
 
-We split the pre-image of point C, represented as *βU*+*αV*+*W*+*HT*, into two parts:
+We split the pre-image of point C, represented as *βU*+*αV*+*W*+*HT*, into two parts:
 
-1. *c* = [*βU*+*αV*+*W*+*HT*] — This is the polynomial for the private input.
-2. *k* = [*βU*+*αV*+*W*] — This is the polynomial for the public input.
+1. *c* = [*βU*+*αV*+*W*+*HT*] — This is the polynomial for the private input.
+2. *k* = [*βU*+*αV*+*W*] — This is the polynomial for the public input.
 
-For the pre-images of A and B, represented as *U*+*α* and *V*+*β* respectively, nothing has changed. Final equation will look like this:
+For the pre-images of A and B, represented as *U*+*α* and *V*+*β* respectively, nothing has changed. Final equation will look like this:
 
 ![](https://miro.medium.com/v2/resize:fit:358/1*AX6aaaScgwXFvJB_8we5rQ.png)
 
-The prover will supply *A*′, *B*′, and *C*. The values of *α* and *β* are provided to the verifier from the trusted setup. The verifier is responsible for calculating the point *K*. The prover is required to present the values [1 out] in an unencrypted form. To encrypt these values, the verifier will employ elliptic curve scalar multiplication, and the necessary points for this operation will be supplied by the setup ([k1] * 1 + [k2] * out).
+The prover will supply *A*′, *B*′, and *C*. The values of *α* and *β* are provided to the verifier from the trusted setup. The verifier is responsible for calculating the point *K*. The prover is required to present the values [1 out] in an unencrypted form. To encrypt these values, the verifier will employ elliptic curve scalar multiplication, and the necessary points for this operation will be supplied by the setup ([k1] * 1 + [k2] * out).
 
 
 
-To reiterate: In an ideal scenario, the smart contract should accept points *A*, *B*, *C*, and the ‘public input’ as function arguments. However, for the sake of simplicity in this demonstration, all values have been hard-coded. These can be easily verified in Remix Studio or [here](https://mumbai.polygonscan.com/address/0xe529a6ba0847a2e7e2335fbb29ea2eaa3ee00b85#readContract).
+To reiterate: In an ideal scenario, the smart contract should accept points *A*, *B*, *C*, and the ‘public input’ as function arguments. However, for the sake of simplicity in this demonstration, all values have been hard-coded. These can be easily verified in Remix Studio or [here](https://mumbai.polygonscan.com/address/0xe529a6ba0847a2e7e2335fbb29ea2eaa3ee00b85#readContract).
 
 
 
