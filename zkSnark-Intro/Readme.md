@@ -147,7 +147,7 @@ Le cœur de ce système réside dans le vecteur témoin, qui est une représenta
   
 `Lw * Rw = Ow`  
   
-Que l'on peut vérifier avec le code python suivant (code/r1cs.py) :
+Que l'on peut vérifier avec le code python suivant [code/r1cs.py](code/r1cs.py) :
 ```python
 import numpy as np
 import random
@@ -280,7 +280,7 @@ On sait qu'il existe une seule courbe de dimension 6 qui passe par ces 6 points.
 
 Pour obtenir le système, il faut fabriquer les polynomes de lagrange correspondant.
 
-Le code suivant permet d'obtenir les coefficients des polynômes de Lagrange.
+Le code suivant permet d'obtenir les coefficients des polynômes de Lagrange [code/lagrange.py](code/lagrange.py)
 
 ```python
 import numpy as np
