@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from numpy import poly1d
 witness = [1, 553, 5, 25, 125, 375, 125, 50]
@@ -13,7 +14,8 @@ U = np.array(
 ])
 
 Uw = np.matmul(U, witness)
-#print(Uw)
+#print(poly1d(Uw))
+#sys.exit()
 
 V = np.array([
 [0.008333,0, -0.05, 0.125,-0.08333,0,0,0],
@@ -52,10 +54,8 @@ T = np.convolve(fu,fv) - np.concatenate((np.flip(Ww), np.zeros(len(np.convolve(f
 print(T)
 t = poly1d([1, -1])*poly1d([1, -2])*poly1d([1, -3])*poly1d([1, -4])*poly1d([1, -5])*poly1d([1, -6])
 
-print("TOTO")
 print(np.polydiv(T,np.flip(t)))
 
-print("TUTU")
 fu = poly1d(Uw)
 print(fu)
 fv = poly1d(Vw)
@@ -63,9 +63,10 @@ print(fv)
 fw = poly1d(Ww)
 print(fw)
 
+print("Resultat de division")
 print(((fu * fv)-fw)/t)
+sys.exit()
 
-print("TEST")
 a = (fu * fv) - fw
 print("->", a)
 print("->", a)

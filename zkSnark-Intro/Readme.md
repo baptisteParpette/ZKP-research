@@ -340,7 +340,7 @@ U:
  [ 42    , 0, -9.   , 0, 0, -1    , -1    , -1   ]
 ]
 ```
-![Courbes U](./U.png)
+![Courbes U](./img/U.png)
 $Uw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
 
 ```
@@ -354,7 +354,7 @@ V:
  [-1    , 0,  12    , -30    ,  20    , 0, 0, 0]
 ]
 ```
-![Courbes V](https://github.com/baptisteParpette/ZKP-research/blob/0d23c200e4dcbaa024fc2729017e10963d43c41a/V.png)
+![Courbes V](./img/V.png)
 $Vw(x) = -7.492x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809$
 
 ```
@@ -368,12 +368,12 @@ W:
  [0, -1    , 0,  6    , -15    ,  20    , -15    ,  6    ]
 ]
 ```
-![Courbes W](https://github.com/baptisteParpette/ZKP-research/blob/0d23c200e4dcbaa024fc2729017e10963d43c41a/W.png)
+![Courbes W](./img/W.png)
 $Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
 
 *Attention les polynômes Uw, Vw, Ww indiqués ici sont arrondis par les affichages. Les erreurs d'arrondis peuvent faire dévier fortement les courbes...*
 
-La multiplication de la matrice de Lagrange par le vecteur témoin se fait par le code python suivant :
+La multiplication de la matrice de Lagrange par le vecteur témoin se fait par le code python suivant [code/mult.py](code/mult.py)
 ```python
 import numpy as np
 from numpy import poly1d
@@ -412,7 +412,7 @@ $f(x)=3x^3+5x^2+10x+3$.
 
 En effet la probabilité de connaître un polynôme unique qui relie les signaux `U, V, et W` par un diviseur cible `t` est nulle. Vous pouvez donc vérifier cette proposition en vérifiant que le reste de la division est nul.
 
-Dans notre exemple, le code python suivant, indique un reste proche de 0 qu'on peut considérer nul.
+Dans notre exemple, [code/division.py](code/division.py), le code python suivant, indique un reste proche de 0 qu'on peut considérer nul.
 ```python
 import numpy as np
 from numpy import poly1d
@@ -432,16 +432,13 @@ $h(x)=-34.09x^4+414.6x^3-1713x^2+2734x-1394$
 $r(x)=0.0001015x^5-0.001524x^4+0.00865x^3-0.02295x^2+0.028x-0.01228$
 
 A titre de comparaison la fonction résultante ((Uw*Vw)-Ww) est la suivante  
-$f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+8785000x^3-8321000ex^2+4428000x-1004000$
-
-Le tracé de la fonction résultante et du reste permet de visualiser concrêtement le caractère hortogonal de ces fonctions.
-(visual)
+$f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+8785000x^3-8321000x^2+4428000x-1004000$
 
 Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le **prouveur** et le **vérifieur**.
-l'étape suivante consiste à porter nos équations dans un espace plus efficace à calculer. A savoir passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques.
+L'étape suivante consiste à porter nos équations dans un espace de calcul plus efficace. Passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques simplifiera les calculs.
 
 # L'espace de galois
-Tous les calculs peuvent se faire dans un espace de galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appélé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7, la matrice L et le vecteur témoins sont modifiés en conséquence. En python, ils doivent être rendus compatibles avant d'être convertis en valeurs appartenant au corps associé. Le code suivant indique la même preuve que précédemment mais dans le corps de galois d'ordre 7. 
+Tous les calculs peuvent se faire dans un espace de galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appélé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7, la matrice L et le vecteur témoins sont modifiés en conséquence. En python, ils doivent être rendus compatibles avant d'être convertis en valeurs appartenant au corps associé. Le code suivant [code/qapGF.py](code/qapGF.py) indique la même preuve que précédemment mais dans le corps de galois d'ordre 7. 
 Nous utilisons deux fonctions spécifiques : `calculPolyLagrangeGF` calcul les coefficients de lagrange dans le le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance. 
 
 ```python
@@ -536,14 +533,14 @@ Le passage dans le corps de Galois ne permet pas nécessairement de gagner du te
 
 # Projection sur les courbes elliptiques
 Dans la preuve précédente, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. 
-Le **vérifieur** peut fabriquer le polynôme t, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
+Le **vérifieur** peut fabriquer le polynôme *t*, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
 
-Pour palier cela, **prouveur** et verifieur sont mis en relation par un tier de confiance le **confident** *Trusted setup* en anglais, qui va imposer des valeurs de références uniques au deux participants. 
+Pour palier cela, **prouveur** et **verifieur** sont mis en relation par un tier de confiance le **confident** *Trusted setup* en anglais, qui va imposer des valeurs de références uniques au deux participants. 
 
 Le principe est le suivant. On part de l'équation : 
 $Uw * Vw = Ww + HT$
 
-Ce sont tous des polynômes, qui peuvent être évalués à n'importe quelle coordonnée à certaines coordonnées. 
+Ce sont tous des polynômes, qui peuvent être évalués à n'importe quelle coordonnée. 
 
 Prenons par-exemple Uw = $4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x$
 En choisissant arbitrairement `x = 5`, on peut écire `4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055`
@@ -556,8 +553,7 @@ Si on ajoute G à G, on trouve le point suivant sur la courbe. 5*G1 déplace G1 
 Par rapport à notre exemple : 
 $15055G1 = 4*3125G1 + 3*625G1 + 5*125G1 + 3*25G1 - 4*5G1$
 $15055G1 = 15055G1$
-Le code python suivant implante cette égalité. 
-**Remarque Importante : dans cette exemple, j'ai pris une des courbes précédentes, en changeant le dernier coefficient par son négatif pour illustrer la fonction `neg`**
+Le code python [code/G.py](code/G.py) implante cette égalité. 
 
 ```python
 from py_ecc.bn128 import G1, G2, multiply, add, neg, eq
@@ -572,48 +568,48 @@ X2 = multiply(G1, 5**2)
 X1 = multiply(G1, 5)
 X0 = G1
 
-c5 = multiply(X5, 4)
-c4 = multiply(X4, 3)
-c3 = multiply(X3, 5)
-c2 = multiply(X2, 3)
-c1 = multiply(neg(X1), 4)
+c5 = multiply(X5, 4)      #  4 * x^5
+c4 = multiply(X4, 3)      #  3 * x^4
+c3 = multiply(X3, 5)      #  5 * x^3
+c2 = multiply(X2, 3)      #  2 * x^2
+c1 = multiply(neg(X1), 4) # -4 * x 
 
 sommeCoefs = add(add(add(add(c1,c2),c3),c4),c5)
 print("Somme(coefficient) = ", sommeCoefs)
 
 print(multiply(G1, 15055) == sommeCoefs)
 ```
+**Remarque : dans ce dernier exemple, nous avons pris une des courbes précédentes, en changeant le dernier coefficient par son négatif pour illustrer la fonction `neg`**
 
 Le point résulant `15055G1` 
 ```
 (2708568011129098481813750608442309814741431019776566886222041314305674896534, 12627231381848946543670844035528126888439204587944747555252932693150421290218)
 ``` 
 représente une valeur du polynôme en un point particulier.
-Il est impossible de remonter au polynôme source, et si le **confident** est un tier de confiance, on suppose qu'il a calculé cette valeur et que ni le **prouveur**, ni le **vérifieur** ne peuvent contester. 
 
-On arrive donc à la preuve succincte :
+Il est impossible de remonter au polynôme source, et si le **confident** est un tier de confiance, on suppose qu'il a calculé cette valeur que ni le **prouveur**, ni le **vérifieur** ne peuvent contester. 
+
+On arrive donc à la notion de preuve succincte :
 Si `Uw * Vw = Ww + HT` sont tous des polynomes, le **prouveur** peux en calculer des projections équivalente sur des courbes elliptiques. 
 
 Si 
-A = Encode(Uw, tau)  
-B = Encode(Vw, tau)  
-C = Encode(Ww + HT, tau)   
-
-Sont fabriqués par le **prouveur**, alors il est facile au **vérifieur** de controler que `A*B = C`. 
+$A = Encode(Uw, tau)$,  
+$B = Encode(Vw, tau)$, 
+et $C = Encode(Ww + HT, tau)$   
+sont fabriqués par le **prouveur**, alors il est facile et rapide pour le **vérifieur** de controler que `A*B = C`. 
 Avant cela, nous devons résoudre deux problèmes : 
 
 1. Envoyer Uw, Vw, Ww au **confident** est une divulgation de connaissances...
 2. La multiplication Uw*Vw n'a aucun sens ni dans G1, ni dans G2 il faut passer par un mécanisme de pairing. 
 
-### 1. Ne pas envoyer Uw au **confident**
+### Ne pas envoyer Uw au **confident**
 Dans l'exemple précédent, on peut constater que X0 à X5 sont des valeurs  connues uniquement du **confident**, qui choisi aléatoirement la valeur de tau initiale, et c1 à c5 permettent de réaliser le calcul sans en notifier le **confident**. 
 
 A, B, C se calculent ainsi :   
 
-$X0...Xn$ sont fournis par le **confident**
-$T0...Tn$ sont calculés et fournis par le **confident**
+$X0...Xn$ et $T0...Tn$ sont calculés et fournis par le **confident**
 
-Le **prouveur** fini sa preuve en calculant :
+Le **prouveur** fini sa partie en calculant :
 $A = u[n]*Xn+u[n-1]*X[n-1]+...+u0X0$
 $B = v[n]*Xn+v[n-1]*X[n-1]+...+u0X0$$ 
 
@@ -621,12 +617,12 @@ $B = v[n]*Xn+v[n-1]*X[n-1]+...+u0X0$$
 Avec $u[n]..u0$ les coefficients du polynome $Uw$
 Pour $HT$, le calcul se fait en appliquant $Hv(Tp)$
 
-En résumé le **prouveur** est capable de calculer A, B sans divulguer d'information au **confident**. 
+En résumé, le **prouveur** est capable de calculer A, B sans divulguer d'information au **confident**. 
 Le **confident** envoi les coefficient X0 à Xn qui sont les points de courbe aux différentes puissances, à une coordonnée initiale inconnue de tous sauf du **confident**, qui peut être détruite une fois les X calculés.
 
 Une partie du coût de calcul est déporté vers le **confident**, qui calcule une fois pour toute les coefficients $X0-Xn$.
 
-Le code suivant distingue le calcul des puissances de tau, réalisé par le **confident** du calcul de la valeur A réalisée par le **prouveur**.
+Le code suivant [code/EncodeUwInElliptic.py](code/EncodeUwInElliptic.py) distingue le calcul des puissances de tau, réalisé par le **confident** du calcul de la valeur A réalisée par le **prouveur**.
 ```python
 import sys;
 from py_ecc.bn128 import G1, multiply, add, curve_order, eq, neg
@@ -668,17 +664,17 @@ print(eq(multiply(G1, res), (add(add(add(add(add(u0, u1), u2),u3),u4),u5))))
 ```
 La valeur $U=(1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106)$. Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
 
-On peut faire pareil pour U, V. 
+On peut faire pareil pour U et V. 
 
 ### La multiplication sur la courbe elliptique
-Le produit A * B ne donne pas de résultat sur la courbe elliptique. Il faut passer par un principe de pairing. Le principe est que la multiplication d'un point par un autre point doit se faire sur deux courbes différentes et le résultat est un point sur une troisième courbe. Ainsi le mapping se présente ainsi :
-Si on a 3 points A, B, C sur une courbe bien choisie (bn128), et que A * B = C, alors on peut projeter les points ainsi :
+Le produit `A * B` ne donne pas de résultat sur la courbe elliptique. Il faut passer par un principe de pairing. Le principe est que la multiplication d'un point par un autre point doit se faire sur deux courbes différentes et le résultat est un point sur une troisième courbe. Ainsi le mapping se présente ainsi :
+Si on a 3 points A, B, C sur une courbe bien choisie, et que A * B = C, alors on peut projeter les points ainsi :
 
 ```python
 mapping(B_G2, A_G1) == mapping(G2, C_G1) # Le mapping s'effectue sur la courbe G12, mais le point n'est pas nécessairement accessible.
 ```
 
-Le code suivant illustre un exemple d'équivalence de mapping `map(5*G1, 6*G2) == map(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification.
+Le code suivant [code/testpairing.py](code/testpairing.py) illustre un exemple d'équivalence de mapping `map(5*G1, 6*G2) == map(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification.
 
 ```python
 from py_ecc.bn128 import multiply, G1, G2, pairing
@@ -697,14 +693,16 @@ on devrait aboutir au pairing suivant.
 
 Si cette équation est vérifiée alors le code démontre que le **prouveur** connait une équation sans en divulguer les coefficients au **vérifieur**. Les suffixes v et p indiquent d'où proviennent les données
 
-Le code suivant cacule la preuve de bout en bout. 
+Le code suivant [code/ProofArrangedFinal.py](ProofArrangedFinal.py) calcule la preuve quasiment de bout en bout. 
+
 
 ```python
 import sys
 from py_ecc.bn128 import G1, G2, multiply, add, curve_order, pairing
 import galois
 
-GF = galois.GF(curve_order)
+GF = galois.GF(curve_order) # Attention le pairing ne fonctionne que dans ce champ.
+                            # Cette ligne est très longue à s'exécuter
 
 u = galois.Poly([14774563938491510775016323878048660684770145970280823181996287825938670734546, 3648040478639879203707734290876212514758060733402672390616367364429301415868, 10032111316259667810196269299909584415584667016857349074195010252180578894213, 7296080957279758407415468581752425029516121466805344781232734728858602830837, 8025689053007734248157015439927667532467733613485879259356008201744463116328, 21888242871839275222246405745257275088548364400416034343698204186575808495064], field=GF)
 v = galois.Poly([20429026680383323540763312028906790082645140107054965387451657240804087929235, 14592161914559516814830937163504850059032242933610689562465469457717205663881, 7296080957279758407415468581752425029516121466805344781232734728858602830952, 7296080957279758407415468581752425029516121466805344781232734728858602834704, 16051378106015468496314030879855335064935467226971758518712016403488926226275, 1809], field=GF)
@@ -773,15 +771,15 @@ w1 = multiply(XG2_1, 80256890530077342481570154399276675324677336134858792593560
 w0 = multiply(XG2_0, 3647)
 encodeCoeffWwG2=(add(add(add(add(add(w0, w1), w2),w3),w4),w5))
 
-# Le **vérifieur**s reçoit 
-print("Le **vérifieur** reçoit du **prouveur**")
+# Le **vérifieur** reçoit 
+print("Le vérifieur reçoit du prouveur")
 print("Uw=",encodeCoeffUwG2)
 print("Vw=",encodeCoeffVwG1)
 print("Ww=",encodeCoeffWwG2)
 print("Les coefficients du polynôme h=", [0, 18568526036276985146872367540559921700118529133019602468237309884945144207081, 8414813370729321363219173764287796867375260091715497647688420720616921933174, 2760350628837508597472185613429667469500265954941355442233051305751504736345, 1240333762737558929260629658897912255017740649356908612809564903905962484152, 19213013187503363806194067265281385911059119862587407923912868119327654122536])
 
-print("Il recoit également du **confident**, les coefficients de T[tau] pour tous les degrés de h")
-print("Il combine les coefficients de h du **prouveur**, avec les coeffient de T[tau] du **confident**")
+print("Il recoit également du confident, les coefficients de T[tau] pour tous les degrés de h.")
+print("Il combine les coefficients de h du prouveur, avec les coeffient de T[tau] du confident.")
 ht4  = multiply(TG2_4, 18568526036276985146872367540559921700118529133019602468237309884945144207081)
 ht3  = multiply(TG2_3, 8414813370729321363219173764287796867375260091715497647688420720616921933174)
 ht2  = multiply(TG2_2, 2760350628837508597472185613429667469500265954941355442233051305751504736345)
@@ -789,7 +787,7 @@ ht1  = multiply(TG2_1, 124033376273755892926062965889791225501774064935690861280
 ht0  = multiply(TG2_0, 19213013187503363806194067265281385911059119862587407923912868119327654122536)
 encodeCoeffHTG2=(add(add(add(add(ht0, ht1), ht2),ht3),ht4))
 
-print("Le **vérifieur** peut alors réaliser le test suivant")
+print("Le vérifieur peut alors réaliser le test suivant")
 print(" Pairing(U(proof surG2), V(proof surG1) == Pairing((W(proof sur G2) + Ecode(coefh sur TG2)), G1) ")
 
 LPairing = pairing(encodeCoeffUwG2, encodeCoeffVwG1)
@@ -799,10 +797,6 @@ RPairing = pairing(add(encodeCoeffWwG2, encodeCoeffHTG2), G1)
 # Pair(A2, B1) == Pair(C2, G1)
 
 # La littérature fait Pair(A1, B2) == Pair(C1, G2),  mais un bug de python oblige à faire pairing(2, 1)
-# Il faut donc ecrire Pair(B2, A1) == Pair(G2, C1)
-
-#print(LPairing)
-#print(RPairing)
 
 print("VALIDATION", LPairing == RPairing)
 ```

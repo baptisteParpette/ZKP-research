@@ -2,8 +2,12 @@ import sys
 from py_ecc.bn128 import neg, multiply, G1, G2, G12, pairing, curve_order, add, FQ12
 #from c.bn128.bn128_field_elements import FQ12
 
+A = multiply(G1, 5)
+B = multiply(G2, 6)
+C = multiply(G1, 5*6)
 
-
+print(pairing(B, A) == pairing(G2, C)) # un bug de librairie python oblige de faire G2 -> G1
+sys.exit()
 
 #neutral_element = bn128.FQ12([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
