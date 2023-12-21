@@ -93,7 +93,7 @@ out = v3 + v4 + v5 + 3 (6)
 out = (v3 + v4 + v5 + 3) * 1 (6bis)  
 ```
 Le schéma suivant présente le circuit équivalent sous forme de portes. 
-<img src="./circuit.png">
+<img src="./img/circuit.png">
 
 
 Dans le circuit R1CS, chaque étape est représentée par une porte logique, intégrant des entrées et une sortie basées sur la multiplication. Pour s'aligner avec les contraintes du circuit, les additions sont traitées en regroupant les signaux en amont des portes. Ainsi, la dernière étape où `out` est calculé devient une multiplication par 1 pour respecter la forme standard du R1CS : $O = L * R$.
@@ -147,7 +147,7 @@ Le cœur de ce système réside dans le vecteur témoin, qui est une représenta
   
 `Lw * Rw = Ow`  
   
-Que l'on peut vérifier avec le code python suivant :
+Que l'on peut vérifier avec le code python suivant (code/r1cs.py) :
 ```python
 import numpy as np
 import random
