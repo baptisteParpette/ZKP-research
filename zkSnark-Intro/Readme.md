@@ -1,4 +1,3 @@
-
 # Preuves à Divulgation Nulle de Connaissance (ZKP) : Un Outil Cryptographique Clé
 
 Les Preuves à Divulgation Nulle de Connaissance, souvent abrégées en ZKP, représentent une avancée majeure dans le monde de la cryptographie, la science de la protection des informations. Conçues dans les années 1980 par les scientifiques Shafi Goldwasser, Silvio Micali et Charles Rackoff, les ZKP constituent une idée fascinante qui a révolutionné la manière dont les informations sécurisées sont partagées. Imaginez un jeu de devinettes où vous devez convaincre quelqu'un que vous connaissez un secret, mais sans jamais révéler le secret lui-même. C'est exactement ce que permettent les ZKP.
