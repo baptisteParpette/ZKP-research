@@ -64,7 +64,7 @@ Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier q
 
 La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme ? " sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
 
-*[PHOTO POLYNOME AVEC POINT]*
+![polynome](./img/plotPoint-fx.png)
 
 Lorsque je présente au **vérifieur** des paires de valeurs telles que (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le vérifieur pourrait potentiellement retrouver la courbe originale à partir de ces informations, ce qui compromettrait l'objectif de cacher la courbe. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
 
@@ -79,7 +79,11 @@ Cette transformation se fait en trois étapes :
 
 # Circuit R1CS
 Le Circuit R1CS, ou Rank 1 Constraint System, est une structure clé en cryptographie, utilisée pour transformer des équations polynomiales complexes en une série d'opérations élémentaires axées sur la multiplication, avec deux entrées et une sortie:
-<img src="./porte.png" width="100">
+
+<p align="center">
+  <img src="./img/porteLRO.png" width="200">
+</p>
+
 Cette transformation est essentielle pour simplifier le traitement des équations dans des contextes tels que les preuves à divulgation nulle de connaissance.
 
 Considérons un exemple concret avec notre polynôme $f(x) = 3x^3 + 5x^2 + 10x + 3$. Sa conversion en circuit R1CS se décompose en étapes successives, où chaque opération polynomiale est transformée en une série de multiplications:
@@ -93,7 +97,7 @@ out = v3 + v4 + v5 + 3 (6)
 out = (v3 + v4 + v5 + 3) * 1 (6bis)  
 ```
 Le schéma suivant présente le circuit équivalent sous forme de portes. 
-<img src="./img/circuit.png">
+<img src="./img/circuit-fx.png">
 
 
 Dans le circuit R1CS, chaque étape est représentée par une porte logique, intégrant des entrées et une sortie basées sur la multiplication. Pour s'aligner avec les contraintes du circuit, les additions sont traitées en regroupant les signaux en amont des portes. Ainsi, la dernière étape où `out` est calculé devient une multiplication par 1 pour respecter la forme standard du R1CS : $O = L * R$.
@@ -529,7 +533,7 @@ else:
     print("=> La preuve invalide")
 ```
 
-Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir une preuve plus succincte. 
+Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir une preuve plus succincte, ainsi que d'obtenir le reste de la division `h_hem` égale à 0 car nous ne travaillons plus avec des nombres flottants donc il n'y a plus de problème d'arrondit. 
 
 # Projection sur les courbes elliptiques
 Dans la preuve précédente, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. 
@@ -611,7 +615,7 @@ $X0...Xn$ et $T0...Tn$ sont calculés et fournis par le **confident**
 
 Le **prouveur** fini sa partie en calculant :
 $A = u[n]*Xn+u[n-1]*X[n-1]+...+u0X0$
-$B = v[n]*Xn+v[n-1]*X[n-1]+...+u0X0$$ 
+$B = v[n]*Xn+v[n-1]*X[n-1]+...+u0X0$
 
 
 Avec $u[n]..u0$ les coefficients du polynome $Uw$
