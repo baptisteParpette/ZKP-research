@@ -3,6 +3,7 @@ import numpy as np
 from numpy import poly1d
 from scipy.interpolate import lagrange
 
+errMax = 0.0000001
 witness = [1, 553, 5, 25, 125, 375, 125, 50]
 x = np.array([1, 2, 3, 4, 5, 6])
 
@@ -49,11 +50,15 @@ O = np.array([
 Uw = calculPoly(L)
 Vw = calculPoly(R)
 Ww = calculPoly(O)
-print(Uw)
-print(Vw)
-print(Ww)
+print("Uw", Uw)
+print("Vw", Vw)
+print("Ww", Ww)
 
-for i in range(1, 7):
-    print(Uw(i)*Vw(i)-Ww(i))
+for i in range(1, 7):    # 7 points d'interpolation
+    erreur = abs(Uw(i)*Vw(i)-Ww(i))
+    print(erreur)
+    assert (erreur < errMax), "L'égalité n'est pas garantie"
+
+
 
 
