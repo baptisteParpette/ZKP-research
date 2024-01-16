@@ -275,7 +275,8 @@ U:
 ]
 ```
 ![Courbes U](./img/U.png)
-$Uw(x) = -7.533x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809$
+$Uw(x) = 4.525 x - 68.17 x + 388.5 x - 1035 x + 1268 x - 553$
+
 
 ```
 V:
@@ -289,7 +290,8 @@ V:
 ]
 ```
 ![Courbes V](./img/V.png)
-$Vw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
+$Vw(x) = -7.533 x + 136.3 x - 920.3 x + 2832 x - 3844 x + 1809$
+
 
 ```
 W:
@@ -305,7 +307,7 @@ W:
 ![Courbes W](./img/W.png)
 $Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
 
-Une multiplication de matrice par le vecteur témoin se fait par le code python suivant [code/mult.py](code/mult.py)
+Une multiplication de matrice par le vecteur témoin se fait par le code python suivant [mult](code/mult.py)
 ```python
 import numpy as np
 from numpy import poly1d
@@ -324,7 +326,70 @@ Vw = np.matmul(V, witness)
 print(poly1d(Vw))
 ```
 
-On peut vérifier que `Uw.Vw = Ww` est valide aux points d'interpolation avec le code suivant. 
+Pour éviter les erreurs d'arrondis, on peut vérifier que `Uw.Vw = Ww` est valide aux points d'interpolation avec le code suivant. [valideUwVwWw](code/valideUwVwWw.py)
+
+```python
+import numpy as np
+from numpy import poly1d
+from scipy.interpolate import lagrange
+
+errMax = 0.0000001
+witness = [1, 553, 5, 25, 125, 375, 125, 50]
+x = np.array([1, 2, 3, 4, 5, 6])
+
+def calculPoly(mat):
+    Lt = np.transpose(mat)
+    res = []
+    for i in range(0, len(Lt)):
+        y = Lt[i]
+        lArray = lagrange(x, y).coeffs
+        if (len(lArray) == 1):
+            lArray = np.zeros(len(mat))
+
+        res.append(lArray)
+
+    return poly1d(np.matmul(np.transpose(res), witness))
+
+L = np.array([
+[ 0,0,1,0,0,0,0,0],
+[ 0,0,1,0,0,0,0,0],
+[ 3,0,0,0,0,0,0,0],
+[ 5,0,0,0,0,0,0,0],
+[10,0,0,0,0,0,0,0],
+[ 3,0,0,0,0,1,1,1]
+])
+
+R = np.array([
+[0,0,1,0,0,0,0,0],
+[0,0,0,1,0,0,0,0],
+[0,0,0,0,1,0,0,0],
+[0,0,0,1,0,0,0,0],
+[0,0,1,0,0,0,0,0],
+[1,0,0,0,0,0,0,0]
+])
+
+O = np.array([
+[0,0,0,1,0,0,0,0],
+[0,0,0,0,1,0,0,0],
+[0,0,0,0,0,1,0,0],
+[0,0,0,0,0,0,1,0],
+[0,0,0,0,0,0,0,1],
+[0,1,0,0,0,0,0,0]
+])
+
+Uw = calculPoly(L)
+Vw = calculPoly(R)
+Ww = calculPoly(O)
+print("Uw", Uw)
+print("Vw", Vw)
+print("Ww", Ww)
+
+for i in range(1, 7):    # 7 points d'interpolation
+    erreur = abs(Uw(i)*Vw(i)-Ww(i))
+    print(erreur)
+    assert (erreur < errMax), "L'égalité n'est pas garantie"
+
+```
 
 
 # L'application de la preuve
