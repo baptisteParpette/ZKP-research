@@ -1,92 +1,34 @@
-# Preuves à Divulgation Nulle de Connaissance (ZKP) : Un Outil Cryptographique Clé
+# Preuves à Divulgation Nulle de Connaissance (ZKP)
+Les ZKP visent à prouver une assertion sans divulguer de valeurs et sans connaître les détails de l'assertion. Le principe est directement issu des casses-têtes. Je peux montrer que je connais la solution sans divulguer les étapes intermédiares. Dans l'exercice du Sudoku, je peux montrer que j'ai trouvé 10 chiffres différents sur toutes les lignes et toutes les colonnes. Le ZKP modélisent ce principe. La mécanique générale met en relation un **prouveur** qui indique connaître la solution au problème et un **vérifieur** qui contrôle que la solution proposée. Cet échange se fait dans un cadre contraint contrôlé par un tier de confiance que nous appelons le **confident**. Par exemple dans le cadre concrêt du Sodoku, le **confident** peut être vu comme  celui qui prépare la grille initiale et qui vérifie que le prouveur n'a pas trouvé une solution toute prête ailleurs. 
+  
+## Principes généraux des zksnarks et groth16
+Nous présentons le détail du fonctionnement mathématique de l'approche ZkSnark mise en œeuvre dans l'implantation groth16. Les Zksnarks est une famille de preuves ZKP qui possèdent des propriétés communes. Elles sont **Succinctes** et **Non interactives**. **Succincte** indique que le vérifieur peut contrôler la solution rapidement. **Non interactive** indique que le **prouveur** n'envoie qu'un seul message contenant la solution au **vérifieur**. En effet dans l'exemple du Sudoku, en supposant que les lignes et les colonnes sont données une par une, la preuve se fait de manière interactive. A chaque ligne ou colonne présentée au **vérifieur** sa confiance dans la preuve augmente. 
 
-Les Preuves à Divulgation Nulle de Connaissance, souvent abrégées en ZKP, représentent une avancée majeure dans le monde de la cryptographie, la science de la protection des informations. Conçues dans les années 1980 par les scientifiques Shafi Goldwasser, Silvio Micali et Charles Rackoff, les ZKP constituent une idée fascinante qui a révolutionné la manière dont les informations sécurisées sont partagées. Imaginez un jeu de devinettes où vous devez convaincre quelqu'un que vous connaissez un secret, mais sans jamais révéler le secret lui-même. C'est exactement ce que permettent les ZKP.
-
-Dans ce jeu, vous êtes le **prouveur**, celui qui détient une information secrète, et vous cherchez à convaincre le **vérifieur**, une autre personne, de la véracité de cette information. La particularité réside dans le fait que vous réalisez cette prouesse sans jamais divulguer aucun détail sur le secret. Cela revient à prouver que vous connaissez la réponse à une énigme sans jamais la révéler.
-
-Les ZKP fonctionnent sur la base d'un **tiers de confiance**, sorte d'arbitre neutre qui établit les règles du jeu. Ce tiers de confiance ne favorise aucun parti, mais fournit un cadre équitable et sûr pour la preuve. Ainsi, les ZKP permettent de confirmer des affirmations tout en préservant la confidentialité et la sécurité des informations.
-
-En somme, les ZKP sont une méthode ingénieuse pour démontrer la véracité d'une affirmation sans en révéler les raisons. Devenus un élément crucial dans le domaine de la sécurité informatique, les ZKP trouvent des applications variées, allant de la protection de la vie privée en ligne à la sécurisation des transactions financières.
-
-### Exemples simples
-
- Exemple 1 (Où est Charlie ?)
----------
-Dans le jeu "où est Charlie ?", il faut retrouver les coordonnées d'un personnage appelé Charlie dans un dessin rempli de détails. Dans la solution de base, le **prouveur** est celui qui indique où est le personnage, le **vérifieur** peut voir sur le dessin que Charlie est au bon endroit indiqué. Le tiers de confiance peut être vu comme une personne qui garantit au vérifieur que Charlie est bien présent quelque part sur l'image ou que l'image n'a pas été remplacée.
-
-Dans une approche ZKP, le **prouveur** peut montrer au **vérifieur** qu'il sait où se trouve Charlie sans divulguer sa position.
-
-Pour cela, il recouvre l'image d'un cache noir largement plus grand que le dessin. Dans ce cache, un petit trou est découpé, juste assez grand pour montrer Charlie, mais rien d'autre. Ce trou est soigneusement positionné de sorte qu'il révèle uniquement le personnage de Charlie dans l'image. Ce faisant, le cache cache efficacement tout le reste de l'image, y compris les coordonnées exactes où Charlie se trouve.
-
-Le vérifieur, alors, est en mesure de voir Charlie à travers ce trou, confirmant ainsi que Charlie est bien présent dans l'image. Cependant, et c'est là que réside l'astuce, le vérifieur ne peut pas déterminer l'emplacement exact de Charlie dans l'image. Il voit bien Charlie, mais les coordonnées précises restent un mystère.
-
-Ainsi, lorsque le vérifieur quitte la scène, il est convaincu que le prouveur a effectivement localisé Charlie, mais sans avoir lui-même accès à cette information spécifique. La position de Charlie reste secrète, et c'est là que réside la beauté des ZKP : prouver une affirmation (Charlie est trouvé) sans divulguer les informations critiques (où exactement Charlie se trouve dans l'image).
-
-Exemple 2 (Résolution de sudoku)
----------
-Le sudoku est un puzzle captivant qui met au défi les joueurs de remplir une grille de 9x9 cases avec des chiffres allant de 1 à 9. Cette grille est subdivisée en 9 blocs carrés, chacun mesurant 3x3 cases. Pour résoudre le puzzle, chaque ligne, chaque colonne, et chaque bloc carré de 9 cases doivent contenir tous les chiffres de 1 à 9, sans répétitions.
-
-Au début du jeu, certaines cases de la grille sont déjà remplies avec des chiffres. Ces indices initiaux sont placés de manière stratégique pour guider le joueur vers une solution unique. L'objectif du joueur est donc de compléter les 27 groupes de la grille – 9 lignes, 9 colonnes, et 9 blocs – en veillant à ce que chaque groupe contienne tous les chiffres de 1 à 9, une seule fois.
-
-Dans la version classique du jeu, le rôle du **prouveur** revient au joueur qui démontre que la grille a été correctement remplie, en s'assurant que chaque chiffre est bien placé selon les règles.
-
-Dans une approche ZKP, le **prouveur** peut montrer au **vérifieur** qu'il connait la solution sans divulguer la répartition des chiffres.
-
-Pour appliquer la méthode des Preuves à Divulgation Nulle de Connaissance (ZKP) au sudoku, le prouveur adopte une approche unique. Au lieu d'inscrire directement les solutions sur la grille, il utilise des étiquettes amovibles qu'il place sur les cases vides. Chaque étiquette porte la valeur correcte pour sa case respective, mais ces étiquettes sont disposées face cachée, de sorte que le vérifieur ne peut pas voir les valeurs.
-
-Pour mener à bien la démonstration ZKP, le vérifieur interroge le prouveur à travers un ensemble de 18 questions spécifiques. Chaque question cible un ensemble d'étiquettes correspondant à une zone particulière de la grille de sudoku - soit une ligne, une colonne, ou un bloc de 3x3. En réponse, le prouveur recueille les étiquettes de la zone concernée, les mélange à l'abri des regards du vérifieur, puis révèle que chaque chiffre de 1 à 9 est présent une seule fois parmi ces étiquettes, sans toutefois divulguer leur arrangement spécifique. Après cette démonstration, il replace les étiquettes face cachée à leurs emplacements originaux.
-
-En répétant ce processus pour les 18 questions couvrant ainsi toutes les lignes, colonnes et blocs de la grille, le vérifieur devient progressivement convaincu que le prouveur connaît effectivement la solution complète de la grille de sudoku. Cependant, malgré cette conviction, le vérifieur demeure dans l'ignorance quant à la disposition précise des valeurs sur la grille. Ainsi, la méthode ZKP est mise en œuvre avec succès : le prouveur démontre sa connaissance de la solution sans divulguer les détails spécifiques de cette dernière.
-
-Cette preuve est dite interactive, car elle peut se terminer avant la fin des 18 itérations. En effet, au fur et à mesure des itérations, le vérifier devient de plus en plus convaincu que le prouver a bien résolu la grille.
-
-Ces deux exemples donnent une intuition sur le principe de fonctionnement des approches par ZKP. Dans le cadre général, il s'agit d'arriver à montrer qu'on connait la réponse à une question en révélant des valeurs qui n'ont pas de corrélation directe avec la solution. "Charlie est là, mais je n'ai pas sa coordonnée", "les chiffres sont là, mais je n'ai pas vu l'organisation".
-
-Il existe de nombreux exemples plus ou moins intuitifs sur les mécanismes de ZKP. Dans le domaine de la crypto, les techniques tournent autour de la résolution de polynômes de degrés n. Le principe est de montrer qu'on connait la solution d'un système d'équations sachant que la complexité du système rend improbable le fait de trouver la solution par tirage aléatoire.
-
-### Overview
-Dans le vaste domaine des Preuves à Divulgation Nulle de Connaissance (ZKP), certaines avancées technologiques clés ont émergé pour répondre à des besoins spécifiques de performance et de transparence. Parmi ces innovations, les concepts de ZKP succincts, non-interactifs et transparents se distinguent par leurs caractéristiques uniques et leur applicabilité dans divers contextes.
-
-Les **ZKP succincts** révolutionnent l'efficacité en générant des preuves de taille extrêmement réduite. Cette caractéristique est cruciale pour les applications nécessitant un traitement et une vérification rapides, même pour des affirmations complexes. L'atout principal de ces ZKP est leur capacité à réduire considérablement l'espace de stockage et le temps de traitement, rendant ainsi possible leur utilisation dans des systèmes à grande échelle ou des environnements avec des ressources limitées.
-
-D'autre part, les **ZKP non-interactifs** simplifient le processus de vérification. Contrairement aux ZKP interactifs, où une série de communications entre le prouveur et le vérifieur est nécessaire, les ZKP non-interactifs permettent au prouveur de produire une preuve unique que n'importe quel vérifieur peut ensuite confirmer sans interaction supplémentaire. Cette propriété les rend particulièrement adaptés pour les applications décentralisées, telles que les blockchains et les cryptomonnaies, où l'interaction directe n'est pas toujours possible ou souhaitable.
-
-Enfin, les **ZKP transparents** abordent les préoccupations en matière de confiance et de sécurité. Ils éliminent le besoin d'une configuration secrète, un processus souvent nécessaire dans les systèmes de preuves classiques. En rendant le processus de génération de preuves entièrement transparent, ces ZKP renforcent la confiance dans leur validité et réduisent le risque de manipulation ou d'erreur.
-
-### zk-SNARK
-Les zk-SNARKs sont des preuves à divulgation nulle de connaissance succinctes et non interactives. Pour rappel, non-interactif, veut dire que la preuve est validée en un seul échange, succcincte veut dire que le temps de calcul pour le **vérifieur** doit être rapide. Groth16 est un implantation du protocole zk-SNARK et nous proposons ici de présenter le fonctionnement général et justifier les différentes étapes. Nous expliquerons cela sans faire appel à de trop grandes notions théoriques mathématiques, tout en illustrant de lignes de code les exemples les plus importants.
-
-Nous donnons en annexe une liste de lecture permettant de rentrer plus facilement dans certains détails. Ce document est fortement inspiré de deux sources.
-
-Notre objectif étant que le protocole soit compréhensible dans cette première lecture.
-
-Dans zkSnarks, la preuve sans divulgation consiste à indiquer à un vérifier qu'on connait un polynôme sans divulguer l'équation du polynome. Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ que seul le **prouveur** connait.
+Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ et un `x` sur la courbe que seul le **prouveur** connait. Le **prouveur** veut montrer au vérifieur qu'il a bien exécuté cette fonction sur une valeur de `x`qu'il a choisi. Le **prouveur** doit pouvoir valider cette assertion sans avoir de doute et rapidement. 
 
 La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme ? " sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
 
 ![polynome](./img/plotPoint-fx.png)
 
-Lorsque je présente au **vérifieur** des paires de valeurs telles que (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le vérifieur pourrait potentiellement retrouver la courbe originale à partir de ces informations, ce qui compromettrait l'objectif de cacher la courbe. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
+Si je trace la courbe, je peux présenter au **vérifieur** des paires de valeurs telles que (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le vérifieur pourrait potentiellement retrouver la courbe originale à partir de ces informations, ce qui compromet l'objectif de cacher la courbe. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
 
-Nous sommes donc confrontés à deux défis majeurs en maintenant la méthode de révélation de certaines coordonnées : premièrement, démontrer ma connaissance du polynôme sans pour autant divulguer ses coefficients spécifiques, permettant ainsi au **vérifieur** de confirmer l'existence d'une courbe correspondante. Deuxièmement, il est crucial de dissimuler ces informations de manière à empêcher le vérifieur de remonter au polynôme d'origine, tout en garantissant que le masquage ne me donne pas la latitude de sélectionner des valeurs aléatoires.
+Nous sommes face à deux défis : démontrer ma connaissance du polynôme sans divulguer les coefficients spécifiques, et garantir que le masquage ne me permet pas de choisir des valeurs aléatoires.
 
-Le premier challenge, consiste à transformer l'équation vers un ensemble de polynomes uniques qui possèdent la même solution que le polynme initial. Le polynôme initial est transformé dans un système d'équations qui présente le même ensemble de solutions que le polynôme initial, mais qui rend fortement improbable de remonter au polynôme source.
+Pour Zksnarks, le **prouveur** va montrer au vérifieur qu'il a exécuté un polynôme avec une valeur spécifique donnée. La preuve fournie ne permet ni de remonter au polynôme exécuté ni à la valeur d'entrée. La preuve zkSnark, se fait en 5 étapes. 
+- Transformation du polynôme dans un circuit R1CS
+- Récupération des coefficients du circuit et calcul du vecteur témoin (point solution de l'équation)
+- Conversion des coefficients dans un système d'équations quadratique (QAP)
+- Application du vecteur témoin au système QAP afin d'obtenir trois courbes ayant pour solution le circuit initial
+- Projection des courbes dans un espace elliptique
 
-Cette transformation se fait en trois étapes :
-  1. Transformation du polynôme initial dans un circuit R1CS
-  2. Transformation du circuit en coefficients d'un système de courbe quadratique
-  3. Extension du système de courbes quadratiques pour équilibrer les équations
-
-# Circuit R1CS
-Le Circuit R1CS, ou Rank 1 Constraint System, est une structure clé en cryptographie, utilisée pour transformer des équations polynomiales complexes en une série d'opérations élémentaires axées sur la multiplication, avec deux entrées et une sortie:
-
+# La preuve Zksnark
+## Transformation de l'équation dans un circuit R1CS
+Le Circuit R1CS, ou Rank 1 Constraint System, est une structure utilisée pour transformer des équations polynomiales complexes en une série d'opérations élémentaires modélisées par des porte. Chaque porte effectue une multiplication, avec une entrée gauche, une entrée droite et une sortie. Les portes sont enchaînées afin d'obtenir un circuit équivalent au polynôme initial. 
 <p align="center">
   <img src="./img/porteLRO.png" width="200">
 </p>
 
-Cette transformation est essentielle pour simplifier le traitement des équations dans des contextes tels que les preuves à divulgation nulle de connaissance.
-
-Considérons un exemple concret avec notre polynôme $f(x) = 3x^3 + 5x^2 + 10x + 3$. Sa conversion en circuit R1CS se décompose en étapes successives, où chaque opération polynomiale est transformée en une série de multiplications:
+Considérons un exemple concret avec notre polynôme $f(x) = 3x^3 + 5x^2 + 10x + 3$. Sa conversion en circuit R1CS se décompose en portes, où chaque opération polynomiale est transformée en une série de multiplications:
 ```
 v1 = x * x   (1)  
 v2 = x * v1  (2)  
@@ -96,27 +38,31 @@ v5 = 10 * x  (5)
 out = v3 + v4 + v5 + 3 (6)  
 out = (v3 + v4 + v5 + 3) * 1 (6bis)  
 ```
-Le schéma suivant présente le circuit équivalent sous forme de portes. 
+Le schéma suivant présente le circuit équivalent sous forme de portes. La dernière porte regroupe toutes les sorties nécessaires afin de réaliser l'addition terminale du polynôme.  
+
 <img src="./img/circuit-fx.png">
 
 
 Dans le circuit R1CS, chaque étape est représentée par une porte logique, intégrant des entrées et une sortie basées sur la multiplication. Pour s'aligner avec les contraintes du circuit, les additions sont traitées en regroupant les signaux en amont des portes. Ainsi, la dernière étape où `out` est calculé devient une multiplication par 1 pour respecter la forme standard du R1CS : $O = L * R$.
 
-Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice sont donc `[ 1 out x v1 v2 v3 v4 v5 ]`.  
-Le système d'équation se résume à 3 matrices, dont le résultat fourni la sortie finale : `L * R = O`
+Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice représentent les différentes variables utilisées dans le circuit R1CS `[ 1 out x v1 v2 v3 v4 v5 ]`.  Le circuit établi est constitué de 6 portes et 8 variables. La variable `1` représente les constantes du système, `out` représente la valeur de sortie du polynôme, `x`la valeur d'entrée, `v1-vx` les valeurs intérmédiaires des portes du circuit R1CS.
+
+Le système d'équation se résume à 3 matrices exprimant respectivement les entrées gauches (L), les entrées droites (R) et les sorties du circuit. 
 
 ```
 //L    
 //1 out x v1 v2 v3 v4 v5  
 [  
-  0  0  1  0  0  0  0  0    // x  
-  0  0  1  0  0  0  0  0    // x  
-  3  0  0  0  0  0  0  0    // 3  
-  5  0  0  0  0  0  0  0    // 5  
- 10  0  0  0  0  0  0  0    // 10  
-  3  0  0  0  0  1  1  1    // (6bis)  
+  0  0  1  0  0  0  0  0    // 1: x  
+  0  0  1  0  0  0  0  0    // 2: x  
+  3  0  0  0  0  0  0  0    // 3: 3  
+  5  0  0  0  0  0  0  0    // 4: 5  
+ 10  0  0  0  0  0  0  0    // 5: 10  
+  3  0  0  0  0  1  1  1    // 6: (6bis)  
 ]
 ```
+On retrouve l'état des 8 variables en colonne pour chaque porte en ligne.
+La ligne 4 de la matrice L indique qu'à l'entrée gauche de la porte 4 il y a une constante 5.  
 
 ```
 //R  
@@ -130,6 +76,7 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   1  0  0  0  0  0  0  0  // (6bis)  
 ]
 ```
+Ici, La ligne 4 de la matrice L indique qu'à l'entrée droite de la porte 4 il y a la valeur v1.  
 
 ```
 //out  
@@ -143,20 +90,16 @@ Le système d'équation se résume à 3 matrices, dont le résultat fourni la so
   0  1  0  0  0  0  0  0    // out  
 ]  
 ```
+Ce circuit simule l'exécution du polynôme par étapes successives représentées par des additions et des multiplication d'entiers. 
 
-Le cœur de ce système réside dans le vecteur témoin, qui est une représentation concrète des valeurs calculées à chaque étape. Pour une valeur donnée de `x`, par exemple `x = 5`, le vecteur témoin est calculé et contient toutes les valeurs intermédiaires et finales du circuit. Ce vecteur est crucial pour la vérification, car il démontre au **vérifieur** que le prouveur connaît une solution sans révéler explicitement les détails de cette solution.
+Pour une valeur donnée de `x`, par exemple `5`, la valeur de sortie du polynôme est $f(5) = 553$. Cette valeur peut également se calculer au travers du système R1CS. On peut stocker les valeurs des variables intermédiaire dans le vecteur suivant : `w = [ 1 553 5 25 125 375 125 50]`. 
 
-`w = [ 1 out x v1 v2 v3 v4 v5]` on peut prendre n'importe quelle valeur de x, et calculer alors toutes les autres valeurs. Si `x = 5` alors on aura comme vecteur témoins les valeurs suivantes :  `w = [ 1 553 5 25 125 375 125 50]`  
-  
-  
-`Lw * Rw = Ow`  
-  
-Que l'on peut vérifier avec le code python suivant [code/r1cs.py](code/r1cs.py) :
+Le circuit R1CS fonctionne avec le produit [matriciel d'Hadamard](https://fr.wikipedia.org/wiki/Produit_matriciel_de_Hadamard) `Lw ☉ Rw = Ow`, que l'on peut vérifier avec le code python suivant [code/r1cs.py](code/r1cs.py) et détaillé plus loin.
 ```python
 import numpy as np
 import random
-
-# Define the matrices
+# Equation 3x^3 + 5x^2 + 10x + 3
+# Définition des matrices R1CS
 O = np.array([
 [0,0,0,1,0,0,0,0],
 [0,0,0,0,1,0,0,0],
@@ -184,11 +127,10 @@ R = np.array([
 [1,0,0,0,0,0,0,0]
 ])
 
-# pick random values for x and y
+# x aléatoire
 x = random.randint(1,1000)
-#x = 5
 
-# this is our orignal formula
+# Circuit initial
 v1 = x * x
 v2 = x * v1
 v3 = 3 * v2
@@ -199,20 +141,11 @@ out = v3 + v4 + v5 + 3
 w = np.array([1, out, x, v1, v2, v3, v4, v5])
 
 result = O.dot(w) == np.multiply(L.dot(w),R.dot(w))
-assert result.all(), "result contains an inequality"
-
-print("-->", w)
+assert result.all(), "Le produit ne fonctionne pas"
+print("--> Vecteur choisi", w)
 ```
 
-Ces matrices ne font que représenter le polynôme initial en le décomposant en une multiplication de matrice. Le polynôme va maintenant être masqué dans un système d'équation quadratiques, constitué d'autant de courbes quadratique que de paramètres de l'équation, et pour lesquels le degré max des équations correspondes au nombre le ligne des matrices.
-
-Dans notre exemple, le système d'équation quadrique sera composé de 8 équations de 6e degré.
-
-## Une vérification intermédiaire rapide
-Une première vérification consiste à vérifier que les matrices représentant le circuit résolvent le vecteur témoin. L'application est un produit d'Hadamard entre les matrice L, R et O et le vecteur comme illustré ci-dessous. Les valeurs du vecteur sont répliqués sur chaque colonne de la matrice.
-
-Lw . Rw = Ow
-
+Le produit matriciel d'Hadamard, ce décompose ainsi.
 ```
 L.w =
   0  0  1  0  0  0  0  0           1
@@ -273,25 +206,22 @@ L.w =
 553
 ```
 
-On peut facilement vérifier que Lw x Rw = Ow.
+On peut facilement vérifier que `Lw ☉ Rw = Ow`.
 
-# Le twist des équations quadratiques
-Cette dernière multiplication fonctionne, mais il est simple de comprendre que si on connait les valeur de la matrice et le vecteur solution on peut remonter au circuit initial. Le premier vrai masqage va consister a faire la même multiplication mais dans le monde des Polynomes en "noyant" les coefficients des matrices dans une série d'équations quadratiques.
+# Les équations quadratiques
+Ces matrices (LRO) ne font que représenter le polynôme initial en le décomposant en coefficients de matrices.  
+L'étape suivante de zkSnark consiste à transformer masquer la valeur de ces coefficients dans des courbe. La courbe passe en 0 par les points correspondants aux coefficients. 
 
-Si on prend la première série de coefficient de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée aux portes du circuit. Si ces coefficients sont vus comme des coordonnées de l'espace plan : $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
+Par exemple, si on prend la première série de coefficient de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée gauche des portes du circuit. On peut modéliser ces entrée par une courbe qui donne les mêmes coefficients. Ainsi le vecteur $[0, 0, 3, 5, 10, 3]$ peut être modélisé par une courbe qui passe par les points  $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
 
-On sait qu'il existe une seule courbe de dimension 6 qui passe par ces 6 points. Elle a la forme $f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0$ , et que grâce à Lagrange on peut lui faire calculer les coefficient pour passer par les points. On passe alors dans l'espace du signal, et l'ensemble des fonctions de tous les coefficients de passage des portes forme un système d'équations. Ce système d'équations est résolu par une convolution avec le vecteur témoin.
-
-Pour obtenir le système, il faut fabriquer les polynomes de lagrange correspondant.
-
-Le code suivant permet d'obtenir les coefficients des polynômes de Lagrange [code/lagrange.py](code/lagrange.py)
+On sait qu'il existe une seule courbe de dimension 6 qui passe par ces 6 points. Elle a la forme $f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0$. L'interpolation de Lagrange permet de calculer la courbe qui passe par ces points [code/lagrange.py](code/lagrange.py). Il faut bien noter que les matrices U, V, W sont des transposées par rapport à R,L,O. Elle contiennent 8 lignes correspondant aux courbes de chaque paramètre du vecteur témoin et les fonctions interpolées sont de degré 5 correspondant aux 6 portes traversées. 
 
 ```python
 import numpy as np
 from scipy.interpolate import lagrange
 x = np.array([1, 2, 3, 4, 5, 6])
 y = np.array([0, 0, 3, 5, 10, 3])
-print(lagrange(x, 1))
+print(lagrange(x, y))
 ```
 
 ```
@@ -327,10 +257,10 @@ W : Transposé et coordonnées           --> Polynôme (on n'indique que les pol
 (1,0) (2,0) (3,0) (4,0) (5,1) (6,0)   --> f(x) = -0.04167x^5+0.6667x^4-3.958x^3+10.83x2-13.5x+6
 ```
 
-Nous obtenons 3 matrices de coefficients de Lagrange. Le nombre de fonctions, représenté par les lignes représentent le nombre de paramètres utilisés dans le circuit, le degré des polynomes correspond au nombre d'opérations du circuit (un degré 5, véhicule 6 opérations). Dans notre exemple 8 variables de circuit pour 6 opérations.
+Nous obtenons 3 matrices de coefficients de Lagrange. Dans notre exemple 8 variables de circuit pour 6 opérations.
 
 Nous récrivons ces polynomes sous la forme de matrices (de coefficients) que nous pouvons multiplier avec le vecteur solution, afin de vérifier la même preuve que précédemment mais dans l'espace des polynômes.
-`Uw . Vw = Ww`
+`Uw . Vw = Ww` est valide aux points d'interpolation (1, 2, 3, 4, 5, 6).
 
 `w = [ 1 553 5 25 125 375 125 50]`
 ```
@@ -345,7 +275,7 @@ U:
 ]
 ```
 ![Courbes U](./img/U.png)
-$Uw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
+$Uw(x) = -7.533x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809$
 
 ```
 V:
@@ -359,7 +289,7 @@ V:
 ]
 ```
 ![Courbes V](./img/V.png)
-$Vw(x) = -7.492x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809$
+$Vw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553$
 
 ```
 W:
@@ -368,16 +298,14 @@ W:
  [0, -0.125, 0,  0.167,  -0.792,   1.5  ,  -1.417,  0.667]
  [0,  0.708, 0, -1.292,   5.708, -10.083,   8.917, -3.958]
  [0, -1.875, 0,  4.833, -19.208,  31    , -25.583, 10.833]
- [0,  2.283, 0, -8.7  ,  29.25 , -42.333,  33    , 13.5  ]
+ [0,  2.283, 0, -8.7  ,  29.25 , -42.333,  33    , -13.5  ]
  [0, -1    , 0,  6    , -15    ,  20    , -15    ,  6    ]
 ]
 ```
 ![Courbes W](./img/W.png)
 $Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
 
-*Attention les polynômes Uw, Vw, Ww indiqués ici sont arrondis par les affichages. Les erreurs d'arrondis peuvent faire dévier fortement les courbes...*
-
-La multiplication de la matrice de Lagrange par le vecteur témoin se fait par le code python suivant [code/mult.py](code/mult.py)
+Une multiplication de matrice par le vecteur témoin se fait par le code python suivant [code/mult.py](code/mult.py)
 ```python
 import numpy as np
 from numpy import poly1d
@@ -395,19 +323,23 @@ witness = [1, 553, 5, 25, 125, 375, 125, 50]
 Vw = np.matmul(V, witness)
 print(poly1d(Vw))
 ```
+
+On peut vérifier que `Uw.Vw = Ww` est valide aux points d'interpolation avec le code suivant. 
+
+
 # L'application de la preuve
-Si l'isomorphisme fonctionne, nous pouvons faire l'opération de controle. Dans le monde R1CS nous avons vérifié que `Lw . Rw = Ow`. Nous devrions avoir par similitude dans le domaine des Polynômes : `Uw * Vw = Ww`.  
+Si l'isomorphisme fonctionne, nous pouvons faire l'opération de controle. Dans le monde R1CS nous avons vérifié que `Lw . Rw = Ow`. Nous devrions avoir par similitude dans le domaine des Polynômes : `Uw * Vw = Ww` aux points d'interpolation.
 
 On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré `deg(Uw * Vw) - deg(Ww)`.  
-$H(x) = (x-1)(x-2)(x-3)...(x-10)$
 
-`Uw * Vw = Ww + H`
+
+`Uw * Vw = Ww + H` aux points d'interpolation.
 Le polynome H n'a aucune chance d'annuler l'innégalité, car il est choisi de manière arbitraire.  
-`(Uw * Vw) - Ww != H`  
+`(Uw * Vw) - Ww != H`  (H degré 10)
 
-L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est connu h et l'autre ne fait qu'annuler l'équation.
-`(Uw * Vw) - Ww = h * t`  
-
+L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est connu h et l'autre ne fait qu'annuler l'équation aux points d'interpolation.
+`(Uw * Vw) - Ww = h * t`
+$t(x) = (x-1)(x-2)(x-3)...(x-5)$
 `h * t` doit être de la dimension de `(Uw * Vw)`, t peut être fabriqué commme voulu. On peut donc écrire l'équation suivante :
 `((Uw * Vw) - Ww) / t = h`
 
