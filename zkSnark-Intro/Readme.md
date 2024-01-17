@@ -1,57 +1,54 @@
 # Preuves à Divulgation Nulle de Connaissance (ZKP)
-Les ZKP visent à prouver une assertion sans divulguer de valeurs et sans connaître les détails de l'assertion. Le principe est directement issu des casses-têtes. Je peux montrer que je connais la solution sans divulguer les étapes intermédiares. Dans l'exercice du Sudoku, je peux montrer que j'ai trouvé 10 chiffres différents sur toutes les lignes et toutes les colonnes. Le ZKP modélisent ce principe. La mécanique générale met en relation un **prouveur** qui indique connaître la solution au problème et un **vérifieur** qui contrôle que la solution proposée. Cet échange se fait dans un cadre contraint contrôlé par un tier de confiance que nous appelons le **confident**. Par exemple dans le cadre concrêt du Sodoku, le **confident** peut être vu comme  celui qui prépare la grille initiale et qui vérifie que le prouveur n'a pas trouvé une solution toute prête ailleurs. 
+Les ZKP visent à prouver une assertion sans divulguer de valeurs et sans connaître les détails de l'assertion. Le principe est directement issu des casses-têtes. Je peux montrer que je connais la solution sans divulguer les étapes intermédiares. Dans l'exercice du Sudoku, je peux montrer que j'ai trouvé 10 chiffres différents sur toutes les lignes et toutes les colonnes sans donner la position exacte. Les ZKP modélisent ce principe. La mécanique générale met en relation un **prouveur** qui indique connaître la solution au problème et un **vérifieur** qui contrôle que la solution proposée. Cet échange se fait dans un cadre contraint, contrôlé par un tier de confiance que nous appelons le **confident**. Dans le cadre du Sodoku, le **confident** peut être vu comme celui qui prépare la grille initiale et qui vérifie que le **prouveur** n'a pas trouvé une solution toute prête ailleurs. 
   
-## Principes généraux des zksnarks et groth16
-Nous présentons le détail du fonctionnement mathématique de l'approche ZkSnark mise en œeuvre dans l'implantation groth16. Les Zksnarks est une famille de preuves ZKP qui possèdent des propriétés communes. Elles sont **Succinctes** et **Non interactives**. **Succincte** indique que le vérifieur peut contrôler la solution rapidement. **Non interactive** indique que le **prouveur** n'envoie qu'un seul message contenant la solution au **vérifieur**. En effet dans l'exemple du Sudoku, en supposant que les lignes et les colonnes sont données une par une, la preuve se fait de manière interactive. A chaque ligne ou colonne présentée au **vérifieur** sa confiance dans la preuve augmente. 
+## I. Principes généraux des zksnarks et groth16
+Nous présentons le détail du fonctionnement mathématique de l'approche ZkSnark mise en œeuvre dans l'implantation [[Groth16](https://eprint.iacr.org/2016/260.pdf)]. Les Zksnarks sont une famille de preuves ZKP qui possèdent des propriétés communes. Elles sont 'succinctes' et 'Non interactives'. Succincte indique que le **vérifieur** peut contrôler la solution rapidement. 'Non interactive' indique que le **prouveur** n'envoie qu'un seul message contenant la solution au **vérifieur**. Pour comprendre le principe de preuve interactive, reprenons l'exemple du Sudoku. En supposant que les lignes et les colonnes sont données une par une, la preuve se fait de manière interactive. A chaque ligne ou colonne présentée au **vérifieur** sa confiance dans la preuve augmente. Dans une approche 'non interactive' la preuve est fournie en un seul appel de fonction.  
 
-Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ et un `x` sur la courbe que seul le **prouveur** connait. Le **prouveur** veut montrer au vérifieur qu'il a bien exécuté cette fonction sur une valeur de `x`qu'il a choisi. Le **prouveur** doit pouvoir valider cette assertion sans avoir de doute et rapidement. 
+Groth16 part d'un polynôme quelconque : $f(x) = 3x^3+5x^2+10x+3$ et d'un `x` sur la courbe que seul le **prouveur** connait. Le **prouveur** veut montrer au vérifieur qu'il a bien exécuté cette fonction pour une valeur de `x`qu'il a choisi. Le **vérifieur** doit pouvoir valider cette assertion rapidement et sans doute. 
 
-La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme ? " sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
+La question est la suivante, en tant que **prouveur** : "Comment prouver à une personne que j'ai appliqué un polynôme sur une variable donnée ? ". Ceci, sans lui indiquer ni les coefficients (3, 5, 10, 3), ni le degré, ni la variable choisie.
 
 <p align="center">
   <img src="./img/plotPoint-fx.png" width="200">
 </p>
 
-Si je trace la courbe, je peux présenter au **vérifieur** des paires de valeurs telles que (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le vérifieur pourrait potentiellement retrouver la courbe originale à partir de ces informations, ce qui compromet l'objectif de cacher la courbe. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
+L'idée initiale consiste à passer par une interpolation. En traçant la courbe, en tant que **prouveur** je peux présenter au **vérifieur** des coordonnées comme (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le **vérifieur** peut retrouver la courbe originale à partir de ces informations, ce qui compromet l'objectif Zkp. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
 
-Nous sommes face à deux défis : démontrer ma connaissance du polynôme sans divulguer les coefficients spécifiques, et garantir que le masquage ne me permet pas de choisir des valeurs aléatoires.
+Nous sommes face à deux défis : démontrer ma connaissance du polynôme et de son application sans divulguer les coefficients spécifiques, et garantir que le masquage choisi ne me permet pas de choisir ces valeurs aléatoirement.
 
-Pour Zksnarks, le **prouveur** va montrer au vérifieur qu'il a exécuté un polynôme avec une valeur spécifique donnée. La preuve fournie ne permet ni de remonter au polynôme exécuté ni à la valeur d'entrée. La preuve zkSnark, se fait en 5 étapes. 
-- Transformation du polynôme dans un circuit R1CS
-- Récupération des coefficients du circuit et calcul du vecteur témoin (point solution de l'équation)
-- Conversion des coefficients dans un système d'équations quadratique (QAP)
-- Application du vecteur témoin au système QAP afin d'obtenir trois courbes ayant pour solution le circuit initial
-- Projection des courbes dans un espace elliptique
+Dans Zksnarks, le **prouveur** va montrer au **vérifieur** qu'il a exécuté un polynôme avec une valeur spécifique donnée. La preuve se fait en 5 étapes. 
+1. Transformation du polynôme dans un circuit R1CS
+2. Récupération des coefficients du circuit et calcul du vecteur témoin (point solution de l'équation)
+3. Conversion des coefficients dans un système d'équations quadratique (QAP)
+4. Application du vecteur témoin au système QAP afin d'obtenir trois courbes ayant pour solution le circuit initial
+5. Projection des courbes dans un espace elliptique
 
-# La preuve Zksnark
-## Transformation de l'équation dans un circuit R1CS
-Le Circuit R1CS, ou Rank 1 Constraint System, est une structure utilisée pour transformer des équations polynomiales complexes en une série d'opérations élémentaires modélisées par des porte. Chaque porte effectue une multiplication, avec une entrée gauche, une entrée droite et une sortie. Les portes sont enchaînées afin d'obtenir un circuit équivalent au polynôme initial. 
+## II. Déroulement de la preuve Zksnark
+### 1. Transformation de l'équation dans un circuit R1CS
+Le Circuit R1CS, ou Rank 1 Constraint System, est une structure utilisée pour transformer des équations polynomiales en une série d'opérations élémentaires modélisées par des portes. Chaque porte effectue une multiplication, avec une entrée gauche, une entrée droite et une sortie. Les portes sont chaînées afin d'obtenir un circuit réalisant le calcul du polynôme initial. 
 <p align="center">
   <img src="./img/porteLRO.png" width="200">
 </p>
 
-Considérons un exemple concret avec notre polynôme $f(x) = 3x^3 + 5x^2 + 10x + 3$. Sa conversion en circuit R1CS se décompose en portes, où chaque opération polynomiale est transformée en une série de multiplications:
+Considérons un exemple concret avec notre polynôme $f(x) = 3x^3 + 5x^2 + 10x + 3$. Sa conversion en circuit R1CS se décompose avec les 6 en portes suivantes :
 ```
 v1 = x * x   (1)  
 v2 = x * v1  (2)  
 v3 = 3 * v2  (3)  
 v4 = 5 * v1  (4)  
 v5 = 10 * x  (5)  
-out = v3 + v4 + v5 + 3 (6)  
-out = (v3 + v4 + v5 + 3) * 1 (6bis)  
+out = (v3 + v4 + v5 + 3) * 1 (6)  
 ```
-Le schéma suivant présente le circuit équivalent sous forme de portes. La dernière porte regroupe toutes les sorties nécessaires afin de réaliser l'addition terminale du polynôme.  
+La dernière porte (6) regroupe toutes les sorties nécessaires afin de réaliser l'addition terminale du polynôme.  
 
 <p align="center">
   <img src="./img/circuit-fx.png" width="200">
 </p>
 
+### 2. Récupération des coefficients du circuit et calcul du vecteur témoin
+Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice représentent les différentes variables utilisées dans le circuit R1CS `[ 1 out x v1 v2 v3 v4 v5 ]`.  Le circuit initialement établi est constitué de 6 portes et 8 variables. La variable `1` représente les constantes du système, `out` représente la valeur de sortie du polynôme, `x`la valeur d'entrée, `v1` à `vx` les valeurs intérmédiaires des portes du circuit R1CS.
 
-Dans le circuit R1CS, chaque étape est représentée par une porte logique, intégrant des entrées et une sortie basées sur la multiplication. Pour s'aligner avec les contraintes du circuit, les additions sont traitées en regroupant les signaux en amont des portes. Ainsi, la dernière étape où `out` est calculé devient une multiplication par 1 pour respecter la forme standard du R1CS : $O = L * R$.
-
-Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice représentent les différentes variables utilisées dans le circuit R1CS `[ 1 out x v1 v2 v3 v4 v5 ]`.  Le circuit établi est constitué de 6 portes et 8 variables. La variable `1` représente les constantes du système, `out` représente la valeur de sortie du polynôme, `x`la valeur d'entrée, `v1-vx` les valeurs intérmédiaires des portes du circuit R1CS.
-
-Le système d'équation se résume à 3 matrices exprimant respectivement les entrées gauches (L), les entrées droites (R) et les sorties du circuit. 
+Le système d'équations se résume à 3 matrices exprimant respectivement les entrées gauches (L), les entrées droites (R) et les sorties (O) du circuit. 
 
 ```
 //L    
@@ -62,7 +59,7 @@ Le système d'équation se résume à 3 matrices exprimant respectivement les en
   3  0  0  0  0  0  0  0    // 3: 3  
   5  0  0  0  0  0  0  0    // 4: 5  
  10  0  0  0  0  0  0  0    // 5: 10  
-  3  0  0  0  0  1  1  1    // 6: (6bis)  
+  3  0  0  0  0  1  1  1    // 6: 3+v3+v4+v5
 ]
 ```
 On retrouve l'état des 8 variables en colonne pour chaque porte en ligne.
@@ -77,7 +74,7 @@ La ligne 4 de la matrice L indique qu'à l'entrée gauche de la porte 4 il y a u
   0  0  0  0  1  0  0  0  // v2  
   0  0  0  1  0  0  0  0  // v1  
   0  0  1  0  0  0  0  0  // x  
-  1  0  0  0  0  0  0  0  // (6bis)  
+  1  0  0  0  0  0  0  0  // 1  
 ]
 ```
 Ici, La ligne 4 de la matrice L indique qu'à l'entrée droite de la porte 4 il y a la valeur v1.  
@@ -96,9 +93,10 @@ Ici, La ligne 4 de la matrice L indique qu'à l'entrée droite de la porte 4 il 
 ```
 Ce circuit simule l'exécution du polynôme par étapes successives représentées par des additions et des multiplication d'entiers. 
 
-Pour une valeur donnée de `x`, par exemple `5`, la valeur de sortie du polynôme est $f(5) = 553$. Cette valeur peut également se calculer au travers du système R1CS. On peut stocker les valeurs des variables intermédiaire dans le vecteur suivant : `w = [ 1 553 5 25 125 375 125 50]`. 
+Pour une valeur donnée de `x`, par exemple `5`, la valeur de sortie du polynôme est $f(5) = 553$. Cette valeur peut également se calculer au travers du système R1CS. On stocker les valeurs des variables intermédiaire dans le vecteur suivant : `w = [ 1 553 5 25 125 375 125 50]` appelé 'vecteur témoin' pour le *prouveur*. Il 'témoigne' que le **prouveur** a bien exécuté les étapes du circuit R1CS.   
 
-Le circuit R1CS fonctionne avec le produit [matriciel d'Hadamard](https://fr.wikipedia.org/wiki/Produit_matriciel_de_Hadamard) `Lw ☉ Rw = Ow`, que l'on peut vérifier avec le code python suivant [code/r1cs.py](code/r1cs.py) et détaillé plus loin.
+#### La première vérification intermédiaire : montrer que Lw ☉ Rw = Ow
+Le circuit R1CS fonctionne avec le produit [matriciel d'Hadamard](https://fr.wikipedia.org/wiki/Produit_matriciel_de_Hadamard) `Lw ☉ Rw = Ow`, que l'on peut vérifier avec le code python suivant [verifR1cs](code/r1cs.py) et détaillé plus loin.
 ```python
 import numpy as np
 import random
@@ -212,14 +210,13 @@ L.w =
 
 On peut facilement vérifier que `Lw ☉ Rw = Ow`.
 
-# Les équations quadratiques
-## Transposition initiale
-Ces matrices (LRO) ne font que représenter le polynôme initial en le décomposant en coefficients de matrices.  
-L'étape suivante de zkSnark consiste à transformer masquer la valeur de ces coefficients dans des courbe. La courbe passe en 0 par les points correspondants aux coefficients. 
+### 3. Les équations quadratiques
+Cependant, les matrices (LRO) ne font que représenter le polynôme initial en le décomposant en coefficients de matrices.  
+L'étape suivante de zkSnark consiste à masquer la valeur de ces coefficients dans des courbes. La courbe passe en '0' par les points correspondants aux coefficients des matrices.
 
-Par exemple, si on prend la première série de coefficient de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée gauche des portes du circuit. On peut modéliser ces entrée par une courbe qui donne les mêmes coefficients. Ainsi le vecteur $[0, 0, 3, 5, 10, 3]$ peut être modélisé par une courbe qui passe par les points  $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
+Par exemple, si on prend la première série de coefficients de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée gauche des portes du circuit. On peut modéliser ces entrée par une courbe qui possède des racines sur ces mêmes coefficients. Ainsi le vecteur $[0, 0, 3, 5, 10, 3]$ peut être modélisé par une courbe qui passe par les points  $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
 
-On sait qu'il existe une seule courbe de dimension 6 qui passe par ces 6 points. Elle a la forme $f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0$. L'interpolation de Lagrange permet de calculer la courbe qui passe par ces points [code/lagrange.py](code/lagrange.py). Il faut bien noter que les matrices U, V, W sont des transposées par rapport à R,L,O. Elle contiennent 8 lignes correspondant aux courbes de chaque paramètre du vecteur témoin et les fonctions interpolées sont de degré 5 correspondant aux 6 portes traversées. 
+Il n'existe qu'une seule courbe de degré 6 qui passe par ces 6 points. Elle a la forme $f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0$. L'interpolation de Lagrange permet de la calculer [lagrange](code/lagrange.py). Il faut noter que les matrices U, V, W sont des transposées par rapport à R,L,O. Elle contiennent 8 lignes correspondant aux courbes de chaque paramètre du vecteur témoin et les fonctions interpolées sont de degré 5 correspondant aux 6 portes traversées. 
 
 ```python
 import numpy as np
@@ -262,10 +259,10 @@ W : Transposé et coordonnées           --> Polynôme (on n'indique que les pol
 (1,0) (2,0) (3,0) (4,0) (5,1) (6,0)   --> f(x) = -0.04167x^5+0.6667x^4-3.958x^3+10.83x2-13.5x+6
 ```
 
-Nous obtenons 3 matrices de coefficients de Lagrange. Dans notre exemple 8 variables de circuit pour 6 opérations.
+Nous obtenons 3 matrices de coefficients de Lagrange. 
 
-Nous récrivons ces polynomes sous la forme de matrices (de coefficients) que nous pouvons multiplier avec le vecteur solution, afin de vérifier la même preuve que précédemment mais dans l'espace des polynômes.
-`Uw . Vw = Ww` est valide aux points d'interpolation (1, 2, 3, 4, 5, 6).
+### 4. Application du vecteur témoin au système QAP afin d'obtenir trois courbes 
+Nous récrivons ces polynômes sous la forme de matrices (de coefficients) que nous multiplions avec le vecteur solution, afin de vérifier la même preuve que pour le produit matriciel d'Hadamard mais dans l'espace des polynômes. Ceci revient à montrer que `Uw . Vw = Ww` est valide aux points d'interpolation (1, 2, 3, 4, 5, 6).
 
 `w = [ 1 553 5 25 125 375 125 50]`
 ```
@@ -285,7 +282,6 @@ U:
 </p>
 $Uw(x) = 4.525 x - 68.17 x + 388.5 x - 1035 x + 1268 x - 553$
 
-
 ```
 V:
 [
@@ -301,7 +297,6 @@ V:
   <img src="./img/V.png" width="200">
 </p>
 $Vw(x) = -7.533 x + 136.3 x - 920.3 x + 2832 x - 3844 x + 1809$
-
 
 ```
 W:
@@ -403,7 +398,7 @@ for i in range(1, 7):    # 7 points d'interpolation
 
 ```
 
-## La généralisation de l'équation Uw.Vw = Ww
+#### La seconde vérification intermédiaire : montrer que Uw.Vw = Ww
 Nous venons de voir que l'équation est valide aux points d'interpolation. Mais cela ne s'arrête pas là. Il est possible de trouver un cas plus général à cette équation en conservant la multiplication polynomiale.
 
 On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré `deg(Uw * Vw) - deg(Ww)`.  
@@ -448,8 +443,8 @@ $f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+87
 Le souci du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le **prouveur** et le **vérifieur**.
 L'étape suivante consiste à porter nos équations dans un espace de calcul plus efficace. Passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques simplifiera les calculs.
 
-# Rendre la preuve succincte en passant par les courbes elliptiques
-## L'espace de galois
+### 5. Rendre la preuve succincte en passant par les courbes elliptiques
+#### L'espace de galois
 L'explication précédente se faisant dans l'espace des réels. En informatique et particulièrement en cryptographie on est vite améné à travailler dans des espaces modulaires ou espaces de Galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appelé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7 (ou corps de Galois 7), la matrice L et le vecteur témoins sont modifiés avec le code suivant [qapGF](code/qapGF.py). Ce code exécute la même preuve que précédemment mais dans un corps de galois d'ordre 7. 
 Nous utilisons deux fonctions spécifiques : `calculPolyLagrangeGF` qui calcule les coefficients de Lagrange dans le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance. 
 
@@ -543,7 +538,7 @@ else:
 
 Le passage par les corps de Galois ne permet pas de gagner du temps de calcul, mais de projetter les équations sur des courbes elliptiques afin de fournir une preuve plus succincte. De plus, cela permet d'obtenir un reste de division `h_hem` égal à 0 car il n'y a plus d'arrondis en calcul modulaire.
 
-## Projection sur les courbes elliptiques
+#### Projection sur les courbes elliptiques
 Dans la preuve QAP, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. Le **vérifieur** peut fabriquer le polynôme `t`, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
 
 Pour palier cela, **prouveur** et **verifieur** sont mis en relation par un tier de confiance le **confident** *Trusted setup* en anglais, qui va imposer des valeurs de références uniques au deux participants. 
@@ -612,7 +607,7 @@ Avant cela, nous devons résoudre deux problèmes :
 1. Envoyer Uw, Vw, Ww au **confident** est une divulgation de connaissances...
 2. La multiplication Uw*Vw n'a aucun sens ni dans G1, ni dans G2 il faut passer par un mécanisme de pairing. 
 
-### Ne pas envoyer Uw au **confident**
+#### Ne pas envoyer Uw au **confident**
 Dans le code précédent, on constate que X0 à X5 sont des valeurs préparées et figées par **confident**. Il choisit  la valeur initiale aléatoire `tau` qu'il peut détruire / oublier dès que les puissances X0 à X5 sont calculées. Connaissant X0 à X5, il est impossible de remonter à la valeur `tau` initiale. Parallèlement, si le **prouveur** reçoit les différentes puissances (X0-X5), il peut calculer sont polynôme en continuant les déplacements sur la courbe elliptique G1. Il multiplie les puissances par les coefficients des polynômes. $P(x)=anx^n+a(n-1)x^(n-1)+...+a2x^2+a1x+a0$ devient $A = anXn+a(n-1)X(n-1)+...+a2X2+a1X1+a0X0$. Uw, Vw, Ww deviennent alors de valeurs numériques caractéristiques unique des polynômes associés. Nous les appelons A, B, C. 
 
 Pour $HT$, le calcul se fait en appliquant $Hv(Tp)$
@@ -664,7 +659,7 @@ print(eq(multiply(G1, res), (add(add(add(add(add(u0, u1), u2),u3),u4),u5))))
 ```
 La valeur $A=(1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106)$. Représente Uw par un point de la courbe elliptique G1.
 
-### La multiplication sur la courbe elliptique
+#### La dernière vérification : multiplication sur la courbe elliptique
 Le produit `A * B` ne donne pas de résultat sur la courbe elliptique G1. Il faut passer par un principe de pairing. Le pairing permet de multiplier deux points sur deux courbes elliptiques G1 et G2 pour obtenir un troisième point situé sur G12. Ainsi le mapping se présente ainsi :
 
 ```python
@@ -797,25 +792,25 @@ RPairing = pairing(add(encodeCoeffWwG2, encodeCoeffHTG2), G1)
 print("VALIDATION", LPairing == RPairing)
 ```
 
-# Conclusion
+## 3. Conclusion
 L'objectif de cette présentation est de décomposer chaque étape d'une preuve Zkp/znarks/groth16 dans un code python simple, clair et réutilisable. Le code a été validé et testé afin de comprendre le déroulement de bout en bout de l'algorithme sans noyer le développeur dans les concepts mathématiques associés. Nous les considérons comme des *boites noires* fournies par les différentes bibliothèques python disponibles. 
 
 Cependant, l'algorithme Groth16 n'est pas intégralement implanté car la dernière étape ne se déroule pas si simplement. En effet, si le *vérifieur* reçoit les trois chiffres A, B, C, il peut vérifier le pairing, mais il n'a aucune garantie que les données n'ont pas été 'inventées' par le *prouveur*. Pour palier cela, le *confident* fabrique des valeurs aléatoires propre à la preuve en cours qui va 'décaller' les valeurs A, B et C sur les différentes courbes. Ce décallage empêche le *prouveur* d'inventer complètement les valeurs. Ses calculs sont contraints par les décallages. Nous proposons dans un article suivant la réécriture de cette preuve en prenant en compte ces décalages. Nous n'avons pas proposé d'intégrer ces décalages dans ce document car il fallait revenir trop loin dans les étapes de la preuve. L'intuition initiale liée à la projection sur les courbes elliptiques devient plus complexe à percevoir. 
 
-# Outillages
-## visualisation
+## 4. Outillages
+### visualisation
 https://www.desmos.com/calculator?lang=fr  
 https://www.geogebra.org/?lang=fr 
 
-## Zkp, Zsnarks, Groth16
+### Zkp, Zsnarks, Groth16
 - [Under the hood of zkSNARK Groth16 protocol (part 1) | by Crypto Fairy | Coinmonks | Sep, 2023 | Medium](https://medium.com/coinmonks/under-the-hood-of-zksnark-groth16-protocol-2843b0d1558b)  
 - Code python : [zkSNARK-under-the-hood/groth16.ipynb at main · tarassh/zkSNARK-under-the-hood · GitHub](https://github.com/tarassh/zkSNARK-under-the-hood/blob/main/groth16.ipynb)  
 - [260.pdf (iacr.org)](https://eprint.iacr.org/2016/260.pdf)
 
-## Fondements mathématiques pour les Zkp
+### Fondements mathématiques pour les Zkp
 - [RareSkills/zkp](https://www.rareskills.io/zk-book)
 
-## Circuits R1CS
+### Circuits R1CS
 - [Zokrates](https://github.com/Zokrates/ZoKrates): The code is written in a language resembling Python.
 - [Circom](https://github.com/iden3/circom): It uses its own domain-specific language.
 - [Pequin](https://github.com/pepper-project/pequin) from the Pepper-Project: This utilizes a C-like language, similar to the gist provided above."
