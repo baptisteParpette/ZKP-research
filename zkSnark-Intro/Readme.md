@@ -8,7 +8,9 @@ Partons du polynôme : $f(x) = 3x^3+5x^2+10x+3$ et un `x` sur la courbe que seul
 
 La question est la suivante, en tant que **prouveur** "Comment prouver à une personne que je connais ce polynôme ? " sans lui indiquer les coefficients (3, 5, 10, 3) ni les degrés correspondants.
 
-![polynome](./img/plotPoint-fx.png)
+<p align="center">
+  <img src="./img/plotPoint-fx.png" width="200">
+</p>
 
 Si je trace la courbe, je peux présenter au **vérifieur** des paires de valeurs telles que (0, 3), (1, 21), (2, 67) et (3, 159), il peut en déduire que je suis au courant de l'existence d'une courbe spécifique de degré 3, puisqu'une seule courbe de ce type peut relier ces quatre points. Cependant, ce processus comporte un risque : le vérifieur pourrait potentiellement retrouver la courbe originale à partir de ces informations, ce qui compromet l'objectif de cacher la courbe. D'un autre côté, il est aussi possible que j'aie fabriqué ces points sans fondement réel.
 
@@ -40,7 +42,9 @@ out = (v3 + v4 + v5 + 3) * 1 (6bis)
 ```
 Le schéma suivant présente le circuit équivalent sous forme de portes. La dernière porte regroupe toutes les sorties nécessaires afin de réaliser l'addition terminale du polynôme.  
 
-<img src="./img/circuit-fx.png">
+<p align="center">
+  <img src="./img/circuit-fx.png" width="200">
+</p>
 
 
 Dans le circuit R1CS, chaque étape est représentée par une porte logique, intégrant des entrées et une sortie basées sur la multiplication. Pour s'aligner avec les contraintes du circuit, les additions sont traitées en regroupant les signaux en amont des portes. Ainsi, la dernière étape où `out` est calculé devient une multiplication par 1 pour respecter la forme standard du R1CS : $O = L * R$.
@@ -209,6 +213,7 @@ L.w =
 On peut facilement vérifier que `Lw ☉ Rw = Ow`.
 
 # Les équations quadratiques
+## Transposition initiale
 Ces matrices (LRO) ne font que représenter le polynôme initial en le décomposant en coefficients de matrices.  
 L'étape suivante de zkSnark consiste à transformer masquer la valeur de ces coefficients dans des courbe. La courbe passe en 0 par les points correspondants aux coefficients. 
 
@@ -274,7 +279,10 @@ U:
  [ 42    , 0, -9.   , 0, 0, -1    , -1    , -1   ]
 ]
 ```
-![Courbes U](./img/U.png)
+
+<p align="center">
+  <img src="./img/U.png" width="200">
+</p>
 $Uw(x) = 4.525 x - 68.17 x + 388.5 x - 1035 x + 1268 x - 553$
 
 
@@ -289,7 +297,9 @@ V:
  [-1    , 0,  12    , -30    ,  20    , 0, 0, 0]
 ]
 ```
-![Courbes V](./img/V.png)
+<p align="center">
+  <img src="./img/V.png" width="200">
+</p>
 $Vw(x) = -7.533 x + 136.3 x - 920.3 x + 2832 x - 3844 x + 1809$
 
 
@@ -304,7 +314,9 @@ W:
  [0, -1    , 0,  6    , -15    ,  20    , -15    ,  6    ]
 ]
 ```
-![Courbes W](./img/W.png)
+<p align="center">
+  <img src="./img/W.png" width="200">
+</p>
 $Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
 
 Une multiplication de matrice par le vecteur témoin se fait par le code python suivant [mult](code/mult.py)
@@ -391,18 +403,16 @@ for i in range(1, 7):    # 7 points d'interpolation
 
 ```
 
-
-# L'application de la preuve
-Si l'isomorphisme fonctionne, nous pouvons faire l'opération de controle. Dans le monde R1CS nous avons vérifié que `Lw . Rw = Ow`. Nous devrions avoir par similitude dans le domaine des Polynômes : `Uw * Vw = Ww` aux points d'interpolation.
+## La généralisation de l'équation Uw.Vw = Ww
+Nous venons de voir que l'équation est valide aux points d'interpolation. Mais cela ne s'arrête pas là. Il est possible de trouver un cas plus général à cette équation en conservant la multiplication polynomiale.
 
 On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré `deg(Uw * Vw) - deg(Ww)`.  
 
-
 `Uw * Vw = Ww + H` aux points d'interpolation.
-Le polynome H n'a aucune chance d'annuler l'innégalité, car il est choisi de manière arbitraire.  
-`(Uw * Vw) - Ww != H`  (H degré 10)
+Le polynome H n'a aucune chance d'annuler l'inégalité, car il est choisi de manière arbitraire.  
+`(Uw * Vw) - Ww != H`
 
-L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est connu h et l'autre ne fait qu'annuler l'équation aux points d'interpolation.
+L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est inconnu `h` et l'autre annule l'équation aux points d'interpolation. Car justement ce sont les racines initialement testées.
 `(Uw * Vw) - Ww = h * t`
 $t(x) = (x-1)(x-2)(x-3)...(x-5)$
 `h * t` doit être de la dimension de `(Uw * Vw)`, t peut être fabriqué commme voulu. On peut donc écrire l'équation suivante :
@@ -413,7 +423,7 @@ $f(x)=3x^3+5x^2+10x+3$.
 
 En effet la probabilité de connaître un polynôme unique qui relie les signaux `U, V, et W` par un diviseur cible `t` est nulle. Vous pouvez donc vérifier cette proposition en vérifiant que le reste de la division est nul.
 
-Dans notre exemple, [code/division.py](code/division.py), le code python suivant, indique un reste proche de 0 qu'on peut considérer nul.
+Dans notre exemple, [division](code/division.py), indique un reste proche de 0.
 ```python
 import numpy as np
 from numpy import poly1d
@@ -435,12 +445,13 @@ $r(x)=0.0001015x^5-0.001524x^4+0.00865x^3-0.02295x^2+0.028x-0.01228$
 A titre de comparaison la fonction résultante ((Uw*Vw)-Ww) est la suivante  
 $f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+8785000x^3-8321000x^2+4428000x-1004000$
 
-Le soucis majeur du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le **prouveur** et le **vérifieur**.
+Le souci du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le **prouveur** et le **vérifieur**.
 L'étape suivante consiste à porter nos équations dans un espace de calcul plus efficace. Passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques simplifiera les calculs.
 
-# L'espace de galois
-Tous les calculs peuvent se faire dans un espace de galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appélé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7, la matrice L et le vecteur témoins sont modifiés en conséquence. En python, ils doivent être rendus compatibles avant d'être convertis en valeurs appartenant au corps associé. Le code suivant [code/qapGF.py](code/qapGF.py) indique la même preuve que précédemment mais dans le corps de galois d'ordre 7. 
-Nous utilisons deux fonctions spécifiques : `calculPolyLagrangeGF` calcul les coefficients de lagrange dans le le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance. 
+# Rendre la preuve succincte en passant par les courbes elliptiques
+## L'espace de galois
+L'explication précédente se faisant dans l'espace des réels. En informatique et particulièrement en cryptographie on est vite améné à travailler dans des espaces modulaires ou espaces de Galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appelé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7 (ou corps de Galois 7), la matrice L et le vecteur témoins sont modifiés avec le code suivant [qapGF](code/qapGF.py). Ce code exécute la même preuve que précédemment mais dans un corps de galois d'ordre 7. 
+Nous utilisons deux fonctions spécifiques : `calculPolyLagrangeGF` qui calcule les coefficients de Lagrange dans le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance. 
 
 ```python
 import sys
@@ -476,7 +487,7 @@ GF = galois.GF(p)
 
 np.set_printoptions(linewidth=np.nan)
 
-#On part des matrices initiales. Indépendantes du corps de calcul
+#On part des matrices initiales que l'on contraint dans le corps par le modulo (%)
 L = GF(np.array([
  [0,0,1,0,0,0,0,0],
  [0,0,1,0,0,0,0,0],
@@ -530,11 +541,10 @@ else:
     print("=> La preuve invalide")
 ```
 
-Le passage dans le corps de Galois ne permet pas nécessairement de gagner du temps de calcul, mais permet de projetter les équation sur des courbes elliptique afin de fournir une preuve plus succincte, ainsi que d'obtenir le reste de la division `h_hem` égale à 0 car nous ne travaillons plus avec des nombres flottants donc il n'y a plus de problème d'arrondit. 
+Le passage par les corps de Galois ne permet pas de gagner du temps de calcul, mais de projetter les équations sur des courbes elliptiques afin de fournir une preuve plus succincte. De plus, cela permet d'obtenir un reste de division `h_hem` égal à 0 car il n'y a plus d'arrondis en calcul modulaire.
 
-# Projection sur les courbes elliptiques
-Dans la preuve précédente, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. 
-Le **vérifieur** peut fabriquer le polynôme *t*, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
+## Projection sur les courbes elliptiques
+Dans la preuve QAP, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. Le **vérifieur** peut fabriquer le polynôme `t`, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
 
 Pour palier cela, **prouveur** et **verifieur** sont mis en relation par un tier de confiance le **confident** *Trusted setup* en anglais, qui va imposer des valeurs de références uniques au deux participants. 
 
@@ -543,18 +553,19 @@ $Uw * Vw = Ww + HT$
 
 Ce sont tous des polynômes, qui peuvent être évalués à n'importe quelle coordonnée. 
 
-Prenons par-exemple Uw = $4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x$
+Prenons par exemple Uw = $4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x$
 En choisissant arbitrairement `x = 5`, on peut écire `4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055`
-Une courbe elliptique permet de fournir une valeur représentante qui montre que la solution est connue mais sans qu'on puisse remonter à l'équation source. (C'est une forme de Zkp, mais sans vérification possible).
+Une courbe elliptique permet de fournir une valeur représentante qui montre que la solution est connue mais sans qu'on puisse remonter à l'équation source. 
 $Ell(Uw(5)) = 4*Ell(5^5) + 3*Ell(5^4) + 5*Ell(5^3) + 3*Ell(5^2)-4*Elli(5)+0$
 
 Les courbes elliptiques fonctionnent ainsi : 
-On part d'un point sur la courbe, appelé G. En fonction des courbes considérés les points initiaux peuvent avoir plusieurs types de coordonnées. G1 : 1 point à 2 dimensions, G2 : 2 points à 2 dimensions, G12 : 12 points à 2 dimensions.
-Si on ajoute G à G, on trouve le point suivant sur la courbe. 5*G1 déplace G1 sur la courbe de 5 sauts, et 5G1 est toujours sur la courbe. 
+On part d'un point sur la courbe, appelé G1. (En fonction des courbes considérés les points initiaux peuvent avoir plusieurs dimensions. G1 : 1 point à 2 dimensions, G2 : 2 points à 2 dimensions, G12 : 12 points à 2 dimensions.)
+Si on ajoute G1 à G1, on trouve le point suivant sur la courbe. 5*G1 déplace G1 sur la courbe de 5 sauts, et 5G1 est toujours sur la courbe.
+
 Par rapport à notre exemple : 
 $15055G1 = 4*3125G1 + 3*625G1 + 5*125G1 + 3*25G1 - 4*5G1$
 $15055G1 = 15055G1$
-Le code python [code/G.py](code/G.py) implante cette égalité. 
+Le code python [G](code/G.py) implante cette égalité. 
 
 ```python
 from py_ecc.bn128 import G1, G2, multiply, add, neg, eq
@@ -586,12 +597,10 @@ Le point résulant `15055G1`
 ```
 (2708568011129098481813750608442309814741431019776566886222041314305674896534, 12627231381848946543670844035528126888439204587944747555252932693150421290218)
 ``` 
-représente une valeur du polynôme en un point particulier.
-
-Il est impossible de remonter au polynôme source, et si le **confident** est un tier de confiance, on suppose qu'il a calculé cette valeur que ni le **prouveur**, ni le **vérifieur** ne peuvent contester. 
+représente une valeur du polynôme en un point particulier. Il est impossible de remonter au polynôme source. Une équation polynômiale se présente sous la forme $P(x)=anx^n+a(n-1)x^(n-1)+...+a2x^2+a1x+a0$. Ce qui est important dans ces équations ce sont les coefficients ax...a0 et le degré du polynôme. En passant par les courbes elliptiques, on peu s'abstraire des puissances de x. En prenant un point de G1 au hasard, et en prenant ses puissances respectives, un tiers de confiance peut 'figer' les puissances une fois pour toute. Dans le code exemple, le point 5G1 est la valeur aléatoire initiale ('5' qui s'appelera `tau` plus loin dans le texte) et X0 à X5 sont les différentes puissances de x précalculées et figées par le **confident**.  
 
 On arrive donc à la notion de preuve succincte :
-Si `Uw * Vw = Ww + HT` sont tous des polynomes, le **prouveur** peux en calculer des projections équivalente sur des courbes elliptiques. 
+Si `Uw * Vw = Ww + HT` sont des polynomes, le **prouveur** peux en calculer des projections équivalente sur des courbes elliptiques. 
 
 Si 
 $A = Encode(Uw, tau)$,  
@@ -604,18 +613,8 @@ Avant cela, nous devons résoudre deux problèmes :
 2. La multiplication Uw*Vw n'a aucun sens ni dans G1, ni dans G2 il faut passer par un mécanisme de pairing. 
 
 ### Ne pas envoyer Uw au **confident**
-Dans l'exemple précédent, on peut constater que X0 à X5 sont des valeurs  connues uniquement du **confident**, qui choisi aléatoirement la valeur de tau initiale, et c1 à c5 permettent de réaliser le calcul sans en notifier le **confident**. 
+Dans le code précédent, on constate que X0 à X5 sont des valeurs préparées et figées par **confident**. Il choisit  la valeur initiale aléatoire `tau` qu'il peut détruire / oublier dès que les puissances X0 à X5 sont calculées. Connaissant X0 à X5, il est impossible de remonter à la valeur `tau` initiale. Parallèlement, si le **prouveur** reçoit les différentes puissances (X0-X5), il peut calculer sont polynôme en continuant les déplacements sur la courbe elliptique G1. Il multiplie les puissances par les coefficients des polynômes. $P(x)=anx^n+a(n-1)x^(n-1)+...+a2x^2+a1x+a0$ devient $A = anXn+a(n-1)X(n-1)+...+a2X2+a1X1+a0X0$. Uw, Vw, Ww deviennent alors de valeurs numériques caractéristiques unique des polynômes associés. Nous les appelons A, B, C. 
 
-A, B, C se calculent ainsi :   
-
-$X0...Xn$ et $T0...Tn$ sont calculés et fournis par le **confident**
-
-Le **prouveur** fini sa partie en calculant :
-$A = u[n]*Xn+u[n-1]*X[n-1]+...+u0X0$
-$B = v[n]*Xn+v[n-1]*X[n-1]+...+u0X0$
-
-
-Avec $u[n]..u0$ les coefficients du polynome $Uw$
 Pour $HT$, le calcul se fait en appliquant $Hv(Tp)$
 
 En résumé, le **prouveur** est capable de calculer A, B sans divulguer d'information au **confident**. 
@@ -623,7 +622,7 @@ Le **confident** envoi les coefficient X0 à Xn qui sont les points de courbe au
 
 Une partie du coût de calcul est déporté vers le **confident**, qui calcule une fois pour toute les coefficients $X0-Xn$.
 
-Le code suivant [code/EncodeUwInElliptic.py](code/EncodeUwInElliptic.py) distingue le calcul des puissances de tau, réalisé par le **confident** du calcul de la valeur A réalisée par le **prouveur**.
+Le code suivant [EncodeUwInElliptic](code/EncodeUwInElliptic.py) distingue le calcul des puissances de tau, réalisé par le **confident** du calcul de la valeur A réalisée par le **prouveur**.
 ```python
 import sys;
 from py_ecc.bn128 import G1, multiply, add, curve_order, eq, neg
@@ -652,7 +651,7 @@ u2 = multiply(X2, 3)
 u1 = multiply(X1, 4)
 u0 = multiply(X0, 0)
 encodeCoeffU=(add(add(add(add(add(u0, u1), u2),u3),u4),u5))
-print("U=",encodeCoeffU)
+print("A=",encodeCoeffU)
 
 #  !!!!   Verification a ne jamais faire : ici pour montrer que le code fonctionne
 u = galois.Poly([4, 3, 5, 3, 4, 0], field=GF)
@@ -663,19 +662,18 @@ print("Uprouf = ", multiply(G1, res))
 print(eq(multiply(G1, res), (add(add(add(add(add(u0, u1), u2),u3),u4),u5))))
 
 ```
-La valeur $U=(1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106)$. Représente un point de la courbe du polynôme Uw dans la courbe elliptique G1. Le point x initialement choisi est inconnu, 
-
-On peut faire pareil pour U et V. 
+La valeur $A=(1546263917648380985932166947985122387032060776958041831898579505785293100452, 7891785325832423556431731423973646932499847348453447787792896938638292260106)$. Représente Uw par un point de la courbe elliptique G1.
 
 ### La multiplication sur la courbe elliptique
-Le produit `A * B` ne donne pas de résultat sur la courbe elliptique. Il faut passer par un principe de pairing. Le principe est que la multiplication d'un point par un autre point doit se faire sur deux courbes différentes et le résultat est un point sur une troisième courbe. Ainsi le mapping se présente ainsi :
-Si on a 3 points A, B, C sur une courbe bien choisie, et que A * B = C, alors on peut projeter les points ainsi :
+Le produit `A * B` ne donne pas de résultat sur la courbe elliptique G1. Il faut passer par un principe de pairing. Le pairing permet de multiplier deux points sur deux courbes elliptiques G1 et G2 pour obtenir un troisième point situé sur G12. Ainsi le mapping se présente ainsi :
 
 ```python
 mapping(B_G2, A_G1) == mapping(G2, C_G1) # Le mapping s'effectue sur la courbe G12, mais le point n'est pas nécessairement accessible.
 ```
+B est un point de G2, A un point de G1, A * B indique un point C situé sur G12.
+Il est a noté que le pairing ne fonctionne que sur un espace de Galois spécifique où le pairing a été vérifié. Il s'agit des courbes bn128.   
 
-Le code suivant [code/testpairing.py](code/testpairing.py) illustre un exemple d'équivalence de mapping `map(5*G1, 6*G2) == map(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification.
+Le code suivant [testpairing](code/testpairing.py) teste le pairing `map(5*G1, 6*G2) == map(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification [[cf. Bilinear Pairing](https://www.rareskills.io/post/bilinear-pairing)].
 
 ```python
 from py_ecc.bn128 import multiply, G1, G2, pairing
@@ -687,15 +685,12 @@ C = multiply(G1, 5*6)
 print(pairing(B, A) == pairing(G2, C)) # un bug de librairie python oblige de faire G2 -> G1
 ```
 
-Par rapport à nos équations `Uw * Vw = Ww + HT`
-on devrait aboutir au pairing suivant. 
-
+Par simulitude avec nos équations `Uw * Vw = Ww + HT` on devrait aboutir au pairing suivant. 
 `pairing(Uwp_G1c, Vwp_G2c) = pairing((Wwp_G1c+HpTv_G1c), G2)`
 
 Si cette équation est vérifiée alors le code démontre que le **prouveur** connait une équation sans en divulguer les coefficients au **vérifieur**. Les suffixes v et p indiquent d'où proviennent les données
 
-Le code suivant [code/ProofArrangedFinal.py](ProofArrangedFinal.py) calcule la preuve quasiment de bout en bout. 
-
+Le code suivant [ProofArrangedFinal](ProofArrangedFinal.py) calcule la preuve proposée de bout en bout. 
 
 ```python
 import sys
@@ -802,16 +797,23 @@ RPairing = pairing(add(encodeCoeffWwG2, encodeCoeffHTG2), G1)
 print("VALIDATION", LPairing == RPairing)
 ```
 
+# Conclusion
+L'objectif de cette présentation est de décomposer chaque étape d'une preuve Zkp/znarks/groth16 dans un code python simple, clair et réutilisable. Le code a été validé et testé afin de comprendre le déroulement de bout en bout de l'algorithme sans noyer le développeur dans les concepts mathématiques associés. Nous les considérons comme des *boites noires* fournies par les différentes bibliothèques python disponibles. 
 
+Cependant, l'algorithme Groth16 n'est pas intégralement implanté car la dernière étape ne se déroule pas si simplement. En effet, si le *vérifieur* reçoit les trois chiffres A, B, C, il peut vérifier le pairing, mais il n'a aucune garantie que les données n'ont pas été 'inventées' par le *prouveur*. Pour palier cela, le *confident* fabrique des valeurs aléatoires propre à la preuve en cours qui va 'décaller' les valeurs A, B et C sur les différentes courbes. Ce décallage empêche le *prouveur* d'inventer complètement les valeurs. Ses calculs sont contraints par les décallages. Nous proposons dans un article suivant la réécriture de cette preuve en prenant en compte ces décalages. Nous n'avons pas proposé d'intégrer ces décalages dans ce document car il fallait revenir trop loin dans les étapes de la preuve. L'intuition initiale liée à la projection sur les courbes elliptiques devient plus complexe à percevoir. 
 
-
-# outils & refs
+# Outillages
+## visualisation
 https://www.desmos.com/calculator?lang=fr  
-https://www.geogebra.org/?lang=fr  
-Article medium qui explique le fonctionnement : [Under the hood of zkSNARK Groth16 protocol (part 1) | by Crypto Fairy | Coinmonks | Sep, 2023 | Medium](https://medium.com/coinmonks/under-the-hood-of-zksnark-groth16-protocol-2843b0d1558b)  
-Code python : [zkSNARK-under-the-hood/groth16.ipynb at main · tarassh/zkSNARK-under-the-hood · GitHub](https://github.com/tarassh/zkSNARK-under-the-hood/blob/main/groth16.ipynb)  
-article de ref de groth16 : [260.pdf (iacr.org)](https://eprint.iacr.org/2016/260.pdf)  
+https://www.geogebra.org/?lang=fr 
 
+## Zkp, Zsnarks, Groth16
+- [Under the hood of zkSNARK Groth16 protocol (part 1) | by Crypto Fairy | Coinmonks | Sep, 2023 | Medium](https://medium.com/coinmonks/under-the-hood-of-zksnark-groth16-protocol-2843b0d1558b)  
+- Code python : [zkSNARK-under-the-hood/groth16.ipynb at main · tarassh/zkSNARK-under-the-hood · GitHub](https://github.com/tarassh/zkSNARK-under-the-hood/blob/main/groth16.ipynb)  
+- [260.pdf (iacr.org)](https://eprint.iacr.org/2016/260.pdf)
+
+## Fondements mathématiques pour les Zkp
+- [RareSkills/zkp](https://www.rareskills.io/zk-book)
 
 ## Circuits R1CS
 - [Zokrates](https://github.com/Zokrates/ZoKrates): The code is written in a language resembling Python.
@@ -820,123 +822,3 @@ article de ref de groth16 : [260.pdf (iacr.org)](https://eprint.iacr.org/2016/26
 - https://medium.com/blockapex/a-primer-for-the-zero-knowledge-cryptography-part-ii-ecc0199d0a56
 - https://medium.com/@imolfar/why-and-how-zk-snark-works-8-zero-knowledge-computation-f120339c2c55
 - [Under the hood of zkSNARKs — PLONK protocol: Part 1 | by Crypto Fairy | Nov, 2023 | Medium](https://medium.com/@cryptofairy/under-the-hood-of-zksnarks-plonk-protocol-part-1-34bc406d8303)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##### Ressources :
-
-###### Point de départ vers beaucoup de ressource :
-
-https://github.com/matter-labs/awesome-zero-knowledge-proofs
-
-###### 3 videos que modelise un problème en circuit arithmetique et le converti en R1CS et QAP et ECC:
-
-https://www.youtube.com/watch?v=tR4r4dxL66k
-https://www.youtube.com/watch?v=T2wlGhVFOCw
-https://www.youtube.com/watch?v=bqSFyULJFtQ
-
-###### Les 3 articles de Vitalik Buterin sur les zk-SNARKs :
-
-https://medium.com/@VitalikButerin/quadratic-arithmetic-programs-from-zero-to-hero-f6d558cea649
-  Plus d'explication sur l'article de Vitalik:
-   https://risencrypto.github.io/R1CSQAP/
-   https://webcache.googleusercontent.com/search?q=cache:https://medium.com/asecuritysite-when-bob-met-alice/filling-in-the-details-of-vitalics-excellent-zk-snarks-article-for-qap-processing-8b36fcf69f46
-Vitalik recommende de lire ça : https://chriseth.github.io/notes/articles/zksnarks/zksnarks.pdf
-
-https://medium.com/@VitalikButerin/exploring-elliptic-curve-pairings-c73c1864e627
-https://medium.com/@VitalikButerin/zk-snarks-under-the-hood-b33151a013f6
-
-###### Un article sur les elliptic curves :
-
-https://blog.cloudflare.com/a-relatively-easy-to-understand-primer-on-elliptic-curve-cryptography/
-
-###### Eli Ben-Sasson sur les zk-SNARKs :
-
-https://eprint.iacr.org/2013/879.pdf
-https://www.youtube.com/watch?v=HJ9K_o-RRSY
-
-###### Utilisation de libsnark pour les zk-SNARKs :
-
-https://github.com/christianlundkvist/libsnark-tutorial
-
-##### Rareskills.io
-Site de vulgarisation des maths pour les programmeur crypto
-- Théorie des ensembles : https://www.rareskills.io/post/set-theory
-  - Termes définis : ensemble / magma / semi-groupe / monoid / groupe
-      - Semigroup : pas d'élément identite (0 dans l'addition)
-      - Monoid : identité, mais pas d'inverse (-1 / +1)
-      - Groupe : identité + inverse
-- Théorie des groupes : https://www.rareskills.io/post/group-theory-and-coding
-  - groupe : ensemble muni de
-            - Un opérateur binaire associatif et fermé
-            - Un élément identité
-            - Les éléments possèdent un inverse
-      - Groupe Abélien : groupe muni de
-            - L'opérateur binaire associatif et fermé est aussi commutatif (ex : +)
-  - groupe fini
-  - ordre d'un groupe
-  - groupe cyclique : tous les éléments sont générés par un générateur additionné pleins de fois
-- Anneau et Champs : https://www.rareskills.io/post/rings-and-fields
-  - Anneau : ensemble muni de deux opérateurs binaires
-    - Sous le premier opérateur, l'ensemble est un groupe abélien(inverse et commutatif)
-    - Sous le second, l'ensemble est un monoid(pas d'inverse)
-    - Le second opérateur distribue sur le premier
-  - Champ : pareil qu'un anneau
-    - Premier opérateur pareil que l'anneau
-    - Second opérateur si on exclue le 0, l'ensemble est un groupe abélien
-
-    Exemple : Addition et multiplication modulo 2 est le plus petit champ possible (cf GF(2))
-    Exemple : l'ensemble des entiers avec + et * n'est pas un champ, mais un anneau
-    Exemple : l'ensemble de réels est un champ
-
-- Courbe elliptiques sur les champs finis : https://www.rareskills.io/post/elliptic-curves-finite-fields
-  - Très bon article sur le principe de y^2 = X^3 + 3 (mod 27)
-    - Base des zkp : x + y = 5, je peux prouver que je connais deux chiffres x et y solution, sans les donner.
-    -      Je peux donner : GX, et GY.
-    -        Grace aux courbes elliptiques le **vérifieur** peut faire
-    -                GX + GY = 5G
-    - ==> On suppose qu'un attaquant qui connait GX, ne peux pas revenir à X. C'est le principe des algorithmes discrets
-    - ==> Si un attaqueur imagine x et y, il peut par contre vérifier que ce sont les bonnes valeur sur les points de la courbe elliptique
-
-- Billinear Pairing : Pour l'instant pas compris : https://www.rareskills.io/post/bilinear-pairing
-Le principe est de permettre la multiplication de deux coordonnées de courbes elliptiques. Dans la même courbe (G1) cela correspond à un produit scalaire, qui est l'addition du point sur lui-même autant de fois que possible.
-kA = A + A + A. et A + B = C sont des points d'une même courbe. Le pairing permet de faire une multiplication de points de deux courbes différentes pour se retrouver sur une troisième courbe.
-A x B = C, le principe est que les points sont sur trois courbes différentes qui ont des propriétés de champs étendus similaire (à vérifier). Le pairing est une fonction qui rend homomorphe la multiplication sur des courbes elliptique.
-5G2 * 6G1 = 30 G12. D'une manière générale elle est utilisée pour comparer des pairing. Les points de la courbe G23 ne sont pas forcément accessibles (volume mémoire). On veut vérifier des équalités du style :
-Pairing(G2 * 5, G1 * 6) = Pairing (30*G2, G1). Tout se fait dans G12, mais c'est invisible.
-
-
-
-- R1CS to Quadratic Arithmetic Program over a Finite Field in Python : https://www.rareskills.io/post/r1cs-to-qap
-- Converting Algebraic Circuits to R1CS (Rank One Constraint System) : https://www.rareskills.io/post/rank-1-constraint-system
-
-- Circom : code rust pour écrire des circuits R1CS (version précédente en js) : https://docs.circom.io/
-
