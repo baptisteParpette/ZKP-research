@@ -46,7 +46,7 @@ La dernière porte (6) regroupe toutes les sorties nécessaires afin de réalise
 </p>
 
 ### 2. Récupération des coefficients du circuit et calcul du vecteur témoin
-Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice représentent les différentes variables utilisées dans le circuit R1CS `[ 1 out x v1 v2 v3 v4 v5 ]`.  Le circuit initialement établi est constitué de 6 portes et 8 variables. La variable `1` représente les constantes du système, `out` représente la valeur de sortie du polynôme, `x`la valeur d'entrée, `v1` à `vx` les valeurs intérmédiaires des portes du circuit R1CS.
+Le circuit est ensuite exprimé sous forme de trois matrices distinctes, correspondant aux éléments gauche (L), droite (R) et sortie (O) du circuit. Ces matrices détaillent comment chaque variable et chaque étape intermédiaire sont reliées entre elles dans le circuit. Les colonnes de la matrice représentent les différentes variables utilisées dans le circuit R1CS `[ 1 out x v1 v2 v3 v4 v5 ]`.  Le circuit initialement établi est constitué de 6 portes et 8 variables. La variable `1` représente les constantes du système, `out` représente la valeur de sortie du polynôme, `x`la valeur d'entrée, `v1` à `vx` les valeurs intermédiaires des portes du circuit R1CS.
 
 Le système d'équations se résume à 3 matrices exprimant respectivement les entrées gauches (L), les entrées droites (R) et les sorties (O) du circuit. 
 
@@ -152,7 +152,7 @@ Le produit matriciel d'Hadamard, ce décompose ainsi.
 L.w =
   0  0  1  0  0  0  0  0           1
   0  0  1  0  0  0  0  0         553
-  3  0  0  0  0  0  0  0    .      5
+  3  0  0  0  0  0  0  0    ☉      5
   5  0  0  0  0  0  0  0          25
  10  0  0  0  0  0  0  0         125
   3  0  0  0  0  1  1  1         375
@@ -212,9 +212,9 @@ On peut facilement vérifier que `Lw ☉ Rw = Ow`.
 
 ### 3. Les équations quadratiques
 Cependant, les matrices (LRO) ne font que représenter le polynôme initial en le décomposant en coefficients de matrices.  
-L'étape suivante de zkSnark consiste à masquer la valeur de ces coefficients dans des courbes. La courbe passe en '0' par les points correspondants aux coefficients des matrices.
+L'étape suivante de zkSnark consiste à masquer la valeur de ces coefficients dans des courbes. Les courbes passent en '0' pour les points correspondants aux coefficients des matrices.
 
-Par exemple, si on prend la première série de coefficients de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée gauche des portes du circuit. On peut modéliser ces entrée par une courbe qui possède des racines sur ces mêmes coefficients. Ainsi le vecteur $[0, 0, 3, 5, 10, 3]$ peut être modélisé par une courbe qui passe par les points  $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
+Par exemple, si on prend la première série de coefficients de la matrice L, on a les valeurs : `(0, 0, 3, 5, 10, 3)`, ce sont les coefficients d'entrée gauche des portes du circuit. On peut modéliser ces entrée par une courbe qui possède des racines sur ces mêmes coefficients. Ainsi le vecteur $[0, 0, 3, 5, 10, 3]$ est modélisé par une courbe qui passe par les points  $[(1,0), (2,0), (3, 3), (4, 5), (5, 10), (6, 3)]$.
 
 Il n'existe qu'une seule courbe de degré 6 qui passe par ces 6 points. Elle a la forme $f(x) = a5x^5+a4x^4+a3x^3+a2x^2+a1x+a0$. L'interpolation de Lagrange permet de la calculer [lagrange](code/lagrange.py). Il faut noter que les matrices U, V, W sont des transposées par rapport à R,L,O. Elle contiennent 8 lignes correspondant aux courbes de chaque paramètre du vecteur témoin et les fonctions interpolées sont de degré 5 correspondant aux 6 portes traversées. 
 
@@ -280,7 +280,7 @@ U:
 <p align="center">
   <img src="./img/U.png" width="200">
 </p>
-$Uw(x) = 4.525 x - 68.17 x + 388.5 x - 1035 x + 1268 x - 553$
+Uw(x) = 4.525x^5-68.17x^4+388.5x^3-1035x^2+1268x-553
 
 ```
 V:
@@ -296,7 +296,7 @@ V:
 <p align="center">
   <img src="./img/V.png" width="200">
 </p>
-$Vw(x) = -7.533 x + 136.3 x - 920.3 x + 2832 x - 3844 x + 1809$
+Vw(x) = -7.533x^5+136.3x^4-920.3x^3+2832x^2-3844x+1809
 
 ```
 W:
@@ -312,7 +312,7 @@ W:
 <p align="center">
   <img src="./img/W.png" width="200">
 </p>
-$Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647$
+Ww(x) = -13.31x^5+254.8x^4-1792x^3+5652x^2-7724x+3647
 
 Une multiplication de matrice par le vecteur témoin se fait par le code python suivant [mult](code/mult.py)
 ```python
@@ -410,15 +410,15 @@ Le polynome H n'a aucune chance d'annuler l'inégalité, car il est choisi de ma
 L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est inconnu `h` et l'autre annule l'équation aux points d'interpolation. Car justement ce sont les racines initialement testées.
 `(Uw * Vw) - Ww = h * t`
 $t(x) = (x-1)(x-2)(x-3)...(x-5)$
-`h * t` doit être de la dimension de `(Uw * Vw)`, t peut être fabriqué commme voulu. On peut donc écrire l'équation suivante :
+`h * t` doit être de la dimension de `(Uw * Vw)`, t peut être fabriqué comme voulu. On peut donc écrire l'équation suivante :
 `((Uw * Vw) - Ww) / t = h`
 
-Si `t` est un diviseur parfait de `((Uw * Vw) - Ww)` alors l'équation Qap fonctionne et nous avons la preuve qu'on connait le polynome initial.  
-$f(x)=3x^3+5x^2+10x+3$.
+Si `t` est un diviseur parfait de `((Uw * Vw) - Ww)` alors l'équation QAP fonctionne et nous avons la preuve qu'on a appliqué un polynôme masqué sur une valeur d'entrée inconnue.
 
-En effet la probabilité de connaître un polynôme unique qui relie les signaux `U, V, et W` par un diviseur cible `t` est nulle. Vous pouvez donc vérifier cette proposition en vérifiant que le reste de la division est nul.
+En effet, la probabilité de connaître un polynôme unique qui relie les signaux `U, V, et W` par un diviseur cible `t` est nulle. Vous pouvez donc vérifier cette proposition en vérifiant que le reste de la division est nul.
 
-Dans notre exemple, [division](code/division.py), indique un reste proche de 0.
+Comme nous travaillons sur des nombres réels, notre exemple indique un reste proche de 0 [division](code/division.py).
+
 ```python
 import numpy as np
 from numpy import poly1d
@@ -434,19 +434,16 @@ t = poly1d([1, -1])*poly1d([1, -2])*poly1d([1, -3])*poly1d([1, -4])*poly1d([1, -
 print("h \n", h)
 print("reste \n", reste)
 ```
-$h(x)=-34.09x^4+414.6x^3-1713x^2+2734x-1394$
-$r(x)=0.0001015x^5-0.001524x^4+0.00865x^3-0.02295x^2+0.028x-0.01228$
+h(x)=-34.09x^4+414.6x^3-1713x^2+2734x-1394
+r(x)=0.0001015x^5-0.001524x^4+0.00865x^3-0.02295x^2+0.028x-0.01228
 
-A titre de comparaison la fonction résultante ((Uw*Vw)-Ww) est la suivante  
-$f(x)=-34.09x^{10}+1130x^9-16380x^8+136300x^7-718700x^6+2500000x^5-5792000x^4+8785000x^3-8321000x^2+4428000x-1004000$
-
-Le souci du système dans l'état où il se trouve est qu'il n'est pas succinct. Si on réalise un circuit complexe le système d'équation va devenir rapidement incalculable pour le **prouveur** et le **vérifieur**.
+Le système dans l'état actuel n'est pas succinct. Si on réalise un circuit complexe le système d'équations va rapidement devenir incalculable pour le **prouveur** et le **vérifieur**.
 L'étape suivante consiste à porter nos équations dans un espace de calcul plus efficace. Passer sur de l'arithmétique modulaire et projeter les données dans l'espace des courbes elliptiques simplifiera les calculs.
 
 ### 5. Rendre la preuve succincte en passant par les courbes elliptiques
 #### L'espace de galois
-L'explication précédente se faisant dans l'espace des réels. En informatique et particulièrement en cryptographie on est vite améné à travailler dans des espaces modulaires ou espaces de Galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appelé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7 (ou corps de Galois 7), la matrice L et le vecteur témoins sont modifiés avec le code suivant [qapGF](code/qapGF.py). Ce code exécute la même preuve que précédemment mais dans un corps de galois d'ordre 7. 
-Nous utilisons deux fonctions spécifiques : `calculPolyLagrangeGF` qui calcule les coefficients de Lagrange dans le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance. 
+L'explication précédente se fait dans l'espace des réels. En informatique et particulièrement en cryptographie on bascule dans des espaces modulaires ou espaces de Galois. C'est à dire un environnement où toutes nos équations seront exprimées en modulo d'une valeur d'un nombre premier appelé ordre. Par exemple, si on choisi l'espace de Galois de valeur 7 (ou corps de Galois 7), la matrice L et le vecteur témoin sont modifiés avec le code suivant [qapGF](code/qapGF.py). Il exécute la même preuve que précédemment mais dans un corps de Galois d'ordre 7.
+Nous utilisons deux fonctions internes spécifiques : `calculPolyLagrangeGF` qui calcule les coefficients de Lagrange dans le corps et `generateT` qui fabrique le polynôme d'annulation de la puissance.
 
 ```python
 import sys
@@ -536,7 +533,7 @@ else:
     print("=> La preuve invalide")
 ```
 
-Le passage par les corps de Galois ne permet pas de gagner du temps de calcul, mais de projetter les équations sur des courbes elliptiques afin de fournir une preuve plus succincte. De plus, cela permet d'obtenir un reste de division `h_hem` égal à 0 car il n'y a plus d'arrondis en calcul modulaire.
+Le passage par les corps de Galois ne permet pas de gagner du temps de calcul, mais de projeter les équations sur des courbes elliptiques afin de fournir une preuve succincte. Cela permet également d'obtenir un reste de division `h_hem` égal à 0 car il n'y a plus d'arrondis en calcul modulaire.
 
 #### Projection sur les courbes elliptiques
 Dans la preuve QAP, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. Le **vérifieur** peut fabriquer le polynôme `t`, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
@@ -549,11 +546,11 @@ $Uw * Vw = Ww + HT$
 Ce sont tous des polynômes, qui peuvent être évalués à n'importe quelle coordonnée. 
 
 Prenons par exemple Uw = $4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x$
-En choisissant arbitrairement `x = 5`, on peut écire `4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055`
-Une courbe elliptique permet de fournir une valeur représentante qui montre que la solution est connue mais sans qu'on puisse remonter à l'équation source. 
-$Ell(Uw(5)) = 4*Ell(5^5) + 3*Ell(5^4) + 5*Ell(5^3) + 3*Ell(5^2)-4*Elli(5)+0$
+En choisissant arbitrairement `x = 5`, on peut écrire `4x^5 + 3x^4 + 5x^3 + 3x^2 - 4x = 15055`
+Une courbe elliptique permet de fournir une valeur représentante qui montre que la solution est connue mais sans qu'on puisse remonter à l'équation source. En supposant que la fonction Ell() soit la projection elliptique, l'équation précédente devient :
+Ell(Uw(5)) = 4*Ell(5⁵) + 3*Ell(5⁴) + 5*Ell(5³) + 3*Ell(5²)-4*Ell(5)+0
 
-Les courbes elliptiques fonctionnent ainsi : 
+On exploite les courbes elliptiques ainsi :
 On part d'un point sur la courbe, appelé G1. (En fonction des courbes considérés les points initiaux peuvent avoir plusieurs dimensions. G1 : 1 point à 2 dimensions, G2 : 2 points à 2 dimensions, G12 : 12 points à 2 dimensions.)
 Si on ajoute G1 à G1, on trouve le point suivant sur la courbe. 5*G1 déplace G1 sur la courbe de 5 sauts, et 5G1 est toujours sur la courbe.
 
@@ -586,16 +583,16 @@ print("Somme(coefficient) = ", sommeCoefs)
 
 print(multiply(G1, 15055) == sommeCoefs)
 ```
-**Remarque : dans ce dernier exemple, nous avons pris une des courbes précédentes, en changeant le dernier coefficient par son négatif pour illustrer la fonction `neg`**
+**Remarque : dans ce dernier exemple, nous avons pris une des courbes précédentes, en changeant le dernier coefficient par son négatif pour illustrer l'usage de la fonction `neg`**
 
-Le point résulant `15055G1` 
+Le point résulant `15055G1` a pour coordonnées :
 ```
 (2708568011129098481813750608442309814741431019776566886222041314305674896534, 12627231381848946543670844035528126888439204587944747555252932693150421290218)
 ``` 
-représente une valeur du polynôme en un point particulier. Il est impossible de remonter au polynôme source. Une équation polynômiale se présente sous la forme $P(x)=anx^n+a(n-1)x^(n-1)+...+a2x^2+a1x+a0$. Ce qui est important dans ces équations ce sont les coefficients ax...a0 et le degré du polynôme. En passant par les courbes elliptiques, on peu s'abstraire des puissances de x. En prenant un point de G1 au hasard, et en prenant ses puissances respectives, un tiers de confiance peut 'figer' les puissances une fois pour toute. Dans le code exemple, le point 5G1 est la valeur aléatoire initiale ('5' qui s'appelera `tau` plus loin dans le texte) et X0 à X5 sont les différentes puissances de x précalculées et figées par le **confident**.  
+représente une valeur du polynôme en un point particulier. Il est impossible de remonter au polynôme source. Une équation polynômiale se présente sous la forme $P(x)=anx^n+a(n-1)x^(n-1)+...+a2x^2+a1x+a0$. Ce qui est important dans ces équations ce sont les coefficients an...a0 et le degré du polynôme. En passant par les courbes elliptiques, on peu s'abstraire des puissances de x. En prenant un point de G1 au hasard, et en prenant ses puissances respectives, un tiers de confiance peut 'figer' les puissances une fois pour toute. Dans le code exemple, le point 5G1 est la valeur aléatoire initiale ('5' qui s'appellera `tau` plus loin dans le texte) et X0 à X5 sont les différentes puissances de x précalculées et figées par le **confident**.  
 
-On arrive donc à la notion de preuve succincte :
-Si `Uw * Vw = Ww + HT` sont des polynomes, le **prouveur** peux en calculer des projections équivalente sur des courbes elliptiques. 
+On arrive à la notion de preuve succincte suivante :
+Si `Uw * Vw = Ww + HT` sont des polynômes, le **prouveur** peux en calculer des projections équivalente sur des courbes elliptiques. 
 
 Si 
 $A = Encode(Uw, tau)$,  
@@ -610,12 +607,12 @@ Avant cela, nous devons résoudre deux problèmes :
 #### Ne pas envoyer Uw au **confident**
 Dans le code précédent, on constate que X0 à X5 sont des valeurs préparées et figées par **confident**. Il choisit  la valeur initiale aléatoire `tau` qu'il peut détruire / oublier dès que les puissances X0 à X5 sont calculées. Connaissant X0 à X5, il est impossible de remonter à la valeur `tau` initiale. Parallèlement, si le **prouveur** reçoit les différentes puissances (X0-X5), il peut calculer sont polynôme en continuant les déplacements sur la courbe elliptique G1. Il multiplie les puissances par les coefficients des polynômes. $P(x)=anx^n+a(n-1)x^(n-1)+...+a2x^2+a1x+a0$ devient $A = anXn+a(n-1)X(n-1)+...+a2X2+a1X1+a0X0$. Uw, Vw, Ww deviennent alors de valeurs numériques caractéristiques unique des polynômes associés. Nous les appelons A, B, C. 
 
-Pour $HT$, le calcul se fait en appliquant $Hv(Tp)$
+Pour $HT$, le calcul se fait en appliquant $H(T(tau))$. Les puissances de T(tau) sont fournies par le **confident** également.
 
 En résumé, le **prouveur** est capable de calculer A, B sans divulguer d'information au **confident**. 
-Le **confident** envoi les coefficient X0 à Xn qui sont les points de courbe aux différentes puissances, à une coordonnée initiale inconnue de tous sauf du **confident**, qui peut être détruite une fois les X calculés.
+Le **confident** envoi les coefficient X0 à XN qui sont les points de courbe aux différentes puissances, à une coordonnée initiale inconnue de tous sauf du **confident**, qui peut être détruite par ce dernier une fois les X calculés.
 
-Une partie du coût de calcul est déporté vers le **confident**, qui calcule une fois pour toute les coefficients $X0-Xn$.
+Une partie du coût de calcul est déporté vers le **confident**, qui calcule une fois pour toute les coefficients $X0-XN$.
 
 Le code suivant [EncodeUwInElliptic](code/EncodeUwInElliptic.py) distingue le calcul des puissances de tau, réalisé par le **confident** du calcul de la valeur A réalisée par le **prouveur**.
 ```python
@@ -663,12 +660,12 @@ La valeur $A=(154626391764838098593216694798512238703206077695804183189857950578
 Le produit `A * B` ne donne pas de résultat sur la courbe elliptique G1. Il faut passer par un principe de pairing. Le pairing permet de multiplier deux points sur deux courbes elliptiques G1 et G2 pour obtenir un troisième point situé sur G12. Ainsi le mapping se présente ainsi :
 
 ```python
-mapping(B_G2, A_G1) == mapping(G2, C_G1) # Le mapping s'effectue sur la courbe G12, mais le point n'est pas nécessairement accessible.
+pairing(B_G2, A_G1) == pairing(G2, C_G1) # Le mapping s'effectue sur la courbe G12, mais le point n'est pas nécessairement accessible.
 ```
 B est un point de G2, A un point de G1, A * B indique un point C situé sur G12.
 Il est a noté que le pairing ne fonctionne que sur un espace de Galois spécifique où le pairing a été vérifié. Il s'agit des courbes bn128.   
 
-Le code suivant [testpairing](code/testpairing.py) teste le pairing `map(5*G1, 6*G2) == map(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification [[cf. Bilinear Pairing](https://www.rareskills.io/post/bilinear-pairing)].
+Le code suivant [testpairing](code/testpairing.py) teste le pairing `pairing(5*G1, 6*G2) == pairing(30*G1, G2)`. Ce sont les propriétés conjointes de G1, G2 et G12 qui permettent cette vérification [[cf. Bilinear Pairing](https://www.rareskills.io/post/bilinear-pairing)].
 
 ```python
 from py_ecc.bn128 import multiply, G1, G2, pairing
@@ -714,7 +711,6 @@ print("Les équations sont bonnes")
 
 # La partie du **vérifieur**. Il prépare, X sur G1 et X sur G2 et T sur G2
 tau = GF(123)
-
 
 XG1_6 = multiply(G1, int(tau**6))
 XG1_5 = multiply(G1, int(tau**5))
