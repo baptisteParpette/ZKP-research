@@ -1,8 +1,8 @@
 # Preuves à Divulgation Nulle de Connaissance (ZKP)
-Les ZKP visent à prouver une assertion sans divulguer de valeurs et sans connaître les détails de l'assertion. Le principe est directement issu des casses-têtes. Je peux montrer que je connais la solution sans divulguer les étapes intermédiares. Dans l'exercice du Sudoku, je peux montrer que j'ai trouvé 10 chiffres différents sur toutes les lignes et toutes les colonnes sans donner la position exacte. Les ZKP modélisent ce principe. La mécanique générale met en relation un **prouveur** qui indique connaître la solution au problème et un **vérifieur** qui contrôle que la solution proposée. Cet échange se fait dans un cadre contraint, contrôlé par un tier de confiance que nous appelons le **confident**. Dans le cadre du Sodoku, le **confident** peut être vu comme celui qui prépare la grille initiale et qui vérifie que le **prouveur** n'a pas trouvé une solution toute prête ailleurs. 
+Les ZKP visent à prouver une assertion sans divulguer de valeurs et sans connaître les détails de l'assertion. Le principe est directement issu des casses-têtes. Je peux montrer que je connais la solution sans divulguer les étapes intermédiaires. Dans l'exercice du Sudoku, je peux montrer que j'ai trouvé 10 chiffres différents sur toutes les lignes et toutes les colonnes sans donner la position exacte. Les ZKP modélisent ce principe. La mécanique générale met en relation un **prouveur** qui indique connaître la solution au problème et un **vérifieur** qui contrôle que la solution proposée. Cet échange se fait dans un cadre contraint, contrôlé par un tiers de confiance que nous appelons le **confident**. Dans le cadre du Sodoku, le **confident** peut être vu comme celui qui prépare la grille initiale et qui vérifie que le **prouveur** n'a pas trouvé une solution toute prête ailleurs. 
   
 ## I. Principes généraux des zksnarks et groth16
-Nous présentons le détail du fonctionnement mathématique de l'approche ZkSnark mise en œeuvre dans l'implantation [[Groth16](https://eprint.iacr.org/2016/260.pdf)]. Les Zksnarks sont une famille de preuves ZKP qui possèdent des propriétés communes. Elles sont 'succinctes' et 'Non interactives'. Succincte indique que le **vérifieur** peut contrôler la solution rapidement. 'Non interactive' indique que le **prouveur** n'envoie qu'un seul message contenant la solution au **vérifieur**. Pour comprendre le principe de preuve interactive, reprenons l'exemple du Sudoku. En supposant que les lignes et les colonnes sont données une par une, la preuve se fait de manière interactive. A chaque ligne ou colonne présentée au **vérifieur** sa confiance dans la preuve augmente. Dans une approche 'non interactive' la preuve est fournie en un seul appel de fonction.  
+Nous présentons le détail du fonctionnement mathématique de l'approche ZkSnark mise en œuvre dans l'implantation [[Groth16](https://eprint.iacr.org/2016/260.pdf)]. Les Zksnarks sont une famille de preuves ZKP qui possèdent des propriétés communes. Elles sont 'succinctes' et 'Non interactives'. Succincte indique que le **vérifieur** peut contrôler la solution rapidement. 'Non interactive' indique que le **prouveur** n'envoie qu'un seul message contenant la solution au **vérifieur**. Pour comprendre le principe de preuve interactive, reprenons l'exemple du Sudoku. En supposant que les lignes et les colonnes sont données une par une, la preuve se fait de manière interactive. A chaque ligne ou colonne présentée au **vérifieur** sa confiance dans la preuve augmente. Dans une approche 'non interactive' la preuve est fournie en un seul appel de fonction.  
 
 Groth16 part d'un polynôme quelconque : $f(x) = 3x^3+5x^2+10x+3$ et d'un `x` sur la courbe que seul le **prouveur** connait. Le **prouveur** veut montrer au vérifieur qu'il a bien exécuté cette fonction pour une valeur de `x`qu'il a choisi. Le **vérifieur** doit pouvoir valider cette assertion rapidement et sans doute. 
 
@@ -401,10 +401,10 @@ for i in range(1, 7):    # 7 points d'interpolation
 #### La seconde vérification intermédiaire : montrer que Uw.Vw = Ww
 Nous venons de voir que l'équation est valide aux points d'interpolation. Mais cela ne s'arrête pas là. Il est possible de trouver un cas plus général à cette équation en conservant la multiplication polynomiale.
 
-On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynome de degré `deg(Uw * Vw) - deg(Ww)`.  
+On peut constater un problème sur les degrés des polynômes. La multiplication des Polynômes Uw par Vw va nécessairement aboutir sur un polynôme de degré 10. Il faut donc annuler les degrés supérieurs au degré de Ww. Cela se fait par une polynôme de degré `deg(Uw * Vw) - deg(Ww)`.  
 
 `Uw * Vw = Ww + H` aux points d'interpolation.
-Le polynome H n'a aucune chance d'annuler l'inégalité, car il est choisi de manière arbitraire.  
+Le polynôme H n'a aucune chance d'annuler l'inégalité, car il est choisi de manière arbitraire.  
 `(Uw * Vw) - Ww != H`
 
 L'idée est de décomposer le polynôme H, en réduisant sa dimension pour avoir 2 termes dont un est inconnu `h` et l'autre annule l'équation aux points d'interpolation. Car justement ce sont les racines initialement testées.
@@ -536,7 +536,7 @@ else:
 Le passage par les corps de Galois ne permet pas de gagner du temps de calcul, mais de projeter les équations sur des courbes elliptiques afin de fournir une preuve succincte. Cela permet également d'obtenir un reste de division `h_hem` égal à 0 car il n'y a plus d'arrondis en calcul modulaire.
 
 #### Projection sur les courbes elliptiques
-Dans la preuve QAP, le **prouveur** montre au **vérifieur** les trois polynomes Uw, Vw, Ww, ainsi que le degré des équations. Le **vérifieur** peut fabriquer le polynôme `t`, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
+Dans la preuve QAP, le **prouveur** montre au **vérifieur** les trois polynômes Uw, Vw, Ww, ainsi que le degré des équations. Le **vérifieur** peut fabriquer le polynôme `t`, et vérifier que la division est sans reste. Mais le **vérifieur** accède quand même à ces polynômes qu'il peut alors donner à autre et se faire passer pour un **prouveur**. 
 
 Pour palier cela, **prouveur** et **verifieur** sont mis en relation par un tier de confiance le **confident** *Trusted setup* en anglais, qui va imposer des valeurs de références uniques au deux participants. 
 
@@ -598,7 +598,7 @@ Si
 $A = Encode(Uw, tau)$,  
 $B = Encode(Vw, tau)$, 
 et $C = Encode(Ww + HT, tau)$   
-sont fabriqués par le **prouveur**, alors il est facile et rapide pour le **vérifieur** de controler que `A*B = C`. 
+sont fabriqués par le **prouveur**, alors il est facile et rapide pour le **vérifieur** de contrôler que `A*B = C`. 
 Avant cela, nous devons résoudre deux problèmes : 
 
 1. Envoyer Uw, Vw, Ww au **confident** est une divulgation de connaissances...
