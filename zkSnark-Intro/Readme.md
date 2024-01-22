@@ -152,7 +152,7 @@ Le produit matriciel d'Hadamard, ce décompose ainsi.
 L.w =
   0  0  1  0  0  0  0  0           1
   0  0  1  0  0  0  0  0         553
-  3  0  0  0  0  0  0  0    ☉      5
+  3  0  0  0  0  0  0  0    .      5
   5  0  0  0  0  0  0  0          25
  10  0  0  0  0  0  0  0         125
   3  0  0  0  0  1  1  1         375
@@ -551,7 +551,7 @@ Une courbe elliptique permet de fournir une valeur représentante qui montre que
 Ell(Uw(5)) = 4*Ell(5⁵) + 3*Ell(5⁴) + 5*Ell(5³) + 3*Ell(5²)-4*Ell(5)+0
 
 On exploite les courbes elliptiques ainsi :
-On part d'un point sur la courbe, appelé G1. (En fonction des courbes considérés les points initiaux peuvent avoir plusieurs dimensions. G1 : 1 point à 2 dimensions, G2 : 2 points à 2 dimensions, G12 : 12 points à 2 dimensions.)
+On part d'un point sur la courbe, appelé G1. (En fonction des courbes elliptiques utilisées, les points initiaux peuvent avoir plusieurs dimensions. G1 : un point à deux coordonnées de 1 dimension, G2 : un point à deux coordonnées de 2 dimensions, G12 : 1 point à deux coordonnées de 12 dimensions.)
 Si on ajoute G1 à G1, on trouve le point suivant sur la courbe. 5*G1 déplace G1 sur la courbe de 5 sauts, et 5G1 est toujours sur la courbe.
 
 Par rapport à notre exemple : 
