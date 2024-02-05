@@ -6,6 +6,24 @@ A = multiply(G1, 5)
 B = multiply(G2, 6)
 C = multiply(G1, 5*6)
 
+
+alpha = 12
+beta = 16
+
+left = add(multiply(G1,alpha), A)
+right = add(multiply(G2, beta), B)
+
+alphaBeta = pairing(multiply(G2, beta), multiply(G1, alpha))
+APaired = pairing(G2, multiply(A, beta))
+BPaired = pairing(G2, multiply(multiply(G1, 6), alpha))
+
+rightPairing = alphaBeta*APaired*BPaired*pairing(G2, C)
+
+
+print(pairing(right, left) == rightPairing)
+sys.exit()
+
+
 print(pairing(B, A) == pairing(G2, C)) # un bug de librairie python oblige de faire G2 -> G1
 sys.exit()
 

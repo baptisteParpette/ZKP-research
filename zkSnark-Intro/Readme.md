@@ -1,3 +1,7 @@
+---
+Cet article est rédigé dans le cadre des parcours recherche du département Télécommunications de l’INSA de Lyon. Les codes et les analyses ont été réalisés par M. Baptiste Parpette étudiant en Télécommunications et supervisé par M. Stéphane Frénot.
+---
+
 # Preuves à Divulgation Nulle de Connaissance (ZKP)
 Les ZKP visent à prouver une assertion sans divulguer de valeurs et sans connaître les détails de l'assertion. Le principe est directement issu des casses-têtes. Je peux montrer que je connais la solution sans divulguer les étapes intermédiaires. Dans l'exercice du Sudoku, je peux montrer que j'ai trouvé 10 chiffres différents sur toutes les lignes et toutes les colonnes sans donner la position exacte. Les ZKP modélisent ce principe. La mécanique générale met en relation un **prouveur** qui indique connaître la solution au problème et un **vérifieur** qui contrôle que la solution proposée. Cet échange se fait dans un cadre contraint, contrôlé par un tiers de confiance que nous appelons le **confident**. Dans le cadre du Sodoku, le **confident** peut être vu comme celui qui prépare la grille initiale et qui vérifie que le **prouveur** n'a pas trouvé une solution toute prête ailleurs. 
   
