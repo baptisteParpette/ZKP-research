@@ -112,8 +112,11 @@ En quoi l'introduction d'alpha et beta va résoudre le problème du prouveur mal
 Donc à partir de cela, le prouveur, ne connaissant pas la valeur d'alpha et beta en clair, il ne peut plus construire "un nouveau C" qui répondrait à cette dernière équation.
 
 ## 3 - Ajout de contraintes pour le proveur (γ, δ)
+https://kayleegeorge.github.io/math110_WIM.pdf 
+**Le rôle des autres éléments du champ secret
+γ, δ sont utilisés pour rendre la contribution du public indépendante des autres composants témoins.**
 
-Pour éviter les contrefaçons, nous proposons une approche utilisant des données publiques. Nous partons du principe que les évaluations polynomiales βu₀(τ), αw₀(τ) et w₁(τ) sont utilisées par le vérificateur, et non par le prouveur. Cependant, il est techniquement possible pour le prouveur d'utiliser w₀(τ) et w₁(τ) pour créer une fausse preuve, bien que cela soit difficile à réaliser.
+(Pour éviter les contrefaçons, nous proposons une approche utilisant des données publiques. Nous partons du principe que les évaluations polynomiales βu₀(τ), αw₀(τ) et w₁(τ) sont utilisées par le vérificateur, et non par le prouveur. Cependant, il est techniquement possible pour le prouveur d'utiliser w₀(τ) et w₁(τ) pour créer une fausse preuve, bien que cela soit difficile à réaliser.
 
 Pour contrer cette possibilité, nous introduisons un élément de sécurité en divisant w₀(τ) et w₁(τ) par une variable secrète γ du côté du vérificateur, et par une variable différente δ du côté du prouveur. Les versions cryptées de ces variables [γ] et [δ] sont rendues disponibles afin que le vérificateur et le prouveur puissent les utiliser pour annuler leurs contributions respectives, en garantissant l'intégrité du processus si les parties agissent de manière honnête.
 
@@ -123,7 +126,7 @@ Au lieu d'apparier avec G₂ à l'étape de vérification, nous apparions avec [
 Étape de vérification avec delta gamma et entrées publiques
 Les termes [γ] et [δ] s'annuleront si le prouveur a réellement utilisé les polynômes issus de la configuration de confiance. Le prouveur (et le vérificateur) ne connaissent pas l'élément de champ qui correspond à [δ], donc ils ne peuvent pas provoquer l'annulation des termes à moins d'utiliser les valeurs de la configuration de confiance.
 
-Si le prouveur utilise les évaluations de polynômes provenant de la partie des entrées publiques du témoin, les termes γ et δ ne s'annuleront pas.
+Si le prouveur utilise les évaluations de polynômes provenant de la partie des entrées publiques du témoin, les termes γ et δ ne s'annuleront pas.)
 
 ## 4 - Ajout de contraintes par le prouveur (r, s)
 
